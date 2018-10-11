@@ -1,11 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using LocalCommons.Database;
+﻿using LocalCommons.Database;
 using LocalCommons.Logging;
-using LocalCommons.Utilities;
 using MySql.Data.MySqlClient;
+using System;
+using System.IO;
 
 namespace ArcheAgeLogin.ArcheAge.Database
 {
@@ -24,7 +21,9 @@ namespace ArcheAgeLogin.ArcheAge.Database
                 mc.Parameters.AddWithValue("@path", updateFile);
 
                 using (var reader = mc.ExecuteReader())
+                {
                     return reader.Read();
+                }
             }
         }
 
@@ -40,7 +39,9 @@ namespace ArcheAgeLogin.ArcheAge.Database
                 {
                     // Run update
                     using (var cmd = new MySqlCommand(File.ReadAllText(Path.Combine("sql", updateFile)), conn))
+                    {
                         cmd.ExecuteNonQuery();
+                    }
 
                     // Log update
                     using (var cmd = new InsertCommand("INSERT INTO `updates` {0}", conn))

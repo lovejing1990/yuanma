@@ -132,7 +132,7 @@ namespace ArcheAgeLogin
             Logger.Section("MySQL");
 
             // Database
-            ArcheageDb.Init(m_Current.DataBase_Host, m_Current.DataBase_User, m_Current.DataBase_Password, m_Current.DataBase_Name);
+            ArcheageDb.Init(m_Current.DataBase_Host, m_Current.DataBase_User, m_Current.DataBase_Password, m_Current.DataBase_Name, m_Current.SSL, m_Current.PersistSecurityInfo);
 
             Database = new LoginDb();
 

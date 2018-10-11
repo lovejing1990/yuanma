@@ -12,14 +12,14 @@ namespace ArcheAge.ArcheAge.Holders
 {
     public class CharacterHolder
     {
-        private static List<Character> m_DbCharacters;
+        private static List<Character> _mDbCharacters;
 
         /// <summary>
         /// Loaded List of Characters.
         /// </summary>
         public static List<Character> CharactersList
         {
-            get { return m_DbCharacters; }
+            get { return _mDbCharacters; }
         }
 
         public static int GetCount()
@@ -360,7 +360,7 @@ namespace ArcheAge.ArcheAge.Holders
         /// </summary>
         public static List<Character> LoadCharacterData(uint accountId)
         {
-            m_DbCharacters = new List<Character>();
+            _mDbCharacters = new List<Character>();
             var serverid = Settings.Default.Game_Id;
             using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -494,7 +494,7 @@ namespace ArcheAge.ArcheAge.Holders
                 //character.Spr = reader.GetInt32("spr");
                 //character.Dex = reader.GetInt32("dex");
                 //
-                m_DbCharacters.Add(character);
+                _mDbCharacters.Add(character);
             }
         }
 
@@ -511,7 +511,7 @@ namespace ArcheAge.ArcheAge.Holders
                     conn.Open(); //Устанавливаем соединение с базой данных
                     var cmd = new MySqlCommand();
                     cmd.Connection = conn;
-                    if (m_DbCharacters.Contains(character))
+                    if (_mDbCharacters.Contains(character))
                     {
                         cmd.CommandText =
                             "UPDATE `character_records` SET `characterid` = @characterid, `accountid` = @accountid, `chargender` = @chargender, `charname` = @charname," +
@@ -523,7 +523,7 @@ namespace ArcheAge.ArcheAge.Holders
                             " `Weight1` = @Weight1, `Weight2` = @Weight2, `Weight3` = @Weight3, `Weight4` = @Weight4, `Weight5` = @Weight5, `Weight6` = @Weight6," +
                             " `Weight7` = @Weight7, `Weight8` = @Weight8, `Weight9` = @Weight9, `Weight10` = @Weight10, `Weight11` = @Weight11, `Weight12` = @Weight12," +
                             " `Weight13` = @Weight13, `Weight14` = @Weight14, `Weight15` = @Weight15, `Weight16` = @Weight16, `Weight17` = @Weight17," +
-                            " `worldid` = @worldid, `ability0` = @ability0, `ability1` = @ability1, `ability2` = @ability2," + //" `liveobjectid` = @liveobjectid," +
+                            " `worldid` = @worldid, `ability0` = @ability0, `ability1` = @ability1, `ability2` = @ability2," +
                             " `zone` = @zone, `x` = @x, `y` = @y, `z` = @z, `rotx` = rotx, `roty` = roty, `rotz` = rotz " +
                             " WHERE `charname` = @charname";
                     }
@@ -534,13 +534,13 @@ namespace ArcheAge.ArcheAge.Holders
                             " movex, movey, rightpupil, rotate, scale, type0, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10, type11, type12, type13," +
                             " type14, type15, type16, type17, v, Weight0, Weight1, Weight2, Weight3, Weight4, Weight5, Weight6, Weight7, Weight8, Weight9, Weight10," +
                             " Weight11, Weight12, Weight13, Weight14, Weight15, Weight16, Weight17, Worldid, ability0, ability1, ability2, zone," +
-                            " x, y, z, rotx, roty, rotz) " + //, liveobjectid) " +
+                            " x, y, z, rotx, roty, rotz) " + 
 
                             " VALUES (@characterid, @accountid, @chargender, @charname, @charrace, @decor, @ext, @eyebrow, @guid, @leftPupil, @level, @lip, @modifiers, @movex, @movey," +
                             " @rightpupil, @rotate, @scale, @type0, @type1, @type2, @type3, @type4, @type5, @type6, @type7, @type8, @type9, @type10, @type11, @type12," +
                             " @type13, @type14, @type15, @type16, @type17, @v, @Weight0, @Weight1, @Weight2, @Weight3, @Weight4, @Weight5, @Weight6, @Weight7, @Weight8," +
                             " @Weight9, @Weight10, @Weight11, @Weight12, @Weight13, @Weight14, @Weight15, @Weight16, @Weight17, @Worldid, @ability0, @ability1, @ability2," +
-                            " @zone, @x, @y, @z, @rotx, @roty, @rotz)"; //", @liveobjectid)";
+                            " @zone, @x, @y, @z, @rotx, @roty, @rotz)";
                     }
 
                     MySqlParameterCollection parameters = cmd.Parameters;
@@ -633,9 +633,9 @@ namespace ArcheAge.ArcheAge.Holders
                     //parameters.Add("@spr", MySqlDbType.Int32).Value = character.Spr;
                     //parameters.Add("@dex", MySqlDbType.Int32).Value = character.Dex;
                     //
-                    m_DbCharacters.Add(character);
+                    _mDbCharacters.Add(character);
 
-                    if (m_DbCharacters.Contains(character))
+                    if (_mDbCharacters.Contains(character))
                     {
                         parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
                     }
