@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bufferization\BinaryOperations.cs" />
+    <Compile Include="Compression\Compression.cs" />
     <Compile Include="Cookie\Cookie.cs" />
     <Compile Include="Cryptography\Encrypt.cs" />
     <Compile Include="Database\ArcheageDb.cs" />
