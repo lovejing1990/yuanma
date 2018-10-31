@@ -111,6 +111,7 @@ namespace ArcheAge.ArcheAge.Network
                     Register(0x01, 0x0023, OnPacketReceive_0x01_CSDeleteCharacter_0x0023);
                     Register(0x01, 0x0027, OnPacketReceive_0x01_CSNotifyInGame_0x0027);
                     Register(0x01, 0x0088, OnPacketReceive_0x01_NP_CSMoveUnitPacket_0x0088);
+                    Register(0x01, 0x0101, OnPacketReceive_0x01_CSAddFriend_0x0101);
                     //02
                     Register(0x02, 0x0001, (net, reader) => OnPacketReceive_0x02_FinishState_0x0001(_clientVersion, net, reader)); //02, 03, 09, 10, 11, 12, 14, 15
                     Register(0x02, 0x0012, OnPacketReceive_0x02_Ping_0x0012); //
@@ -251,6 +252,15 @@ namespace ArcheAge.ArcheAge.Network
             net.CurrentAccount.Character.Heading = new Direction(rotx, roty, rotz); //сохраним направление взгляда
 
             CharacterHolder.InsertOrUpdate(net.CurrentAccount.Character); //записываем в базу character_records
+        }
+
+        public static void OnPacketReceive_0x01_CSAddFriend_0x0101(ClientConnection net, PacketReader reader)
+        {
+            byte name_length = reader.ReadByte();
+            byte unk0 = reader.ReadByte();
+            string name = System.Text.Encoding.UTF8.GetString(reader.ReadByteArray(name_length));
+
+            net.SendAsync(new NP_SCAddFriendPacket_0x0101(net, name));
         }
 
         ///<summary>
