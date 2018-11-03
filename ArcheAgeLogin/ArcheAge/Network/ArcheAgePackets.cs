@@ -28,6 +28,12 @@ namespace ArcheAgeLogin.ArcheAge.Network
         {
             switch (clientVersion)
             {
+                case "0":
+                    //0C00 0000 00 0003000000000000 00
+                    ns.Write((byte)0x00);     //reason
+                    ns.Write((long)0x0300);  //afs
+                    ns.Write((byte)0x00);   //slotCount
+                    break;
                 case "1":
                     //0C00 0000 00 0003000000000000 00
                     ns.Write((byte)0x00);     //reason
@@ -92,11 +98,18 @@ namespace ArcheAgeLogin.ArcheAge.Network
         {
             switch (clientVersion)
             {
+                case "0":
+                    //2800 0300 58330000 2000 3236393631326537613630393431313862623735303764626334326261353934
+                    ns.Write((int)net.CurrentAccount.AccountId); // записываем AccountID
+                    //wsk - wide string key, в каждой сесии один и тот-же, даже при перелогине (выборе сервера)
+                    var wsk = "A18D7A05E22E459BD1A819222B821030"; //для теста
+                    ns.WriteASCIIFixed(wsk, wsk.Length);
+                    break;
                 case "1":
                     //2800 0300 58330000 2000 3236393631326537613630393431313862623735303764626334326261353934
                     ns.Write((int)net.CurrentAccount.AccountId); // записываем AccountID
                     //wsk - wide string key, в каждой сесии один и тот-же, даже при перелогине (выборе сервера)
-                    string wsk = "A18D7A05E22E459BD1A819222B821030"; //для теста
+                    wsk = "A18D7A05E22E459BD1A819222B821030"; //для теста
                     ns.WriteASCIIFixed(wsk, wsk.Length);
                     break;
                 /*
@@ -203,9 +216,15 @@ namespace ArcheAgeLogin.ArcheAge.Network
         {
             switch (clientVersion)
             {
+                case "0":
+                    ns.Write((int)cookie);
+                    var ipAddress = server.IPAddress; //Main address
+                    ns.WriteUTF8Fixed(ipAddress, ipAddress.Length);
+                    ns.Write(server.Port); //1239
+                    break;
                 case "1":
                     ns.Write((int)cookie);
-                    string ipAddress = server.IPAddress; //Main address
+                    ipAddress = server.IPAddress; //Main address
                     ns.WriteUTF8Fixed(ipAddress, ipAddress.Length);
                     ns.Write(server.Port); //1239
                     break;
@@ -278,10 +297,10 @@ namespace ArcheAgeLogin.ArcheAge.Network
         {
             switch (clientVersion)
             {
-                case "1":
-                    var m_Current = GameServerController.CurrentGameServers.Values.ToList();
-                    ns.Write((byte)m_Current.Count); // Count
-                    foreach (var server in m_Current)
+                case "0":
+                    var mCurrent = GameServerController.CurrentGameServers.Values.ToList();
+                    ns.Write((byte)mCurrent.Count); // Count
+                    foreach (var server in mCurrent)
                     {
                         ns.Write((byte)server.Id);
                         ns.WriteUTF8Fixed(server.Name, Encoding.UTF8.GetByteCount(server.Name));
@@ -295,35 +314,88 @@ namespace ArcheAgeLogin.ArcheAge.Network
                                 var status = server.CurrentAuthorized.Count >= server.MaxPlayers ? 0x01 : 0x00;
                                 ns.Write((byte)status); //Server Status - 0x00 - normal / 0x01 - load / 0x02 - queue
                                 //The following sections are the racial restrictions on server creation for this server selection interface 0 Normal 2 Prohibited
-                                for (int i = 0; i < 9; i++)
+                                for (var i = 0; i < 9; i++)
                                 {
                                     ns.Write((byte)0x00); //rcon
                                 }
                                 break;
                         }
                     }
-                    int CharCount = CharacterHolder.LoadCharacterData(net.CurrentAccount.AccountId); //считываем данные персонажей и их количество
-                    ns.Write((byte)CharCount); //CharCount
+                    var charCount = CharacterHolder.LoadCharacterData(net.CurrentAccount.AccountId); //считываем данные персонажей и их количество
+                    ns.Write((byte)charCount); //CharCount
 
-                    net.CurrentAccount.Characters = (byte)CharCount;
+                    net.CurrentAccount.Characters = (byte)charCount;
 
-                    if (CharCount != 0)
+                    if (charCount != 0)
                     {
-                        long m_AccountId = net.CurrentAccount.AccountId; //считываем данные только наших персонажей
-                        foreach (Character n_Current in CharacterHolder.CharactersList)
+                        long mAccountId = net.CurrentAccount.AccountId; //считываем данные только наших персонажей
+                        foreach (var nCurrent in CharacterHolder.CharactersList)
                         {
-                            if (n_Current.AccountId == m_AccountId)
+                            if (nCurrent.AccountId == mAccountId)
                             {
-                                ns.Write((int)n_Current.AccountId); //AccountID
-                                ns.Write((byte)n_Current.WorldId); //WorldID
-                                ns.Write((int)n_Current.Type); //charID
-                                string charname = n_Current.CharName;
+                                ns.Write((int)nCurrent.AccountId); //AccountID
+                                ns.Write((byte)nCurrent.WorldId); //WorldID
+                                ns.Write((int)nCurrent.Type); //charID
+                                var charname = nCurrent.CharName;
                                 ns.WriteASCIIFixed(charname, charname.Length);
-                                ns.Write((byte)n_Current.CharRace); //CharRace
-                                ns.Write((byte)n_Current.CharGender); //CharGender
-                                string uid = n_Current.GUID; // = ""; //UID - Параметры чара, возможно пустая строка!
+                                ns.Write((byte)nCurrent.CharRace); //CharRace
+                                ns.Write((byte)nCurrent.CharGender); //CharGender
+                                var uid = nCurrent.GUID; // = ""; //UID - Параметры чара, возможно пустая строка!
                                 ns.WriteHex(uid, uid.Length);
-                                ns.Write((long)n_Current.V); //v
+                                ns.Write((long)nCurrent.V); //v
+                            }
+                        }
+                    }
+
+                    AccountHolder.InsertOrUpdate(net.CurrentAccount);
+
+                    break;
+                case "1":
+                    mCurrent = GameServerController.CurrentGameServers.Values.ToList();
+                    ns.Write((byte)mCurrent.Count); // Count
+                    foreach (var server in mCurrent)
+                    {
+                        ns.Write((byte)server.Id);
+                        ns.WriteUTF8Fixed(server.Name, Encoding.UTF8.GetByteCount(server.Name));
+                        var online = server.IsOnline() ? (byte)0x01 : (byte)0x02; //1 Online 2 Offline
+                        ns.Write((byte)online); //Server Status - 0x01 
+                        switch (online)
+                        {
+                            case 0:
+                                break;
+                            default:
+                                var status = server.CurrentAuthorized.Count >= server.MaxPlayers ? 0x01 : 0x00;
+                                ns.Write((byte)status); //Server Status - 0x00 - normal / 0x01 - load / 0x02 - queue
+                                //The following sections are the racial restrictions on server creation for this server selection interface 0 Normal 2 Prohibited
+                                for (var i = 0; i < 9; i++)
+                                {
+                                    ns.Write((byte)0x00); //rcon
+                                }
+                                break;
+                        }
+                    }
+                    charCount = CharacterHolder.LoadCharacterData(net.CurrentAccount.AccountId); //считываем данные персонажей и их количество
+                    ns.Write((byte)charCount); //CharCount
+
+                    net.CurrentAccount.Characters = (byte)charCount;
+
+                    if (charCount != 0)
+                    {
+                        long mAccountId = net.CurrentAccount.AccountId; //считываем данные только наших персонажей
+                        foreach (var nCurrent in CharacterHolder.CharactersList)
+                        {
+                            if (nCurrent.AccountId == mAccountId)
+                            {
+                                ns.Write((int)nCurrent.AccountId); //AccountID
+                                ns.Write((byte)nCurrent.WorldId); //WorldID
+                                ns.Write((int)nCurrent.Type); //charID
+                                var charname = nCurrent.CharName;
+                                ns.WriteASCIIFixed(charname, charname.Length);
+                                ns.Write((byte)nCurrent.CharRace); //CharRace
+                                ns.Write((byte)nCurrent.CharGender); //CharGender
+                                var uid = nCurrent.GUID; // = ""; //UID - Параметры чара, возможно пустая строка!
+                                ns.WriteHex(uid, uid.Length);
+                                ns.Write((long)nCurrent.V); //v
                             }
                         }
                     }
@@ -338,11 +410,11 @@ namespace ArcheAgeLogin.ArcheAge.Network
                     ////ns.WriteHex("010101000900417263686552616765010000000000000000000000");
                     //v.3.0.3.0
                     //Посылаем список серверов, количество чаров на аккаунтах
-                    m_Current = GameServerController.CurrentGameServers.Values.ToList();
+                    mCurrent = GameServerController.CurrentGameServers.Values.ToList();
                     //Write The number of servers
-                    ns.Write((byte)m_Current.Count);
+                    ns.Write((byte)mCurrent.Count);
                     //Информация по серверу
-                    foreach (var server in m_Current)
+                    foreach (var server in mCurrent)
                     {
                         ns.Write((byte)server.Id);
                         ns.Write((byte)0x01); //надпись в списке серверов 00-нет надписи, 01- НОВЫЙ, 02-ОБЪЕДИНЕННЫЙ, 03-ОБЪЕДИНЕННЫЙ, 04-нет надписи
@@ -364,24 +436,24 @@ namespace ArcheAgeLogin.ArcheAge.Network
                         ns.Write((byte)0x00);
                         ns.Write((byte)0x00); //War Mozu 
                     }
-                    CharCount = CharacterHolder.LoadCharacterData(net.CurrentAccount.AccountId); //считываем данные персонажей и их количество
+                    charCount = CharacterHolder.LoadCharacterData(net.CurrentAccount.AccountId); //считываем данные персонажей и их количество
                     //Write The current user account number
-                    ns.Write((byte)CharCount); //CharCount
-                    if (CharCount != 0)
+                    ns.Write((byte)charCount); //CharCount
+                    if (charCount != 0)
                     {
-                        long m_AccountId = net.CurrentAccount.AccountId; //считываем данные только наших персонажей
-                        foreach (Character n_Current in CharacterHolder.CharactersList)
+                        long mAccountId = net.CurrentAccount.AccountId; //считываем данные только наших персонажей
+                        foreach (var n_Current in CharacterHolder.CharactersList)
                         {
-                            if (n_Current.AccountId == m_AccountId)
+                            if (n_Current.AccountId == mAccountId)
                             {
                                 ns.Write((long)n_Current.AccountId); //AccountID
                                 ns.Write((byte)n_Current.WorldId); //WorldID
                                 ns.Write((int)n_Current.Type); //type
-                                string charname = n_Current.CharName;
+                                var charname = n_Current.CharName;
                                 ns.WriteASCIIFixed(charname, charname.Length);
                                 ns.Write((byte)n_Current.CharRace); //Char Race - 01=нуиане, 03 = гномы
                                 ns.Write((byte)n_Current.CharGender); //CharGender - 01-М, 02=Ж
-                                string uid = n_Current.GUID; //UID - Параметры чара
+                                var uid = n_Current.GUID; //UID - Параметры чара
                                 ns.WriteHex(uid, uid.Length);
                                 ns.Write((long)n_Current.V); //v
                             }
@@ -469,7 +541,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
     {
         public NP_SendGameAuthorization(GameServer server, int sessionId) : base(0x0A, true)
         {
-            string[] ipArray = server.IPAddress.Split('.');
+            var ipArray = server.IPAddress.Split('.');
 
             if (ipArray.Length == 4)
             {
@@ -480,7 +552,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
                 ns.Write((byte)0xdd);//unknown
                 ns.Write((byte)0x4e);//unknown
 
-                for (int i = 3; i > -1; i--)
+                for (var i = 3; i > -1; i--)
                 {
                     var cd = Convert.ToInt32(ipArray[i].ToString());
                     ns.Write((byte)Convert.ToInt32(ipArray[i].ToString()));
@@ -519,11 +591,11 @@ namespace ArcheAgeLogin.ArcheAge.Network
         //не использую
         public NP_ServerList(string clientVersion) : base(0x08, true)
         {
-            List<GameServer> m_Current = GameServerController.CurrentGameServers.Values.ToList<GameServer>();
+            var m_Current = GameServerController.CurrentGameServers.Values.ToList<GameServer>();
             //Write server number
             //Write The number of servers
             ns.Write((byte)m_Current.Count);
-            foreach (GameServer server in m_Current)
+            foreach (var server in m_Current)
             {
                 ns.Write(server.Id);
                 if (clientVersion == "3")
@@ -640,7 +712,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
             ns.Write((int)5000); //round 5000
                                  //le - string
             ns.WriteASCIIFixed("xnDekI2enmWuAvwL", 16); //initVec
-            byte[] b = new byte[32];
+            var b = new byte[32];
             ns.Write(b, 0, b.Length);
         }
     }

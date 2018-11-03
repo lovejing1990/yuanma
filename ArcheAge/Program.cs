@@ -48,18 +48,19 @@ namespace ArcheAge
         }
         static void selectVersion()
         {
-            Console.WriteLine("Select Client Version: Default 3");
+            Console.WriteLine("Select Client Version: Default 1");
+            Console.WriteLine("0:   0.5");
             Console.WriteLine("1:   1.0");
             Console.WriteLine("3:   3.0");
             Console.WriteLine("4:   4.0");
             //0 is manually selected
-            if (Settings.Default.ServerClientVersion == "0")
+            if (Settings.Default.ServerClientVersion == "-1")
             {
                 Program.ServerClientVersion = Console.ReadLine();
                 if (Program.ServerClientVersion == "")
                 {
                     //The default is 3
-                    Program.ServerClientVersion = "3";
+                    Program.ServerClientVersion = "1";
                 }
             }
             else

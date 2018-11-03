@@ -1,13 +1,13 @@
 ﻿using ArcheAgeLogin.ArcheAge.Holders;
 using ArcheAgeLogin.ArcheAge.Structuring;
 using ArcheAgeLogin.Properties;
-using LocalCommons.Cookie;
 using LocalCommons.Cryptography;
 using LocalCommons.Logging;
 using LocalCommons.Network;
 using LocalCommons.Utilities;
 using System;
 using System.Linq;
+using LocalCommons.Cookie;
 
 namespace ArcheAgeLogin.ArcheAge.Network
 {
@@ -368,15 +368,6 @@ namespace ArcheAgeLogin.ArcheAge.Network
             //------------------------------------------------------------------------------------------------
             switch (_clientVersion)
             {
-                case "0":
-                    //add for 0.5 @Shannon
-                    Register(0x01, Handle_CARequestAuth_0x01); //пакет №1 от клиента
-                    Register(0x07, Handle_CAOtpNumber_0x07); //пакет №2 от клиента
-                    Register(0x05, Handle_CAChallengeResponse_0x05); //пакет №3 от клиента
-                    Register(0x08, Handle_CAListWorld_0x08);  //пакет №2 от test клиента
-                    Register(0x09, Handle_CAEnterWorld_0x09);  //пакет №3 от test клиента
-                    //Register(0x03, Handle_CARequestAuthGameOn_0x03); //пакет №4 от клиента
-                    break;
                 case "1"://1.0.1406 Feb 11 2014
                     //последовательность пакетов при подключении клиента к LoginServer
                     //Register(0x01, Handle_CARequestAuthPacket_0x01);
@@ -389,10 +380,20 @@ namespace ArcheAgeLogin.ArcheAge.Network
                     //Register(0x0B, Handle_CAEnterWorldPacket_0x0B);
                     //Register(0x0A, Handle_ACWorldCookie_0x0A);
                     //-------------------------------------
+                    Register(0x01, Handle_CARequestAuthPacket_0x01);
                     Register(0x04, Handle_CARequestAuth_0x04); //пакет №1 от клиента
                     Register(0x0A, Handle_CAListWorld_0x0A);  //
+                    //Register(0x0A, Handle_CAListWorld_0x0A);  //дубль
                     Register(0x0B, Handle_CAEnterWorld_0x0B);  //
                     Register(0x0D, Handle_CARequestReconnect_0x0D);
+                    //add for test 0.5 @Shannon
+                    Register(0x08, Handle_CAListWorld_0x0A);  //пакет №2 от test клиента
+                    Register(0x09, Handle_CAEnterWorld_0x0B);  //пакет №3 от test клиента
+                    //add for 0.5 @Shannon
+                    Register(0x01, Handle_CARequestAuth_0x01); //пакет №1 от клиента
+                    Register(0x07, Handle_CAOtpNumber_0x07); //пакет №2 от клиента
+                    Register(0x05, Handle_CAChallengeResponse_0x05); //пакет №3 от клиента
+                    //Register(0x03, Handle_CARequestAuthGameOn_0x03); //пакет №4 от клиента
                     break;
                 case "3": //3.0.3.0
                     Register(0x06, Handle_CAChallengeResponse2_0X06); //пакет №1 от клиента
@@ -418,10 +419,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
             var accountId = reader.ReadLEUInt32();
             var characters = reader.ReadByte(); //количество чаров на аккаунте
             var currentAcc = AccountHolder.AccountList.FirstOrDefault(n => n.AccountId == accountId);
-            if (currentAcc != null)
-            {
-                currentAcc.Characters = characters;
-            }
+            if (currentAcc != null) currentAcc.Characters = characters;
         }
 
         private static void Handle_RegisterGameServer(GameConnection net, PacketReader reader)
@@ -439,15 +437,14 @@ namespace ArcheAgeLogin.ArcheAge.Network
 
         #region Version0.5
 
-        //for Editor @Shannon
+        //for 0.5 @Shannon
         private static void Handle_CARequestAuth_0x01(ArcheAgeConnection net, PacketReader reader)
         {
             //From 0.5 @Shannon
             //CARequestAuthPacket_0x01
             //Size Id   p_from   p_to   svc dev account_len account(aatest) mac_len mac              mac_len2 mac2             cpu
             //3000 0100 08000000 060000 00  00  0600        616174657374    0800    0000000000000000 0800     E839DF54605F0000 52060200FFFBEBBF
-            //reader.Offset += 8; //скипаем 8 байт для editor
-            reader.Offset += 10; //скипаем 10 байт для 0.5 test
+            reader.Offset += 9; //скипаем 9 байт
             int mRUidLength = reader.ReadLEInt16(); //длина строки
             var mUid = reader.ReadString(mRUidLength); //считываем Name
             //long accId = Convert.ToInt64(m_Uid);
@@ -469,7 +466,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
                     //Write account number information Write Online account list
                     GameServerController.AuthorizedAccounts.Add(net.CurrentAccount.AccountId, net.CurrentAccount);
                     Logger.Trace("Account ID: " + nCurrent.AccountId + " & Account Name: " + nCurrent.Name + " landing success");
-                    //net.SendAsync(new AcJoinResponse_0X00(_clientVersion));
+                    net.SendAsync(new AcJoinResponse_0X00(_clientVersion));
                     net.SendAsync(new AcAuthResponse_0X03(_clientVersion, net));
                     return;
                 }
@@ -499,7 +496,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
                     //Write account number information Write Online account list
                     GameServerController.AuthorizedAccounts.Add(net.CurrentAccount.AccountId, net.CurrentAccount);
                     Logger.Trace("Account ID: " + net.CurrentAccount.AccountId + " & Account Name: " + net.CurrentAccount.Name + " landing success");
-                    //net.SendAsync(new AcJoinResponse_0X00(_clientVersion));
+                    net.SendAsync(new AcJoinResponse_0X00(_clientVersion));
                     net.SendAsync(new AcAuthResponse_0X03(_clientVersion, net));
                     return;
                 }
@@ -545,49 +542,6 @@ namespace ArcheAgeLogin.ArcheAge.Network
             */
 
             //CARequestAuthGameOn -> возможно это CARequestReconnectPacket
-        }
-
-        private static void Handle_CAListWorld_0x08(ArcheAgeConnection net, PacketReader reader)
-        {
-            var flag = reader.ReadLEInt64();
-            net.SendAsync(new AcWorldList_0X08(_clientVersion, net));
-        }
-        private static void Handle_CAEnterWorld_0x09(ArcheAgeConnection net, PacketReader reader)
-        {
-            //net.SendAsyncHex(new NP_Hex("13000A008D0EC89A0E003132372E302E302E31D704"));
-            //0B00 0D00 0000000000000000 01
-            var flag = reader.ReadLEInt64();
-            var wId = reader.ReadByte(); //world Id (serverId)
-
-            int pFrom = reader.ReadLEInt32();
-            int pTo = reader.ReadLEInt32();
-            byte serverId = reader.ReadByte(); //serverId
-
-            var server = GameServerController.CurrentGameServers.FirstOrDefault(n => n.Value.Id == wId).Value;
-            if (server != null && server.CurrentConnection != null)
-            {
-                if (GameServerController.AuthorizedAccounts.ContainsKey(net.CurrentAccount.AccountId))
-                {
-                    net.CurrentAccount.LastEnteredTime = Utility.CurrentTimeMilliseconds();
-                    net.CurrentAccount.LastIp = net.ToString(); // IP
-                    // генерируем cookie
-                    var cookie = Cookie.Generate();
-                    net.CurrentAccount.Session = cookie; //Designated session
-                    //Передаем управление Гейм серверу
-                    net.MovedToGame = true;
-                    GameServerController.AuthorizedAccounts.Remove(net.CurrentAccount.AccountId);
-                    //отсылаем Гейм серверу информацию об аккаунте
-                    server.CurrentConnection.SendAsync(new NET_AccountInfo(_clientVersion, net.CurrentAccount));
-                    server.CurrentAuthorized.Add(net.CurrentAccount.AccountId);
-                    //отсылаем Клиенту информацию о куках
-                    net.SendAsync(new AcWorldCookie_0X0A(_clientVersion, server, cookie));
-                }
-            }
-            else
-            {
-                Logger.Trace("No serverID requested：" + wId);
-                net.Dispose();
-            }
         }
 
         #endregion
@@ -756,7 +710,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
         {
             //net.SendAsyncHex(new NP_Hex("13000A008D0EC89A0E003132372E302E302E31D704"));
             //0B00 0D00 0000000000000000 01
-            var flag = reader.ReadLEInt64();
+            var flag  = reader.ReadLEInt64();
             var wId = reader.ReadByte(); //world Id (serverId)
             var server = GameServerController.CurrentGameServers.FirstOrDefault(n => n.Value.Id == wId).Value;
             if (server != null && server.CurrentConnection != null)
