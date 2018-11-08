@@ -1,0 +1,12 @@
+// AAEMU
+// Database file
+// 
+// Values: monsterId, className, name, level, exp, classExp, hp, defense
+//---------------------------------------------------------------------------
+
+[
+// Monsters
+//---------------------------------------------------------------------------
+{ monsterId: 331, className: "Rabbit", name: "Кролик", level: 1, exp: 84, classExp: 60, hp: 24, defense: 21 },
+{ monsterId: 3475, className: "Forest_boar", name: "Лесной вепрь", level: 2, exp: 84, classExp: 60, hp: 24, defense: 21 },
+]

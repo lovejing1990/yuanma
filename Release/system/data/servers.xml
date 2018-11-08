@@ -1,0 +1,7 @@
+<!-- Made By netcastiel -->
+<!-- This File Contains Information About Game Server -->
+<!-- The server name supports English and Korean. It does not support Chinese. -->
+<!-- All Servers Must Be Strictly In Order! Means - 1,2,3 ! Not 1,5,10 -->
+<servers>
+     <server Id="1" Name="AAEmu" MaxPlayers="100" password=""/>
+</servers>

@@ -1,0 +1,11 @@
+// AAEMU
+// Database file
+//---------------------------------------------------------------------------
+
+[
+{ mapId: 129, className: "w_gweonid_forest_1", engName: "Лес Гвинедар", localKey: "ETC_20150317_001338" },
+{ mapId: 179, className: "w_solzreed_3", engName: "Полуостров Солрид", localKey: "ETC_20150406_010701" },
+{ mapId: 139, className: "e_ynystere_1", engName: "Инистра", localKey: "ETC_20150406_010702" },
+{ mapId: 187, className: "e_rainbow_field_2", engName: "Радужные пески", localKey: "ETC_20150317_001342" },
+{ mapId: 184, className: "e_falcony_plateau_2", engName: "Плато Соколиной Охоты", localKey: "ETC_20151224_017815" },
+]
