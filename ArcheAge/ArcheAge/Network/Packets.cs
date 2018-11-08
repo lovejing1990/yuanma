@@ -1,19 +1,19 @@
-﻿using ArcheAge.ArcheAge.Network.Connections;
-using ArcheAge.Properties;
+﻿using ArcheAgeGame.ArcheAge.Network.Connections;
 using LocalCommons.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ArcheAgeGame.Properties;
 
-namespace ArcheAge.ArcheAge.Network
+namespace ArcheAgeGame.ArcheAge.Network
 {
     /// <summary>
     /// Sends Request To Login Server For Authorization.
     /// </summary>
-    public sealed class Net_RegisterGameServer : NetPacket
+    public sealed class Net_RegisterArcheAgeGame : NetPacket
     {
-        public Net_RegisterGameServer() : base(0x00, true)
+        public Net_RegisterArcheAgeGame() : base(0x00, true)
         {
             Settings m_Default = Settings.Default;
             ns.Write((byte)m_Default.Game_Id);

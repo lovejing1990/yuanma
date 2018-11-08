@@ -13,27 +13,27 @@ namespace ArcheAgeLogin.ArcheAge.Network
     /// </summary>
     public class GameConnection : IConnection
     {
-        private GameServer m_CurrentInfo;
+        private ArcheAgeGame m_CurrentInfo;
 
-        public GameServer CurrentInfo
+        public ArcheAgeGame CurrentInfo
         {
-            get { return m_CurrentInfo; }
-            set { m_CurrentInfo = value; }
+            get { return this.m_CurrentInfo; }
+            set { this.m_CurrentInfo = value; }
         }
 
         public GameConnection(Socket socket) : base(socket) 
         {
-            Logger.Trace("GameServer IP: {0} connected", this);
-            DisconnectedEvent += GameConnection_DisconnectedEvent;
-            m_LittleEndian = true;
+            Log.Info("ArcheAgeGame IP: {0} connected", this);
+	        this.DisconnectedEvent += this.ChannelConnection_DisconnectedEvent;
+	        this.m_LittleEndian = true;
         }
 
-        void GameConnection_DisconnectedEvent(object sender, EventArgs e)
+        void ChannelConnection_DisconnectedEvent(object sender, EventArgs e)
         {
-            Logger.Trace("GameServer IP: {0} disconnected", m_CurrentInfo != null ? m_CurrentInfo.Id.ToString() : this.ToString());
-            Dispose();
-            GameServerController.DisconnecteGameServer(m_CurrentInfo != null ? m_CurrentInfo.Id : this.CurrentInfo.Id);
-            m_CurrentInfo = null;
+            Log.Info("ArcheAgeGame IP: {0} disconnected", this.m_CurrentInfo != null ? this.m_CurrentInfo.Id.ToString() : this.ToString());
+	        this.Dispose();
+            ArcheAgeGameController.DisconnecteArcheAgeGame(this.m_CurrentInfo != null ? this.m_CurrentInfo.Id : this.CurrentInfo.Id);
+	        this.m_CurrentInfo = null;
             //Game server will be corresponding status offline
         }
 
@@ -41,12 +41,12 @@ namespace ArcheAgeLogin.ArcheAge.Network
         {
             PacketReader reader = new PacketReader(data, 0);
             ushort opcode = reader.ReadLEUInt16();
-            PacketHandler<GameConnection> handler = PacketList.GHandlers[opcode];
+            PacketHandler0<GameConnection> handler = PacketList.GHandlers[opcode];
             if (handler != null) {
                 handler.OnReceive(this, reader);
             }
             else
-                Logger.Trace("Received undefined GameServer packet 0x{0:X2}", opcode);
+                Log.Info("Received undefined ArcheAgeGame packet 0x{0:X2}", opcode);
             reader = null;
         }
     }

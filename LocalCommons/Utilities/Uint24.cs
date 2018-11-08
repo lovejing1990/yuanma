@@ -28,12 +28,12 @@ namespace LocalCommons.Utilities
                 throw new ArgumentException("array must consist of three or more bytes", nameof(val));
             }
 
-            _val = (uint)(val[0] | val[1] << 8 | val[2] << 16);
+	        this._val = (uint)(val[0] | val[1] << 8 | val[2] << 16);
         }
 
         public bool Equals(Uint24 other)
         {
-            return _val == other._val;
+            return this._val == other._val;
         }
 
         public override bool Equals(object obj)
@@ -43,28 +43,28 @@ namespace LocalCommons.Utilities
                 return false;
             }
 
-            return obj is Uint24 && Equals((Uint24)obj);
+            return obj is Uint24 && this.Equals((Uint24)obj);
         }
 
         public override int GetHashCode()
         {
-            return (int)_val;
+            return (int) this._val;
         }
 
         public override string ToString()
         {
-            return ToString(true);
+            return this.ToString(true);
         }
 
         public string ToString(bool asNumber)
         {
             if (asNumber)
             {
-                return $"{_val}";
+                return $"{this._val}";
             }
 
             char[] bits = new char[24];
-            uint val = _val;
+            uint val = this._val;
             for (int i = 0; val != 0; i++)
             {
                 bits[i] = (val & 1) == 1 ? '1' : '0';
@@ -82,11 +82,11 @@ namespace LocalCommons.Utilities
                 switch (idx)
                 {
                     case 0:
-                        return (byte)_val;
+                        return (byte) this._val;
                     case 1:
-                        return (byte)(_val << 8);
+                        return (byte)(this._val << 8);
                     case 2:
-                        return (byte)(_val << 16);
+                        return (byte)(this._val << 16);
                     default:
                         throw new IndexOutOfRangeException($"Expected idx > 0 && idx < 3 to be true. Received {idx}.");
                 }
@@ -94,15 +94,15 @@ namespace LocalCommons.Utilities
             set
             {
                 // optimisation
-                if (_val == 0 && idx == 0)
+                if (this._val == 0 && idx == 0)
                 {
-                    _val = value;
+	                this._val = value;
                     return;
                 }
 
-                byte[] newVal = BitConverter.GetBytes(_val);
+                byte[] newVal = BitConverter.GetBytes(this._val);
                 newVal[idx] = value;
-                Update(newVal);
+	            this.Update(newVal);
             }
         }
 

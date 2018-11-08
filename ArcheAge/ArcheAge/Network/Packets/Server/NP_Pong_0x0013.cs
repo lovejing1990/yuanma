@@ -1,7 +1,7 @@
-﻿using System;
-using LocalCommons.Network;
+﻿using LocalCommons.Network;
+using System;
 
-namespace ArcheAge.ArcheAge.Network.Packets.Server
+namespace ArcheAgeGame.ArcheAge.Network
 {
     public sealed class NP_Pong_0x0013 : NetPacket
     {

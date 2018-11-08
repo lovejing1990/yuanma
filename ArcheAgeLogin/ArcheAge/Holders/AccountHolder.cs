@@ -43,16 +43,16 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         public static uint MaxAccountUid()
         {
             uint uid = 0;
-            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    var command = new MySqlCommand("SELECT * FROM `accounts`", conn);
-                    var reader = command.ExecuteReader();
+                    MySqlCommand command = new MySqlCommand("SELECT * FROM `accounts`", conn);
+                    MySqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        var account = new Account();
+                        Account account = new Account();
                         account.AccountId = reader.GetUInt32("accountid");
                         if (uid < account.AccountId)
                         {
@@ -65,7 +65,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("Error: {0}", ex.Message);
+                    Log.Info("Error: {0}", ex.Message);
                 }
                 finally
                 {
@@ -81,16 +81,16 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         public static void LoadAccountData()
         {
             m_DbAccounts = new List<Account>();
-            using (var con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (MySqlConnection con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     con.Open();
-                    var command = new MySqlCommand("SELECT * FROM `accounts`", con);
-                    var reader = command.ExecuteReader();
+                    MySqlCommand command = new MySqlCommand("SELECT * FROM `accounts`", con);
+                    MySqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        var account = new Account();
+                        Account account = new Account();
 
                         account.AccountId = reader.GetUInt32("accountid");
                         account.AccessLevel = reader.GetByte("mainaccess");
@@ -111,15 +111,15 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 {
                     if (e.Message.IndexOf("using password: YES") >= 0)
                     {
-                        Logger.Trace("Error: Incorrect username or password");
+                        Log.Info("Error: Incorrect username or password");
                     }
                     else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
                     {
-                        Logger.Trace("Error: Unable to connect to database");
+                        Log.Info("Error: Unable to connect to database");
                     }
                     else
                     {
-                        Logger.Trace("Error: Unknown error");
+                        Log.Info("Error: Unknown error");
                     }
                     //Console.ReadKey();
                     //Message = "Authentication to host '127.0.0.1' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES)"
@@ -127,7 +127,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 finally
                 {
                     con.Close();
-                    Logger.Trace("Load to {0} accounts", m_DbAccounts.Count);
+                    Log.Info("Load to {0} accounts", m_DbAccounts.Count);
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         /// <param name="account">Your Account Which you want Insert(If Not Exist) Or Update(If Exist)</param>
         public static void InsertOrUpdate(Account account)
         {
-            using (var con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (MySqlConnection con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
@@ -164,7 +164,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                         //command.Parameters.Add("@accountid", MySqlDbType.UInt32).Value = Program.AccountUid.Next(); //incr index key
                     }
 
-                    var parameters = command.Parameters;
+                    MySqlParameterCollection parameters = command.Parameters;
 
                     parameters.Add("@accountid", MySqlDbType.String).Value = account.AccountId;
                     parameters.Add("@name", MySqlDbType.String).Value = account.Name;
@@ -186,7 +186,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 }
                 catch (Exception e)
                 {
-                    Logger.Trace("Cannot InsertOrUpdate template for " + account.Name + ": {0}", e);
+                    Log.Info("Cannot InsertOrUpdate template for " + account.Name + ": {0}", e);
                 }
                 finally
                 {

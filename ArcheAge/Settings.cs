@@ -1,6 +1,5 @@
-﻿namespace ArcheAge.Properties {
-    
-    
+﻿namespace ArcheAgeGame.Properties
+{
     // Этот класс позволяет обрабатывать определенные события в классе параметров:
     //  Событие SettingChanging возникает перед изменением значения параметра.
     //  Событие PropertyChanged возникает после изменения значения параметра.
@@ -21,7 +20,7 @@
         {
             get
             {
-                string connection = "server=" + Settings.Default.DataBase_Host + ";user=" + Settings.Default.DataBase_User + ";database=" + Settings.Default.DataBase_Name + ";port=" + Settings.Default.DataBase_Port + ";password=" + Settings.Default.DataBase_Password + ((!Settings.Default.SSL) ? "; SslMode = none" : "") + ((!Settings.Default.PersistSecurityInfo) ? "; PersistSecurityInfo = none" : "");
+                string connection = "server=" + Default.DataBase_Host + ";user=" + Default.DataBase_User + ";database=" + Default.DataBase_Name + ";port=" + Default.DataBase_Port + ";password=" + Default.DataBase_Password + ((!Default.SSL) ? "; SslMode = none" : "") + ((!Default.PersistSecurityInfo) ? "; PersistSecurityInfo = none" : "");
                 return connection;
             }
         }

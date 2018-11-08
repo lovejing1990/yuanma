@@ -1,25 +1,25 @@
-﻿using ArcheAge.ArcheAge.Structuring;
-using ArcheAge.Properties;
-using LocalCommons.Logging;
+﻿using LocalCommons.Logging;
 using LocalCommons.Utilities;
 using LocalCommons.World;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ArcheAgeGame.ArcheAge.Structuring;
+using ArcheAgeGame.Properties;
 
-namespace ArcheAge.ArcheAge.Holders
+namespace ArcheAgeGame.ArcheAge.Holders
 {
     public class CharacterHolder
     {
-        private static List<Character> _mDbCharacters;
+        private static List<Character> m_DbCharacters;
 
         /// <summary>
         /// Loaded List of Characters.
         /// </summary>
         public static List<Character> CharactersList
         {
-            get { return _mDbCharacters; }
+            get { return m_DbCharacters; }
         }
 
         public static int GetCount()
@@ -74,7 +74,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("Error: characters {0}", ex.Message);
+                    Log.Info("Error: characters {0}", ex.Message);
                 }
                 finally
                 {
@@ -102,7 +102,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("MySql: Ошибка удаления данных персонажа charID {0}, {1}", characterId, ex.Message);
+                    Log.Info("MySql: Ошибка удаления данных персонажа charID {0}, {1}", characterId, ex.Message);
                 }
                 finally
                 {
@@ -144,7 +144,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("MySql: Ошибка чтения данных charactermodel {0}", ex.Message);
+                    Log.Info("MySql: Ошибка чтения данных charactermodel {0}", ex.Message);
                 }
                 finally
                 {
@@ -176,7 +176,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("MySql: Ошибка чтения данных charactermodel {0}", ex.Message);
+                    Log.Info("MySql: Ошибка чтения данных charactermodel {0}", ex.Message);
                 }
                 finally
                 {
@@ -211,7 +211,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("MySql: Ошибка чтения данных equip_pack_cloths {0}", ex.Message);
+                    Log.Info("MySql: Ошибка чтения данных equip_pack_cloths {0}", ex.Message);
                 }
                 finally
                 {
@@ -244,7 +244,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("MySql: Ошибка чтения данных equip_pack_weapons {0}", ex.Message);
+                    Log.Info("MySql: Ошибка чтения данных equip_pack_weapons {0}", ex.Message);
                 }
                 finally
                 {
@@ -276,7 +276,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("MySql: Ошибка чтения данных character_equip_packs {0}", ex.Message);
+                    Log.Info("MySql: Ошибка чтения данных character_equip_packs {0}", ex.Message);
                 }
                 finally
                 {
@@ -312,21 +312,21 @@ namespace ArcheAge.ArcheAge.Holders
                 {
                     if (e.Message.IndexOf("using password: YES") >= 0)
                     {
-                        Logger.Trace("Error: Incorrect username or password");
+                        Log.Info("Error: Incorrect username or password");
                     }
                     else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
                     {
-                        Logger.Trace("Error: Unable to connect to database");
+                        Log.Info("Error: Unable to connect to database");
                     }
                     else
                     {
-                        Logger.Trace("Error: Unknown error +  {0}", e);
+                        Log.Info("Error: Unknown error +  {0}", e);
                     }
                 }
                 finally
                 {
                     conn.Close();
-                    //Logger.Trace("Load to {0} characters", CharactersList.GetCount());
+                    //Log.Info("Load to {0} characters", CharactersList.GetCount());
                 }
             }
 
@@ -360,7 +360,7 @@ namespace ArcheAge.ArcheAge.Holders
         /// </summary>
         public static List<Character> LoadCharacterData(uint accountId)
         {
-            _mDbCharacters = new List<Character>();
+            m_DbCharacters = new List<Character>();
             var serverid = Settings.Default.Game_Id;
             using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -381,21 +381,21 @@ namespace ArcheAge.ArcheAge.Holders
                 {
                     if (e.Message.IndexOf("using password: YES") >= 0)
                     {
-                        Logger.Trace("Error: Incorrect username or password");
+                        Log.Info("Error: Incorrect username or password");
                     }
                     else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
                     {
-                        Logger.Trace("Error: Unable to connect to database");
+                        Log.Info("Error: Unable to connect to database");
                     }
                     else
                     {
-                        Logger.Trace("Error: Unknown error +  {0}", e);
+                        Log.Info("Error: Unknown error +  {0}", e);
                     }
                 }
                 finally
                 {
                     conn.Close();
-                    //Logger.Trace("Load to {0} characters", CharactersList.GetCount());
+                    //Log.Info("Load to {0} characters", CharactersList.GetCount());
                 }
             }
             return CharactersList;
@@ -494,7 +494,7 @@ namespace ArcheAge.ArcheAge.Holders
                 //character.Spr = reader.GetInt32("spr");
                 //character.Dex = reader.GetInt32("dex");
                 //
-                _mDbCharacters.Add(character);
+                m_DbCharacters.Add(character);
             }
         }
 
@@ -511,7 +511,7 @@ namespace ArcheAge.ArcheAge.Holders
                     conn.Open(); //Устанавливаем соединение с базой данных
                     var cmd = new MySqlCommand();
                     cmd.Connection = conn;
-                    if (_mDbCharacters.Contains(character))
+                    if (m_DbCharacters.Contains(character))
                     {
                         cmd.CommandText =
                             "UPDATE `character_records` SET `characterid` = @characterid, `accountid` = @accountid, `chargender` = @chargender, `charname` = @charname," +
@@ -523,7 +523,7 @@ namespace ArcheAge.ArcheAge.Holders
                             " `Weight1` = @Weight1, `Weight2` = @Weight2, `Weight3` = @Weight3, `Weight4` = @Weight4, `Weight5` = @Weight5, `Weight6` = @Weight6," +
                             " `Weight7` = @Weight7, `Weight8` = @Weight8, `Weight9` = @Weight9, `Weight10` = @Weight10, `Weight11` = @Weight11, `Weight12` = @Weight12," +
                             " `Weight13` = @Weight13, `Weight14` = @Weight14, `Weight15` = @Weight15, `Weight16` = @Weight16, `Weight17` = @Weight17," +
-                            " `worldid` = @worldid, `ability0` = @ability0, `ability1` = @ability1, `ability2` = @ability2," +
+                            " `worldid` = @worldid, `ability0` = @ability0, `ability1` = @ability1, `ability2` = @ability2," + //" `liveobjectid` = @liveobjectid," +
                             " `zone` = @zone, `x` = @x, `y` = @y, `z` = @z, `rotx` = rotx, `roty` = roty, `rotz` = rotz " +
                             " WHERE `charname` = @charname";
                     }
@@ -534,13 +534,13 @@ namespace ArcheAge.ArcheAge.Holders
                             " movex, movey, rightpupil, rotate, scale, type0, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10, type11, type12, type13," +
                             " type14, type15, type16, type17, v, Weight0, Weight1, Weight2, Weight3, Weight4, Weight5, Weight6, Weight7, Weight8, Weight9, Weight10," +
                             " Weight11, Weight12, Weight13, Weight14, Weight15, Weight16, Weight17, Worldid, ability0, ability1, ability2, zone," +
-                            " x, y, z, rotx, roty, rotz) " + 
+                            " x, y, z, rotx, roty, rotz) " + //, liveobjectid) " +
 
                             " VALUES (@characterid, @accountid, @chargender, @charname, @charrace, @decor, @ext, @eyebrow, @guid, @leftPupil, @level, @lip, @modifiers, @movex, @movey," +
                             " @rightpupil, @rotate, @scale, @type0, @type1, @type2, @type3, @type4, @type5, @type6, @type7, @type8, @type9, @type10, @type11, @type12," +
                             " @type13, @type14, @type15, @type16, @type17, @v, @Weight0, @Weight1, @Weight2, @Weight3, @Weight4, @Weight5, @Weight6, @Weight7, @Weight8," +
                             " @Weight9, @Weight10, @Weight11, @Weight12, @Weight13, @Weight14, @Weight15, @Weight16, @Weight17, @Worldid, @ability0, @ability1, @ability2," +
-                            " @zone, @x, @y, @z, @rotx, @roty, @rotz)";
+                            " @zone, @x, @y, @z, @rotx, @roty, @rotz)"; //", @liveobjectid)";
                     }
 
                     MySqlParameterCollection parameters = cmd.Parameters;
@@ -633,9 +633,9 @@ namespace ArcheAge.ArcheAge.Holders
                     //parameters.Add("@spr", MySqlDbType.Int32).Value = character.Spr;
                     //parameters.Add("@dex", MySqlDbType.Int32).Value = character.Dex;
                     //
-                    _mDbCharacters.Add(character);
+                    m_DbCharacters.Add(character);
 
-                    if (_mDbCharacters.Contains(character))
+                    if (m_DbCharacters.Contains(character))
                     {
                         parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
                     }
@@ -645,7 +645,7 @@ namespace ArcheAge.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("Cannot InsertOrUpdate template for " + character.CharName + ": {0}",
+                    Log.Info("Cannot InsertOrUpdate template for " + character.CharName + ": {0}",
                         ex); // ex.Message - написать так, если нужно только сообщение без указания строки в сурсах
                 }
                 finally

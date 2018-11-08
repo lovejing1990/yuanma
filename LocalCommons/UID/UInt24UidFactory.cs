@@ -15,17 +15,16 @@ namespace LocalCommons.UID
 
         public UInt24UidFactory(Uint24 val = default(Uint24))
         {
-            if(val != 1)
-              _nextUid = val + 1;
+            if(val != 1) this._nextUid = val + 1;
         }
 
         public Uint24 Next()
         {
             Uint24 result;
-            if (_freeUidList.TryDequeue(out result))
+            if (this._freeUidList.TryDequeue(out result))
                 return result;
 
-            return ++_nextUid;
+            return ++this._nextUid;
         }
 
         public void ReleaseUniqueInt(Uint24 uid24)
@@ -33,7 +32,7 @@ namespace LocalCommons.UID
             if ((Uint24)uid24 == 0)
                 return;
 
-            _freeUidList.Enqueue(uid24);
+	        this._freeUidList.Enqueue(uid24);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace LocalCommons.Network
             get
             {
                 lock (this)
-                    return m_FreeBuffers.Count;
+                    return this.m_FreeBuffers.Count;
             }
         }
 
@@ -55,12 +55,12 @@ namespace LocalCommons.Network
 		{
 			lock (this)
 			{
-				name = m_Name;
-				freeCount = m_FreeBuffers.Count;
-				initialCapacity = m_InitialCapacity;
-				currentCapacity = m_InitialCapacity * (1 + m_Misses);
-				bufferSize = m_BufferSize;
-				misses = m_Misses;
+				name = this.m_Name;
+				freeCount = this.m_FreeBuffers.Count;
+				initialCapacity = this.m_InitialCapacity;
+				currentCapacity = this.m_InitialCapacity * (1 + this.m_Misses);
+				bufferSize = this.m_BufferSize;
+				misses = this.m_Misses;
 			}
 		}
 
@@ -75,15 +75,14 @@ namespace LocalCommons.Network
             int initialCapacity,
             int bufferSize)
 		{
-			m_Name = name;
+			this.m_Name = name;
 
-			m_InitialCapacity = initialCapacity;
-			m_BufferSize = bufferSize;
+			this.m_InitialCapacity = initialCapacity;
+			this.m_BufferSize = bufferSize;
 
-			m_FreeBuffers = new Queue<byte[]>(initialCapacity);
+			this.m_FreeBuffers = new Queue<byte[]>(initialCapacity);
 
-			for (int i = 0; i < initialCapacity; ++i)
-				m_FreeBuffers.Enqueue(new byte[bufferSize]);
+			for (int i = 0; i < initialCapacity; ++i) this.m_FreeBuffers.Enqueue(new byte[bufferSize]);
 
 			lock (Pools)
 				Pools.Add(this);
@@ -97,15 +96,14 @@ namespace LocalCommons.Network
 		{
 			lock (this)
 			{
-				if (m_FreeBuffers.Count > 0)
-					return m_FreeBuffers.Dequeue();
+				if (this.m_FreeBuffers.Count > 0)
+					return this.m_FreeBuffers.Dequeue();
 
-				++m_Misses;
+				++this.m_Misses;
 
-				for (int i = 0; i < m_InitialCapacity; ++i)
-					m_FreeBuffers.Enqueue(new byte[m_BufferSize]);
+				for (int i = 0; i < this.m_InitialCapacity; ++i) this.m_FreeBuffers.Enqueue(new byte[this.m_BufferSize]);
 
-				return m_FreeBuffers.Dequeue();
+				return this.m_FreeBuffers.Dequeue();
 			}
 		}
 
@@ -118,8 +116,7 @@ namespace LocalCommons.Network
 			if (buffer == null)
 				return;
 
-			lock (this)
-				m_FreeBuffers.Enqueue(buffer);
+			lock (this) this.m_FreeBuffers.Enqueue(buffer);
 		}
 
         /// <summary>

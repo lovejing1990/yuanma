@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
-
 using System;
 using System.Text;
 
-namespace Melia.Shared.World.ObjectProperties
+namespace LocalCommons.World.ObjectProperties
 {
 	public interface IProperty
 	{
@@ -73,7 +72,7 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <summary>
 		/// Returns this property's value, setting it doesn't do anything.
 		/// </summary>
-		public override float Value { get => _func(); set { } }
+		public override float Value { get => this._func(); set { } }
 
 		/// <summary>
 		/// Creates new instance.
@@ -82,7 +81,7 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <param name="func">Function that returns the value.</param>
 		public RefFloatProperty(int propertyId, Func<float> func) : base(propertyId, func())
 		{
-			_func = func;
+			this._func = func;
 		}
 	}
 
@@ -135,7 +134,7 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <summary>
 		/// Returns this property's value, setting it doesn't do anything.
 		/// </summary>
-		public override string Value { get => _func(); set { } }
+		public override string Value { get => this._func(); set { } }
 
 		/// <summary>
 		/// Creates new instance.
@@ -144,7 +143,7 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <param name="func">Function that returns the value.</param>
 		public RefStringProperty(int propertyId, Func<string> func) : base(propertyId, func())
 		{
-			_func = func;
+			this._func = func;
 		}
 	}
 

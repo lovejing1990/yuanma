@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace LocalCommons.World
@@ -59,7 +56,7 @@ namespace LocalCommons.World
 		/// <returns></returns>
 		public double Get2DDistance(Position otherPos)
 		{
-			return Math.Sqrt(Math.Pow(X - otherPos.X, 2) + Math.Pow(Z - otherPos.Z, 2));
+			return Math.Sqrt(Math.Pow(this.X - otherPos.X, 2) + Math.Pow(this.Z - otherPos.Z, 2));
 		}
 
 		/// <summary>
@@ -69,7 +66,7 @@ namespace LocalCommons.World
 		/// <returns></returns>
 		public double Get3DDistance(Position otherPos)
 		{
-			return Math.Sqrt(Math.Pow(X - otherPos.X, 2) + Math.Pow(Y - otherPos.Y, 2) + Math.Pow(Z - otherPos.Z, 2));
+			return Math.Sqrt(Math.Pow(this.X - otherPos.X, 2) + Math.Pow(this.Y - otherPos.Y, 2) + Math.Pow(this.Z - otherPos.Z, 2));
 		}
 
 	    /// <summary>
@@ -80,7 +77,7 @@ namespace LocalCommons.World
 	    /// <returns></returns>
 	    public bool InRange2D(Position otherPos, int range)
 		{
-			return (Math.Pow(X - otherPos.X, 2) + Math.Pow(Z - otherPos.Z, 2) <= Math.Pow(range, 2));
+			return (Math.Pow(this.X - otherPos.X, 2) + Math.Pow(this.Z - otherPos.Z, 2) <= Math.Pow(range, 2));
 		}
 
 	    /// <summary>
@@ -91,7 +88,7 @@ namespace LocalCommons.World
 	    /// <returns></returns>
 	    public bool InRange3D(Position otherPos, int range)
 		{
-			return (Math.Pow(X - otherPos.X, 2) + Math.Pow(Y - otherPos.Y, 2) + Math.Pow(Z - otherPos.Z, 2) <= Math.Pow(range, 2));
+			return (Math.Pow(this.X - otherPos.X, 2) + Math.Pow(this.Y - otherPos.Y, 2) + Math.Pow(this.Z - otherPos.Z, 2) <= Math.Pow(range, 2));
 		}
 
         /// <summary>
@@ -185,7 +182,7 @@ namespace LocalCommons.World
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format(CultureInfo.InvariantCulture, "X: {0}, Y: {1}, Z: {2}", X, Y, Z);
+			return string.Format(CultureInfo.InvariantCulture, "X: {0}, Y: {1}, Z: {2}", this.X, this.Y, this.Z);
 		}
 	}
 }

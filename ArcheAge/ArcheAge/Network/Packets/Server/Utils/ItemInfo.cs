@@ -1,10 +1,10 @@
-﻿using ArcheAge.ArcheAge.Holders;
-using ArcheAge.ArcheAge.Network.Connections;
-using ArcheAge.ArcheAge.Structuring;
+﻿using ArcheAgeGame.ArcheAge.Holders;
+using ArcheAgeGame.ArcheAge.Network.Connections;
+using ArcheAgeGame.ArcheAge.Structuring;
 using LocalCommons.Network;
 using System.Collections.Generic;
 
-namespace ArcheAge.ArcheAge.Network.Packets.Server.Utils
+namespace ArcheAgeGame.ArcheAge.Network.Packets.Server.Utils
 {
     public sealed class ItemInfo : NetPacket
     {
@@ -16,7 +16,7 @@ namespace ArcheAge.ArcheAge.Network.Packets.Server.Utils
                 case 0:
                     break;
                 default:
-                    ns.Write((long) Program.ObjectUid.Next()); //id[1] Q //TODO: сделать у вещей постоянные UID
+                    ns.Write((long) ArcheAgeGame.ObjectUid.Next()); //id[1] Q //TODO: сделать у вещей постоянные UID
                     ns.Write((byte) 0); //type[1] c
                     ns.Write((byte) 0); //flags[1] c
                     ns.Write((int) 0x01); //stackSize[1] d

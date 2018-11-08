@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Melia.Shared.Const;
+using LocalCommons.Const;
 
-namespace Melia.Shared.World.ObjectProperties
+namespace LocalCommons.World.ObjectProperties
 {
 	public class Properties
 	{
@@ -17,7 +17,7 @@ namespace Melia.Shared.World.ObjectProperties
 		/// in a packet.
 		/// </summary>
 		/// XXX: Could be cached if performance is a problem.
-		public int Size { get { lock (_properties) return _properties.Values.Sum(a => a.Size); } }
+		public int Size { get { lock (this._properties) return this._properties.Values.Sum(a => a.Size); } }
 
 		/// <summary>
 		/// Returns the property with the given property id,
@@ -27,9 +27,9 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <returns></returns>
 		public IProperty Get(int propertyId)
 		{
-			lock (_properties)
+			lock (this._properties)
 			{
-				if (!_properties.TryGetValue(propertyId, out var property))
+				if (!this._properties.TryGetValue(propertyId, out var property))
 					return null;
 
 				return property;
@@ -42,8 +42,8 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <returns></returns>
 		public IProperty[] GetAll()
 		{
-			lock (_properties)
-				return _properties.Values.ToArray();
+			lock (this._properties)
+				return this._properties.Values.ToArray();
 		}
 
 		/// <summary>
@@ -52,8 +52,8 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <returns></returns>
 		public IProperty[] GetAll(params int[] propertyIds)
 		{
-			lock (_properties)
-				return _properties.Values.Where(a => propertyIds.Contains(a.Id)).ToArray();
+			lock (this._properties)
+				return this._properties.Values.Where(a => propertyIds.Contains(a.Id)).ToArray();
 		}
 
 		/// <summary>
@@ -66,10 +66,10 @@ namespace Melia.Shared.World.ObjectProperties
 			if (GetPropertyType(propertyId) != PropertyType.Float)
 				throw new ArgumentException($"Property '{propertyId}' is not supposed to be a float, or is missing from the property type switch.");
 
-			lock (_properties)
+			lock (this._properties)
 			{
-				if (!_properties.TryGetValue(propertyId, out var property))
-					_properties[propertyId] = new FloatProperty(propertyId, value);
+				if (!this._properties.TryGetValue(propertyId, out var property))
+					this._properties[propertyId] = new FloatProperty(propertyId, value);
 				else
 					(property as FloatProperty).Value = value;
 			}
@@ -85,10 +85,10 @@ namespace Melia.Shared.World.ObjectProperties
 			if (GetPropertyType(propertyId) != PropertyType.String)
 				throw new ArgumentException($"Property '{propertyId}' is not supposed to be a string, or is missing from the property type switch.");
 
-			lock (_properties)
+			lock (this._properties)
 			{
-				if (!_properties.TryGetValue(propertyId, out var property))
-					_properties[propertyId] = new StringProperty(propertyId, value);
+				if (!this._properties.TryGetValue(propertyId, out var property))
+					this._properties[propertyId] = new StringProperty(propertyId, value);
 				else
 					(property as StringProperty).Value = value;
 			}
@@ -104,8 +104,8 @@ namespace Melia.Shared.World.ObjectProperties
 			if (!Enum.IsDefined(typeof(PropertyType), property.Type))
 				throw new ArgumentException($"Invalid property type '{property.Type}'.");
 
-			lock (_properties)
-				_properties[property.Id] = property;
+			lock (this._properties)
+				this._properties[property.Id] = property;
 		}
 
 		/// <summary>
@@ -116,8 +116,8 @@ namespace Melia.Shared.World.ObjectProperties
 		/// <returns></returns>
 		public bool Remove(int propertyId)
 		{
-			lock (_properties)
-				return _properties.Remove(propertyId);
+			lock (this._properties)
+				return this._properties.Remove(propertyId);
 		}
 
 		/// <summary>

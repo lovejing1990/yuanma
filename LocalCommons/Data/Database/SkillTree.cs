@@ -1,0 +1,51 @@
+﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+// For more information, see licence.txt in the main folder
+using System;
+using System.Linq;
+using LocalCommons.Const;
+using Newtonsoft.Json.Linq;
+
+namespace LocalCommons.Data.Database
+{
+	[Serializable]
+	public class SkillTreeData
+	{
+		public JobId JobId { get; set; }
+		public int SkillId { get; set; }
+		public Circle UnlockCircle { get; set; }
+		public int LevelsPerCircle { get; set; }
+		public int MaxLevel { get; set; }
+	}
+
+	/// <summary>
+	/// Skill tree database.
+	/// </summary>
+	public class SkillTreeDb : DatabaseJson<SkillTreeData>
+	{
+		/// <summary>
+		/// Returns all skills the given job can learn at a certain circle.
+		/// </summary>
+		/// <param name="jobId"></param>
+		/// <param name="circle"></param>
+		/// <returns></returns>
+		public SkillTreeData[] FindSkills(JobId jobId, Circle circle)
+		{
+			return this.Entries.Where(a => a.JobId == jobId && a.UnlockCircle <= circle).ToArray();
+		}
+
+		protected override void ReadEntry(JObject entry)
+		{
+			entry.AssertNotMissing("jobId", "skillId", "unlockCircle", "levelsPerCircle", "maxLevel");
+
+			var data = new SkillTreeData();
+
+			data.JobId = (JobId)entry.ReadInt("jobId");
+			data.SkillId = entry.ReadInt("skillId");
+			data.UnlockCircle = (Circle)entry.ReadInt("unlockCircle");
+			data.LevelsPerCircle = entry.ReadInt("levelsPerCircle");
+			data.MaxLevel = entry.ReadInt("maxLevel");
+
+			this.Entries.Add(data);
+		}
+	}
+}

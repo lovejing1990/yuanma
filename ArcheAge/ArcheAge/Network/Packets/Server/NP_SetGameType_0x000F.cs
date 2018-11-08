@@ -1,6 +1,6 @@
 ﻿using LocalCommons.Network;
 
-namespace ArcheAge.ArcheAge.Network.Packets.Server
+namespace ArcheAgeGame.ArcheAge.Network
 {
     public sealed class NP_SetGameType_0x000F : NetPacket
     {

@@ -23,17 +23,17 @@ namespace LocalCommons
         public static void InitializeStruct(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Logger.Section("info");
-            Logger.Trace("This software is for learning communication only and must not be used for any public activity");
+            Log.Info("info");
+            Log.Info("This software is for learning communication only and must not be used for any public activity");
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-            Logger.Trace("ArcheAge Emu - version number {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
-            Logger.Trace("Main: Running On .NET Framework (C#) Version {0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
-            Logger.Trace("Allocated Memory = " + (Process.GetCurrentProcess().PrivateMemorySize64 / 1000000) + " MB");
-            Logger.Trace("If you want to stop the service, please press Ctrl+C");
+            Log.Info("ArcheAge Emu - version number {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+            Log.Info("Main: Running On .NET Framework (C#) Version {0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            Log.Info("Allocated Memory = " + (Process.GetCurrentProcess().PrivateMemorySize64 / 1000000) + " MB");
+            Log.Info("If you want to stop the service, please press Ctrl+C");
             int platform = (int)Environment.OSVersion.Platform;
             if (platform == 4 || platform == 128)
             {
-                Logger.Trace("Main: Unix Platform Detected");
+                Log.Info("Main: Unix Platform Detected");
             }
             Console.ResetColor();
         }

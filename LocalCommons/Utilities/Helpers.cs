@@ -2,7 +2,7 @@
 
 namespace LocalCommons.Utilities
 {
-    public class Helpers
+    public static class Helpers
     {
         public static float ConvertX(byte[] coords)
         {

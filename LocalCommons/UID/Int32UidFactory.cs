@@ -9,16 +9,16 @@ namespace LocalCommons.UID
 
         public Int32UidFactory(int val = 1)
         {
-             _nextUid = val + 1;
+	        this._nextUid = val + 1;
         }
 
         public int Next()
         {
             int result;
-            if (_freeUidList.TryDequeue(out result))
+            if (this._freeUidList.TryDequeue(out result))
                 return result;
 
-            return ++_nextUid;
+            return ++this._nextUid;
         }
 
         public void ReleaseUniqueInt(int uid)
@@ -26,7 +26,7 @@ namespace LocalCommons.UID
             if ((int)uid == 0)
                 return;
 
-            _freeUidList.Enqueue(uid);
+	        this._freeUidList.Enqueue(uid);
         }
     }
 }

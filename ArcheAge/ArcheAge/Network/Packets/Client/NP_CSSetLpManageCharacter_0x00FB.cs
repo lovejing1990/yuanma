@@ -1,7 +1,7 @@
-using ArcheAge.ArcheAge.Network.Connections;
+using ArcheAgeGame.ArcheAge.Network.Connections;
 using LocalCommons.Network;
 
-namespace ArcheAge.ArcheAge.Network
+namespace ArcheAgeGame.ArcheAge.Network
 {
     public sealed class NP_CSSetLpManageCharacter_0x00FB : NetPacket
     {

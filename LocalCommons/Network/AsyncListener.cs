@@ -39,18 +39,18 @@ namespace LocalCommons.Network
 #endif
                 s.Bind(point);
                 s.Listen(10);
-                m_Root = s;
+	            this.m_Root = s;
             }
             catch (SocketException e)
             {
-                Logger.Trace(e.ToString());
+                Log.Info(e.ToString());
             }
 
-            Logger.Trace("Installed {0} at {1}", defined.Name, point);
-            m_SyncArgs = new SocketAsyncEventArgs();
-            m_SyncArgs.Completed += M_SyncArgs_Completed;
-            RunAccept();
-            m_FloodAttempts = new Dictionary<string, long>();
+            Log.Info("Installed {0} at {1}", defined.Name, point);
+	        this.m_SyncArgs = new SocketAsyncEventArgs();
+	        this.m_SyncArgs.Completed += this.M_SyncArgs_Completed;
+	        this.RunAccept();
+	        this.m_FloodAttempts = new Dictionary<string, long>();
         }
 
         /// <summary>
@@ -63,11 +63,11 @@ namespace LocalCommons.Network
             {
                 try
                 {
-                    result = !m_Root.AcceptAsync(m_SyncArgs);
+                    result = !this.m_Root.AcceptAsync(this.m_SyncArgs);
                 }
                 catch (SocketException ex)
                 {
-                    Logger.Trace(ex.ToString());
+                    Log.Info(ex.ToString());
                     break;
                 }
                 catch (ObjectDisposedException e)
@@ -75,8 +75,7 @@ namespace LocalCommons.Network
                     break;
                 }
 
-                if (result)
-                    AcceptProceed(m_SyncArgs);
+                if (result) this.AcceptProceed(this.m_SyncArgs);
 
             } while (result);
         }
@@ -88,8 +87,8 @@ namespace LocalCommons.Network
         /// <param name="e"></param>
         void M_SyncArgs_Completed(object sender, SocketAsyncEventArgs e)
         {
-            AcceptProceed(e);
-            RunAccept();
+	        this.AcceptProceed(e);
+	        this.RunAccept();
         }
 
         /// <summary>
@@ -107,7 +106,7 @@ namespace LocalCommons.Network
             //    {
             //        Process.Start("cmd", "/c netsh advfirewall firewall add rule name=\"AutoBAN (" + m_RemoteEndPoint + ")\" protocol=TCP dir=in remoteip=" + m_RemoteEndPoint + " action=block");
             //        m_FloodAttempts.Remove(m_RemoteEndPoint);
-           //         Logger.Trace("{0}: Flood Attempt Closed", m_RemoteEndPoint);
+           //         Log.Info("{0}: Flood Attempt Closed", m_RemoteEndPoint);
            //         return;
            //     }
            //     else
@@ -118,7 +117,7 @@ namespace LocalCommons.Network
 
             if (e.SocketError == SocketError.Success)
             {
-                IConnection con = Activator.CreateInstance(defined, e.AcceptSocket) as IConnection;
+                IConnection con = Activator.CreateInstance(this.defined, e.AcceptSocket) as IConnection;
                 Main.Set();
             }
             e.AcceptSocket = null;
@@ -131,7 +130,7 @@ namespace LocalCommons.Network
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+	        this.Dispose(true);
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
@@ -139,12 +138,12 @@ namespace LocalCommons.Network
             if (disposing)
             {
                 // dispose managed resources
-                Socket sockt = Interlocked.Exchange<Socket>(ref m_Root, null);
+                Socket sockt = Interlocked.Exchange<Socket>(ref this.m_Root, null);
                 if (sockt != null)
                     sockt.Close();
-                if (m_SyncArgs != null)
+                if (this.m_SyncArgs != null)
                 {
-                    m_SyncArgs.Dispose();
+	                this.m_SyncArgs.Dispose();
                 }
             }
             // free native resources

@@ -18,14 +18,14 @@ namespace ArcheAgeStream.ArcheAge
     {
         private static Dictionary<byte, StreamServer> Streamservers = new Dictionary<byte, StreamServer>();
 
-        public static Dictionary<byte, StreamServer> CurrentGameServers
+        public static Dictionary<byte, StreamServer> CurrentArcheAgeGames
         {
             get { return Streamservers; }
         }
 
         public static bool RegisterStreamServer(byte id, string password, StreamConnection con, short port, string ip)
         {
-            Logger.Trace("StreamServer ID: {0} registration", id);
+            Log.Info("StreamServer ID: {0} registration", id);
             return true;
         }
         public static bool DisconnecteStreamServer(byte id)
@@ -39,8 +39,8 @@ namespace ArcheAgeStream.ArcheAge
 
         public static void LoadAvailableStreamServers()
         {
-            XmlSerializer ser = new XmlSerializer(typeof(GameServerTemplate));
-            GameServerTemplate template = (GameServerTemplate)ser.Deserialize(new FileStream(@"data/Servers.xml", FileMode.Open));
+            XmlSerializer ser = new XmlSerializer(typeof(ArcheAgeGameTemplate));
+            ArcheAgeGameTemplate template = (ArcheAgeGameTemplate)ser.Deserialize(new FileStream(@"data/Servers.xml", FileMode.Open));
             for (int i = 0; i < template.xmlservers.Count; i++)
             {
                 StreamServer game = template.xmlservers[i];
@@ -48,7 +48,7 @@ namespace ArcheAgeStream.ArcheAge
                 Streamservers.Add(game.Id, game);
             }
 
-            Logger.Trace("Loading from Servers.xml {0} servers", Streamservers.Count);
+            Log.Info("Loading from Servers.xml {0} servers", Streamservers.Count);
         }
     }
 
@@ -57,7 +57,7 @@ namespace ArcheAgeStream.ArcheAge
     [Serializable]
     [XmlType(AnonymousType = true)]
     [XmlRoot(ElementName = "servers", Namespace = "", IsNullable = false)]
-    public class GameServerTemplate
+    public class ArcheAgeGameTemplate
     {
         [XmlElement("server", Form = XmlSchemaForm.Unqualified)]
         public List<StreamServer> xmlservers;
@@ -93,7 +93,7 @@ namespace ArcheAgeStream.ArcheAge
 
         public bool IsOnline()
         {
-            return CurrentConnection != null;
+            return this.CurrentConnection != null;
         }
     }
 

@@ -7,7 +7,7 @@
     <ProjectGuid>{4F083472-97B6-4514-8CA9-064F080118D8}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArcheAge</RootNamespace>
+    <RootNamespace>ArcheAgeGame</RootNamespace>
     <AssemblyName>AAGameServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -34,11 +34,12 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Release\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,97 +58,126 @@
     <ApplicationIcon>AA.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="mysql.data, Version=8.0.11.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LocalCommons\bin\Debug\mysql.data.dll</HintPath>
+    <Reference Include="Melua">
+      <HintPath>..\packages\dll\Melua.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationFramework" />
-    <Reference Include="protobuf-net, Version=3.0.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\packages\protobuf-net.3.0.0-alpha.3\lib\net40\protobuf-net.dll</HintPath>
+    <Reference Include="MySql.Data, Version=8.0.11.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\dll\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\LocalCommons\bin\Debug\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArcheAge\Database\Account.cs" />
+    <Compile Include="ArcheAge\Database\AccountSettings.cs" />
+    <Compile Include="ArcheAge\Database\GameDb.cs" />
     <Compile Include="ArcheAge\Holders\AccountHolder.cs" />
     <Compile Include="ArcheAge\Holders\CharacterHolder.cs" />
+    <Compile Include="ArcheAge\Network\ChannelConnection.cs" />
+    <Compile Include="ArcheAge\Network\ChannelPacketHandler.cs" />
+    <Compile Include="ArcheAge\Network\ChannelPacketSender.cs" />
     <Compile Include="ArcheAge\Network\Connections\ClientConnection.cs" />
     <Compile Include="ArcheAge\Network\DelegateList.cs" />
     <Compile Include="ArcheAge\Network\Connections\LoginConnection.cs" />
     <Compile Include="ArcheAge\Network\ArcheAgePackets.cs" />
+    <Compile Include="ArcheAge\Network\Helpers\MonsterHelper.cs" />
+    <Compile Include="ArcheAge\Network\Helpers\SkillHelper.cs" />
     <Compile Include="ArcheAge\Network\Packets\Client\NP_CSHSResponsePacket_0x0110.cs" />
     <Compile Include="ArcheAge\Network\Packets\Client\NP_CSMoveUnitPacket_0x0088.cs" />
     <Compile Include="ArcheAge\Network\Packets\Client\NP_CSSetLpManageCharacter_0x00FB.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\05\NP_SCResultRestrictCheck_0x01A2.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_CSAddFriendPacket_0x0101.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_DetailedTimeOfDayPacket_0x00EA.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCAiDebugPacket_0x01B8.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCharacterInvenInitPacket_0x0046.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\05\NP_SCCharacterListPacket_0x002D.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCharacterReturnDistrictsPacket_0x0057.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCharacterStatePacket_0x003B.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCChatSpamDelayPacket_0x00CB.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCGamePointChangedPacket_0x0180.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCICSMenuList_0x01C4.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCInitialConfigPacket_0x0005.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCharacterCreationFailed_0x0038.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCreateCharacterResponse_0x0033.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCharacterDeleted_0x0036.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCancelCharacterDeleteResponse_0x0037.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCLeaveWorldGrantedPacket_0x0003.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCDeleteCharacterResponse_0x0034.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCRaceCongestionPacket_0x003A.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCReconnectAuthPacket_0x0001.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_DetailedTimeOfDayPacket_0x00EA.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCAiDebugPacket_0x01B8.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterInvenInitPacket_0x0046.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterReturnDistrictsPacket_0x0057.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterStatePacket_0x003B.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCChatSpamDelayPacket_0x00CB.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCGamePointChangedPacket_0x0180.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCICSMenuList_0x01C4.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCInitialConfigPacket_0x0005.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterCreationFailed_0x0038.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCreateCharacterResponse_0x0033.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterDeleted_0x0036.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCancelCharacterDeleteResponse_0x0037.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCLeaveWorldGrantedPacket_0x0003.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCDeleteCharacterResponse_0x0034.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCRaceCongestionPacket_0x003A.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCReconnectAuthPacket_0x0001.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_ChangeState_0x0000.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x0030.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x0034.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x008C.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x0094.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x00BA.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x00EC.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x0145.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x014D.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x014F.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x018A.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x01AF.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x01CC.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_SCReconnectAuthPacket__0x01E5.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x0272.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x0281.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x029C.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x02C3.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_0x02CF.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCharacterListPacket_0x0039.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_SCCharacterListPacket_0x0079.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\30\NP_Packet_quit_0x01F1.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCChatMessagePacket_0x00C6.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCAccountInfoPacket_0x01B7.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCCooldownsPacket_0x0045.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCUnitPointsPacket_0x01B2.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCUnitMovementsPacket_0x0066.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCResultRestrictCheck_0x01C3.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCUnitStatePacket_0x0064.cs" />
-    <Compile Include="ArcheAge\Network\Packets\Server\10\NP_SCUnitVisualOptionsPacket_0x01C0.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x0030.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x0034.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x008C.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x0094.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x00BA.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x00EC.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x0145.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x014D.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x014F.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x018A.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x01AF.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x01CC.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCReconnectAuthPacket__0x01E5.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x0272.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x0281.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x029C.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x02C3.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_0x02CF.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterListPacket_0x0039.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCharacterListPacket_0x0079.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_Packet_quit_0x01F1.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCChatMessagePacket_0x00C6.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCAccountInfoPacket_0x01B7.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCCooldownsPacket_0x0045.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitPointsPacket_0x01B2.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitMovementsPacket_0x0066.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCResultRestrictCheck_0x01C3.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitStatePacket_0x0064.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitVisualOptionsPacket_0x01C0.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SetGameType_0x000F.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_Pong_0x0013.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_X2EnterWorldResponsePacket_0x0000.cs" />
     <Compile Include="ArcheAge\Network\Packets.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\Utils\CharacterInfo.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\Utils\ItemInfo.cs" />
+    <Compile Include="ArcheAge\Scripting\LuaThread.cs" />
+    <Compile Include="ArcheAge\Scripting\ScriptManager.cs" />
+    <Compile Include="ArcheAge\Scripting\ScriptState.cs" />
+    <Compile Include="ArcheAge\Scripting\Variables.cs" />
     <Compile Include="ArcheAge\Structuring\Account.cs" />
     <Compile Include="ArcheAge\Structuring\Character.cs" />
     <Compile Include="ArcheAge\Structuring\EventDefinitions.cs" />
     <Compile Include="ArcheAge\Structuring\Main\IVisibleObject.cs" />
     <Compile Include="ArcheAge\Structuring\User\User.cs" />
+    <Compile Include="ArcheAge\Utilites\AbilityPriceTime.cs" />
+    <Compile Include="ArcheAge\Utilites\AbilityUnlock.cs" />
+    <Compile Include="ArcheAge\Utilites\GmCommands.cs" />
+    <Compile Include="ArcheAge\Utilites\GmCommands.Handlers.cs" />
+    <Compile Include="ArcheAge\World\Abilities.cs" />
+    <Compile Include="ArcheAge\World\Ability.cs" />
+    <Compile Include="ArcheAge\World\Character.cs" />
+    <Compile Include="ArcheAge\World\ChatMacro.cs" />
+    <Compile Include="ArcheAge\World\Entity.cs" />
+    <Compile Include="ArcheAge\World\Inventory.cs" />
+    <Compile Include="ArcheAge\World\Item.cs" />
+    <Compile Include="ArcheAge\World\Job.cs" />
+    <Compile Include="ArcheAge\World\Jobs.cs" />
+    <Compile Include="ArcheAge\World\Map.cs" />
+    <Compile Include="ArcheAge\World\Monster.cs" />
+    <Compile Include="ArcheAge\World\PropertyObject.cs" />
+    <Compile Include="ArcheAge\World\RevealedMap.cs" />
+    <Compile Include="ArcheAge\World\SessionObject.cs" />
+    <Compile Include="ArcheAge\World\SessionObjects.cs" />
+    <Compile Include="ArcheAge\World\Skill.cs" />
+    <Compile Include="ArcheAge\World\Skills.cs" />
+    <Compile Include="ArcheAge\World\WorldManager.cs" />
+    <Compile Include="GameServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -165,6 +195,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <COMPILE_IF_NOT_EXCLUDED Include="liblua51.dylib" />
+    <COMPILE_IF_NOT_EXCLUDED Include="liblua51.so" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -194,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AA.ico" />
+    <COMPILE_IF_NOT_EXCLUDED Include="lua51.dll" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

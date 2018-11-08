@@ -1,8 +1,8 @@
-﻿using ArcheAge.ArcheAge.Network.Connections;
-using ArcheAge.ArcheAge.Structuring;
+﻿using ArcheAgeGame.ArcheAge.Network.Connections;
+using ArcheAgeGame.ArcheAge.Structuring;
 using LocalCommons.Network;
 
-namespace ArcheAge.ArcheAge.Network.Packets.Server.Utils
+namespace ArcheAgeGame.ArcheAge.Network.Packets.Server.Utils
 {
     public sealed class CharacterInfo : NetPacket
     {

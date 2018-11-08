@@ -1,13 +1,15 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
+using LocalCommons.Cryptography;
+using LocalCommons.Logging;
 using MySql.Data.MySqlClient;
 using System;
 
 namespace LocalCommons.Database
 {
     public class ArcheageDb
-    {
-        private static string _connectionString;
+	{
+        private string _connectionString;
 
         /// <summary>
         /// Sets connection string and calls TestConnection.
@@ -16,27 +18,24 @@ namespace LocalCommons.Database
         /// <param name="user"></param>
         /// <param name="pass"></param>
         /// <param name="db"></param>
-        /// <param name="ssl"></param>
-        /// <param name="pInfo"></param>
         /// <exception cref="Exception">Thrown if connection couldn't be established.</exception>
-        public static void Init(string host, string user, string pass, string db, bool ssl, bool pInfo)
+        public void Init(string host, string user, string pass, string db)
         {
-            //_connectionString = string.Format("server={0}; database={1}; uid={2}; password={3}; charset=utf8; pooling=true; min pool size=0; max pool size=100;", host, db, user, pass);
-            _connectionString = "server=" + host + "; user=" + user + "; database=" + db + "; password=" + pass + "; charset=utf8; pooling=true; min pool size=0; max pool size=100" + ((!ssl) ? "; SslMode = none" : "") + ((!pInfo) ? "; PersistSecurityInfo = none" : "");
-            TestConnection();
+	        this._connectionString = string.Format("server={0}; database={1}; uid={2}; password={3}; charset=utf8; pooling=true; min pool size=0; max pool size=100;", host, db, user, pass);
+            this.TestConnection();
         }
 
         /// <summary>
         /// Returns a valid connection.
         /// </summary>
-        protected static MySqlConnection GetConnection()
+        protected MySqlConnection GetConnection()
         {
-            if (_connectionString == null)
+            if (this._connectionString == null)
             {
                 throw new Exception("ArcheageDb has not been initialized.");
             }
 
-            var result = new MySqlConnection(_connectionString);
+            var result = new MySqlConnection(this._connectionString);
             result.Open();
             return result;
         }
@@ -45,12 +44,12 @@ namespace LocalCommons.Database
         /// Tests connection.
         /// </summary>
         /// <exception cref="Exception">Thrown if connection couldn't be established.</exception>
-        public static void TestConnection()
+        public void TestConnection()
         {
             MySqlConnection conn = null;
             try
             {
-                conn = GetConnection();
+                conn = this.GetConnection();
             }
             finally
             {
@@ -58,6 +57,123 @@ namespace LocalCommons.Database
                 {
                     conn.Close();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if accounts exists.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool AccountExists(string name)
+        {
+            using (var conn = this.GetConnection())
+            using (var mc = new MySqlCommand("SELECT `name` FROM `accounts` WHERE `name` = @name", conn))
+            {
+                mc.Parameters.AddWithValue("@name", name);
+
+                using (var reader = mc.ExecuteReader())
+                {
+                    return reader.HasRows;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates new account with given information.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if name or password is empty.</exception>
+        public bool CreateAccount(string name, string password)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentNullException("password");
+            }
+
+            // Wrap password in BCrypt
+            password = BCrypt.HashPassword(password, BCrypt.GenerateSalt());
+
+            using (var conn = this.GetConnection())
+            using (var cmd = new InsertCommand("INSERT INTO `accounts` {0}", conn))
+            {
+                cmd.Set("name", name);
+                cmd.Set("password", password);
+
+                try
+                {
+                    cmd.Execute();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Exception(ex, "Failed to create account '{0}'.", name);
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if a character with the given name exists on account.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool CharacterExists(long accountId, string name)
+        {
+            using (var conn = this.GetConnection())
+            using (var mc = new MySqlCommand("SELECT `characterId` FROM `characters` WHERE `accountId` = @accountId AND `name` = @name", conn))
+            {
+                mc.Parameters.AddWithValue("@accountId", accountId);
+                mc.Parameters.AddWithValue("@name", name);
+
+                using (var reader = mc.ExecuteReader())
+                {
+                    return reader.HasRows;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if team name exists.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TeamNameExists(string teamName)
+        {
+            using (var conn = this.GetConnection())
+            using (var mc = new MySqlCommand("SELECT `accountId` FROM `accounts` WHERE `teamName` = @teamName", conn))
+            {
+                mc.Parameters.AddWithValue("@teamName", teamName);
+
+                using (var reader = mc.ExecuteReader())
+                {
+                    return reader.HasRows;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Changes team name for account.
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public bool UpdateTeamName(long accountId, string teamName)
+        {
+            using (var conn = this.GetConnection())
+            using (var cmd = new UpdateCommand("UPDATE `accounts` SET {0} WHERE `accountId` = @accountId", conn))
+            {
+                cmd.AddParameter("@accountId", accountId);
+                cmd.Set("teamName", teamName);
+
+                return cmd.Execute() > 0;
             }
         }
     }

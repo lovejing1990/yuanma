@@ -21,14 +21,14 @@ namespace ArcheAgeStream
         // .method private hidebysig static void Main(string[] args) cil managed
         static void Main(string[] args)
         {
-            Console.Title = "ARCHEAGE STREAM SERVER";
+            Console.Title = "ARCHEAGE SERVER : Stream";
             Console.CancelKeyPress += Console_CancelKeyPress;
             Stopwatch watch = Stopwatch.StartNew();
             watch.Start();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             LoadExecutingAssembly(args);
             watch.Stop();
-            Logger.Trace("ArcheAge Stream Server started in {0} seconds", (watch.ElapsedMilliseconds / 1000.0).ToString("0.00"));
+            Log.Info("ArcheAge Stream Server started in {0} seconds", (watch.ElapsedMilliseconds / 1000.0).ToString("0.00"));
             watch = null;
             Key_Pressed();
         }
@@ -59,7 +59,7 @@ namespace ArcheAgeStream
         /// <param name="e">Event Arguments</param>
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.Trace("Unhandled Exception - Sender: {0} , Exception - \n{1}", sender.GetType().Name, ((Exception)e.ExceptionObject).ToString());
+            Log.Info("Unhandled Exception - Sender: {0} , Exception - \n{1}", sender.GetType().Name, ((Exception)e.ExceptionObject).ToString());
             Console.WriteLine();
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
@@ -69,18 +69,18 @@ namespace ArcheAgeStream
         //.method hidebysig static void LoadExecutngAssembly(string[] args) cil managed
         static void LoadExecutingAssembly(string[] args)
         {
-            Logger.Init();
+            //Logger.Init();
             Settings m_Current = Settings.Default;
 
             //--------------- Init Commons ----------------------
             LocalCommons.Main.InitializeStruct(args);
 
             //------------- Controllers -------------------------
-            //Logger.Section("Controllers");
-            //GameServerController.LoadAvailableGameServers();
+            //Log.Info("Controllers");
+            //ArcheAgeGameController.LoadAvailableArcheAgeGames();
 
             //----------------Network ---------------------------
-            Logger.Section("Network");
+            Log.Info("Network");
             PacketList.Initialize();
             new AsyncListener(m_Current.ArcheAgeStream_IP, m_Current.ArcheAgeStream_PORT, defined: typeof(StreamConnection)); //Waiting For ArcheAge Connections
 

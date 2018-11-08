@@ -43,16 +43,16 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         public static uint MaxCharacterUid()
         {
             uint uid = 0;
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM `character_records`", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var command = new MySqlCommand("SELECT * FROM `character_records`", conn);
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Character character = new Character();
+                        var character = new Character();
                         character.CharacterId = reader.GetUInt32("characterid");
                         if (uid < character.CharacterId)
                         {
@@ -64,7 +64,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("Error: {0}", ex.Message);
+                    Log.Info("Error: {0}", ex.Message);
                 }
                 finally
                 {
@@ -80,27 +80,29 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         public static int LoadCharacterData(long accountId)
         {
             m_DbCharacters = new List<Character>();
-            using (MySqlConnection con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     con.Open();
-                    MySqlCommand command =
+                    var command =
                         new MySqlCommand("SELECT * FROM `character_records` WHERE `accountid` = '" + accountId + "'", con);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Character character = new Character();
-                        character.CharacterId = reader.GetUInt32("characterid");
-                        character.AccountId = reader.GetUInt32("accountid");
-                        character.WorldId = reader.GetByte("worldid");
-                        character.Type = reader.GetInt32("type0");
-                        character.CharName = reader.GetString("charname");
-                        character.CharRace = reader.GetByte("charrace");
-                        character.CharGender = reader.GetByte("chargender");
-                        character.GUID = reader.GetString("guid");
-                        character.V = reader.GetInt64("v");
-                        m_DbCharacters.Add(character);
+	                    var character = new Character
+	                    {
+		                    CharacterId = reader.GetUInt32("characterid"),
+		                    AccountId = reader.GetUInt32("accountid"),
+		                    WorldId = reader.GetByte("worldid"),
+		                    Type = reader.GetInt32("type0"),
+		                    CharName = reader.GetString("charname"),
+		                    CharRace = reader.GetByte("charrace"),
+		                    CharGender = reader.GetByte("chargender"),
+		                    GUID = reader.GetString("guid"),
+		                    V = reader.GetInt64("v")
+	                    };
+	                    m_DbCharacters.Add(character);
                     }
 
                     command.Dispose();
@@ -110,15 +112,15 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 {
                     if (e.Message.IndexOf("using password: YES") >= 0)
                     {
-                        Logger.Trace("Error: Incorrect username or password");
+                        Log.Info("Error: Incorrect username or password");
                     }
                     else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
                     {
-                        Logger.Trace("Error: Unable to connect to database");
+                        Log.Info("Error: Unable to connect to database");
                     }
                     else
                     {
-                        Logger.Trace("Error: Unknown error");
+                        Log.Info("Error: Unknown error");
                     }
 
                     //Console.ReadKey();
@@ -127,7 +129,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 finally
                 {
                     con.Close();
-                    Logger.Trace("Load to {0} character_records", m_DbCharacters.Count);
+                    Log.Info("Load to {0} character_records", m_DbCharacters.Count);
                 }
             }
             return m_DbCharacters.Count;
@@ -139,28 +141,30 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         public static void LoadCharacterData()
         {
             m_DbCharacters = new List<Character>();
-            using (MySqlConnection con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var con = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     con.Open();
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM `character_records`", con);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var command = new MySqlCommand("SELECT * FROM `character_records`", con);
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Character character = new Character();
+	                    var character = new Character
+	                    {
+		                    CharacterId = reader.GetUInt32("characterid"),
+		                    AccountId = reader.GetUInt32("accountid"),
+		                    WorldId = reader.GetByte("worldid"),
+		                    Type = reader.GetInt32("type0"),
+		                    CharName = reader.GetString("charname"),
+		                    CharRace = reader.GetByte("charrace"),
+		                    CharGender = reader.GetByte("chargender"),
+		                    GUID = reader.GetString("guid"),
+		                    V = reader.GetInt64("v")
+	                    };
 
-                        character.CharacterId = reader.GetUInt32("characterid");
-                        character.AccountId = reader.GetUInt32("accountid");
-                        character.WorldId = reader.GetByte("worldid");
-                        character.Type = reader.GetInt32("type0");
-                        character.CharName = reader.GetString("charname");
-                        character.CharRace = reader.GetByte("charrace");
-                        character.CharGender = reader.GetByte("chargender");
-                        character.GUID = reader.GetString("guid");
-                        character.V = reader.GetInt64("v");
 
-                        m_DbCharacters.Add(character);
+	                    m_DbCharacters.Add(character);
                     }
 
                     command.Dispose();
@@ -170,15 +174,15 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 {
                     if (e.Message.IndexOf("using password: YES") >= 0)
                     {
-                        Logger.Trace("Error: Incorrect username or password");
+                        Log.Info("Error: Incorrect username or password");
                     }
                     else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
                     {
-                        Logger.Trace("Error: Unable to connect to database");
+                        Log.Info("Error: Unable to connect to database");
                     }
                     else
                     {
-                        Logger.Trace("Error: Unknown error");
+                        Log.Info("Error: Unknown error");
                     }
 
                     //Console.ReadKey();
@@ -187,7 +191,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 finally
                 {
                     con.Close();
-                    Logger.Trace("Load to {0} character_records", m_DbCharacters.Count);
+                    Log.Info("Load to {0} character_records", m_DbCharacters.Count);
                 }
             }
         }
@@ -226,7 +230,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
 
                     var parameters = command.Parameters;
 
-                    parameters.Add("@accountid", MySqlDbType.String).Value = character.CharacterId;
+                    parameters.Add("@characterid", MySqlDbType.UInt32).Value = character.CharacterId;
                     parameters.Add("@accountid", MySqlDbType.UInt32).Value = character.AccountId;
                     parameters.Add("@worldid", MySqlDbType.Byte).Value = character.WorldId;
                     parameters.Add("@type", MySqlDbType.Int32).Value = character.Type;
@@ -245,7 +249,7 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 }
                 catch (Exception e)
                 {
-                    Logger.Trace("Cannot InsertOrUpdate template for " + character.CharName + ": {0}", e);
+                    Log.Info("Cannot InsertOrUpdate template for " + character.CharName + ": {0}", e);
                 }
                 finally
                 {

@@ -17,9 +17,9 @@ namespace LocalCommons.Network
 
 		public PacketReader( byte[] data, int offset )
 		{
-			m_Data = data;
-            m_Size = data.Length;
-            m_Index = offset;
+			this.m_Data = data;
+			this.m_Size = data.Length;
+			this.m_Index = offset;
 		}
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace LocalCommons.Network
         /// </summary>
 		public byte[] Buffer
 		{
-			get { return m_Data; }
+			get { return this.m_Data; }
 		}
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace LocalCommons.Network
         /// </summary>
 		public int Size
 		{
-			get { return m_Size; }
+			get { return this.m_Size; }
 		}
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace LocalCommons.Network
         /// </summary>
         public int Offset
         {
-            get { return m_Index; }
-            set { m_Index = value; }
+            get { return this.m_Index; }
+            set { this.m_Index = value; }
         }
 
         /// <summary>
@@ -52,16 +52,16 @@ namespace LocalCommons.Network
         /// </summary>
         public int Remaining
         {
-            get { return m_Size - m_Index; }
+            get { return this.m_Size - this.m_Index; }
         }
 
         public byte[] Clear()
         {
-            for (int i = 0; i < m_Size; i++)
+            for (int i = 0; i < this.m_Size; i++)
             {
-                m_Data[i] = 0;
+	            this.m_Data[i] = 0;
             }
-            return m_Data;
+            return this.m_Data;
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace LocalCommons.Network
         /// <returns>Byte[] From Stream</returns>
         public byte[] ReadByteArray(int length)
         {
-            if (length > m_Size)
+            if (length > this.m_Size)
                 return new byte[0];
 
             byte[] data = new byte[length];
-            Array.Copy(m_Data, m_Index, data, 0, data.Length);
-            m_Index += length;
+            Array.Copy(this.m_Data, this.m_Index, data, 0, data.Length);
+	        this.m_Index += length;
             return data;
         }
 
@@ -90,12 +90,15 @@ namespace LocalCommons.Network
 		{
 			switch ( origin )
 			{
-				case SeekOrigin.Begin: m_Index = offset; break;
-				case SeekOrigin.Current: m_Index += offset; break;
-				case SeekOrigin.End: m_Index = m_Size - offset; break;
+				case SeekOrigin.Begin:
+					this.m_Index = offset; break;
+				case SeekOrigin.Current:
+					this.m_Index += offset; break;
+				case SeekOrigin.End:
+					this.m_Index = this.m_Size - offset; break;
 			}
 
-			return m_Index;
+			return this.m_Index;
 		}
 
         /// <summary>
@@ -104,11 +107,11 @@ namespace LocalCommons.Network
         /// <returns>Signed Int64</returns>
         public long ReadInt64()
         {
-            if ((m_Index + 8) > m_Size)
+            if ((this.m_Index + 8) > this.m_Size)
                 return 0;
 
-            uint mlong = (uint)(m_Data[m_Index++] | m_Data[m_Index++] << 8 | m_Data[m_Index++] << 16 | m_Data[m_Index++] << 24);
-            uint mhigher = (uint)(m_Data[m_Index++] | m_Data[m_Index++] << 8 | m_Data[m_Index++] << 16 | m_Data[m_Index++] << 24);
+            uint mlong = (uint)(this.m_Data[this.m_Index++] | this.m_Data[this.m_Index++] << 8 | this.m_Data[this.m_Index++] << 16 | this.m_Data[this.m_Index++] << 24);
+            uint mhigher = (uint)(this.m_Data[this.m_Index++] | this.m_Data[this.m_Index++] << 8 | this.m_Data[this.m_Index++] << 16 | this.m_Data[this.m_Index++] << 24);
             return (long)((ulong)mhigher) << 32 | mlong;
         }
 
@@ -118,13 +121,13 @@ namespace LocalCommons.Network
         /// <returns>Signed Int32.</returns>
 		public int ReadInt32()
 		{
-			if ( (m_Index + 4) > m_Size )
+			if ( (this.m_Index + 4) > this.m_Size )
 				return 0;
 
-			return (m_Data[m_Index++] << 24)
-				 | (m_Data[m_Index++] << 16)
-				 | (m_Data[m_Index++] <<  8)
-				 |  m_Data[m_Index++];
+			return (this.m_Data[this.m_Index++] << 24)
+				 | (this.m_Data[this.m_Index++] << 16)
+				 | (this.m_Data[this.m_Index++] <<  8)
+				 | this.m_Data[this.m_Index++];
 		}
 
         /// <summary>
@@ -133,10 +136,10 @@ namespace LocalCommons.Network
         /// <returns>Signed Short From Stream.</returns>
 		public short ReadInt16()
 		{
-			if ( (m_Index + 2) > m_Size )
+			if ( (this.m_Index + 2) > this.m_Size )
 				return 0;
 
-			return (short) ((m_Data[m_Index++] << 8) | m_Data[m_Index++]);
+			return (short) ((this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++]);
 		}
 
         /// <summary>
@@ -145,10 +148,10 @@ namespace LocalCommons.Network
         /// <returns></returns>
 		public byte ReadByte()
 		{
-			if ( (m_Index + 1) > m_Size )
+			if ( (this.m_Index + 1) > this.m_Size )
 				return 0;
 
-			return m_Data[m_Index++];
+			return this.m_Data[this.m_Index++];
 		}
 
         /// <summary>
@@ -157,10 +160,10 @@ namespace LocalCommons.Network
         /// <returns>Unsigned Integer From Stream.</returns>
 		public Uint24 ReadUInt24()
 		{
-			if ( (m_Index + 4) > m_Size )
+			if ( (this.m_Index + 4) > this.m_Size )
 				return 0;
 
-			return (Uint24)((m_Data[m_Index++] << 16) | (m_Data[m_Index++] << 8) | m_Data[m_Index++]);
+			return (Uint24)((this.m_Data[this.m_Index++] << 16) | (this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++]);
 		}
 
 	    /// <summary>
@@ -169,10 +172,10 @@ namespace LocalCommons.Network
 	    /// <returns>Unsigned Integer From Stream.</returns>
 	    public uint ReadUInt32()
 	    {
-	        if ((m_Index + 4) > m_Size)
+	        if ((this.m_Index + 4) > this.m_Size)
 	            return 0;
 
-	        return (uint)((m_Data[m_Index++] << 24) | (m_Data[m_Index++] << 16) | (m_Data[m_Index++] << 8) | m_Data[m_Index++]);
+	        return (uint)((this.m_Data[this.m_Index++] << 24) | (this.m_Data[this.m_Index++] << 16) | (this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++]);
 	    }
 
         /// <summary>
@@ -181,10 +184,10 @@ namespace LocalCommons.Network
         /// <returns>Unsigned Short From Stream.</returns>
 		public ushort ReadUInt16()
 		{
-			if ( (m_Index + 2) > m_Size )
+			if ( (this.m_Index + 2) > this.m_Size )
 				return 0;
 
-			return (ushort) ((m_Data[m_Index++] << 8) | m_Data[m_Index++]);
+			return (ushort) ((this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++]);
 		}
 
         /// <summary>
@@ -193,10 +196,10 @@ namespace LocalCommons.Network
         /// <returns>Signed Byte From Stream.</returns>
 		public sbyte ReadSByte()
 		{
-			if ( (m_Index + 1) > m_Size )
+			if ( (this.m_Index + 1) > this.m_Size )
 				return 0;
 
-			return (sbyte) (m_Data[m_Index++]);
+			return (sbyte) (this.m_Data[this.m_Index++]);
 		}
 
         /// <summary>
@@ -206,10 +209,10 @@ namespace LocalCommons.Network
         /// <returns></returns>
 		public bool ReadBoolean()
 		{
-			if ( (m_Index + 1) > m_Size )
+			if ( (this.m_Index + 1) > this.m_Size )
 				return false;
 
-			return ( m_Data[m_Index++] != 0 );
+			return (this.m_Data[this.m_Index++] != 0 );
 		}
 
         /// <summary>
@@ -222,7 +225,7 @@ namespace LocalCommons.Network
 
 			int c;
 
-			while ( (m_Index + 1) < m_Size && (c = (m_Data[m_Index++] | (m_Data[m_Index++] << 8))) != 0 )
+			while ( (this.m_Index + 1) < this.m_Size && (c = (this.m_Data[this.m_Index++] | (this.m_Data[this.m_Index++] << 8))) != 0 )
 				sb.Append( (char)c );
 
 			return sb.ToString();
@@ -235,23 +238,23 @@ namespace LocalCommons.Network
         /// <returns>Readed String</returns>
 		public string ReadUnicodeStringLESafe( int fixedLength )
 		{
-			int bound = m_Index + (fixedLength << 1);
+			int bound = this.m_Index + (fixedLength << 1);
 			int end   = bound;
 
-			if ( bound > m_Size )
-				bound = m_Size;
+			if ( bound > this.m_Size )
+				bound = this.m_Size;
 
 			StringBuilder sb = new StringBuilder();
 
 			int c;
 
-			while ( (m_Index + 1) < bound && (c = (m_Data[m_Index++] | (m_Data[m_Index++] << 8))) != 0 )
+			while ( (this.m_Index + 1) < bound && (c = (this.m_Data[this.m_Index++] | (this.m_Data[this.m_Index++] << 8))) != 0 )
 			{
-				if ( IsSafeChar( c ) )
+				if (this.IsSafeChar( c ) )
 					sb.Append( (char)c );
 			}
 
-			m_Index = end;
+			this.m_Index = end;
 
 			return sb.ToString();
 		}
@@ -266,9 +269,9 @@ namespace LocalCommons.Network
 
 			int c;
 
-			while ( (m_Index + 1) < m_Size && (c = (m_Data[m_Index++] | (m_Data[m_Index++] << 8))) != 0 )
+			while ( (this.m_Index + 1) < this.m_Size && (c = (this.m_Data[this.m_Index++] | (this.m_Data[this.m_Index++] << 8))) != 0 )
 			{
-				if ( IsSafeChar( c ) )
+				if (this.IsSafeChar( c ) )
 					sb.Append( (char)c );
 			}
 
@@ -285,9 +288,9 @@ namespace LocalCommons.Network
 
             int c;
 
-            while ((m_Index + 1) < m_Size && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0)
+            while ((this.m_Index + 1) < this.m_Size && (c = ((this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++])) != 0)
             {
-                if (IsSafeChar(c))
+                if (this.IsSafeChar(c))
                     sb.Append((char)c);
             }
 
@@ -302,10 +305,10 @@ namespace LocalCommons.Network
         /// <returns>Readed Short</returns>
         public short ReadLEInt16()
         {
-            if ((m_Index + 2) > m_Size)
+            if ((this.m_Index + 2) > this.m_Size)
                 return 0;
-            short value = BitConverter.ToInt16(m_Data, m_Index);
-            m_Index += 2;
+            short value = BitConverter.ToInt16(this.m_Data, this.m_Index);
+	        this.m_Index += 2;
             return value;
         }
 
@@ -315,10 +318,10 @@ namespace LocalCommons.Network
 	    /// <returns>Readed Short</returns>
 	    public ushort ReadLEUInt16()
 	    {
-	        if ((m_Index + 2) > m_Size)
+	        if ((this.m_Index + 2) > this.m_Size)
 	            return 0;
-	        ushort value = BitConverter.ToUInt16(m_Data, m_Index);
-	        m_Index += 2;
+	        ushort value = BitConverter.ToUInt16(this.m_Data, this.m_Index);
+		    this.m_Index += 2;
 	        return value;
 	    }
 
@@ -328,11 +331,11 @@ namespace LocalCommons.Network
         /// <returns>Readed Int32</returns>
         public uint ReadLEUInt32()
         {
-            if ((m_Index + 4) > m_Size)
+            if ((this.m_Index + 4) > this.m_Size)
                 return 0;
 
-            uint value = BitConverter.ToUInt32(m_Data, m_Index);
-            m_Index += 4;
+            uint value = BitConverter.ToUInt32(this.m_Data, this.m_Index);
+	        this.m_Index += 4;
             return value;
         }
 
@@ -342,11 +345,11 @@ namespace LocalCommons.Network
 	    /// <returns>Readed Int32</returns>
 	    public int ReadLEInt32()
 	    {
-	        if ((m_Index + 4) > m_Size)
+	        if ((this.m_Index + 4) > this.m_Size)
 	            return 0;
 
-	        int value = BitConverter.ToInt32(m_Data, m_Index);
-	        m_Index += 4;
+	        int value = BitConverter.ToInt32(this.m_Data, this.m_Index);
+		    this.m_Index += 4;
 	        return value;
 	    }
 
@@ -356,11 +359,11 @@ namespace LocalCommons.Network
         /// <returns>Readed Long</returns>
         public long ReadLEInt64()
         {
-            if ((m_Index + 8) > m_Size)
+            if ((this.m_Index + 8) > this.m_Size)
                 return 0;
 
-            long value = BitConverter.ToInt64(m_Data, m_Index);
-            m_Index += 8;
+            long value = BitConverter.ToInt64(this.m_Data, this.m_Index);
+	        this.m_Index += 8;
             return value;
         }
 
@@ -370,11 +373,11 @@ namespace LocalCommons.Network
         /// <returns>Readed Float</returns>
         public float ReadLESingle()
         {
-            if ((m_Index + 4) > m_Size)
+            if ((this.m_Index + 4) > this.m_Size)
                 return 0;
 
-            float value = BitConverter.ToSingle(m_Data, m_Index);
-            m_Index += 4;
+            float value = BitConverter.ToSingle(this.m_Data, this.m_Index);
+	        this.m_Index += 4;
             return value;
         }
 
@@ -390,7 +393,7 @@ namespace LocalCommons.Network
 
 			int c;
 
-			while ( (m_Index + 1) < m_Size && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0 )
+			while ( (this.m_Index + 1) < this.m_Size && (c = ((this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++])) != 0 )
 				sb.Append( (char)c );
 
 			return sb.ToString();
@@ -413,23 +416,23 @@ namespace LocalCommons.Network
        /// <returns>Readed</returns>
 		public string ReadUTF8StringSafe( int fixedLength )
 		{
-			if ( m_Index >= m_Size )
+			if (this.m_Index >= this.m_Size )
 			{
-				m_Index += fixedLength;
+				this.m_Index += fixedLength;
 				return String.Empty;
 			}
 
-			int bound = m_Index + fixedLength;
+			int bound = this.m_Index + fixedLength;
 			//int end   = bound;
 
-			if ( bound > m_Size )
-				bound = m_Size;
+			if ( bound > this.m_Size )
+				bound = this.m_Size;
 
 			int count = 0;
-			int index = m_Index;
-			int start = m_Index;
+			int index = this.m_Index;
+			int start = this.m_Index;
 
-			while ( index < bound && m_Data[index++] != 0 )
+			while ( index < bound && this.m_Data[index++] != 0 )
 				++count;
 
 			index = 0;
@@ -437,7 +440,7 @@ namespace LocalCommons.Network
 			byte[] buffer = new byte[count];
 			int value = 0;
 
-			while ( m_Index < bound && (value = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < bound && (value = this.m_Data[this.m_Index++]) != 0 )
 				buffer[index++] = (byte)value;
 
 			string s = Encoding.UTF8.GetString( buffer );
@@ -445,9 +448,9 @@ namespace LocalCommons.Network
 			bool isSafe = true;
 
 			for ( int i = 0; isSafe && i < s.Length; ++i )
-				isSafe = IsSafeChar( (int) s[i] );
+				isSafe = this.IsSafeChar( (int) s[i] );
 
-			m_Index = start + fixedLength;
+			this.m_Index = start + fixedLength;
 
 			if ( isSafe )
 				return s;
@@ -455,7 +458,7 @@ namespace LocalCommons.Network
 			StringBuilder sb = new StringBuilder( s.Length );
 
 			for ( int i = 0; i < s.Length; ++i )
-				if ( IsSafeChar( (int) s[i] ) )
+				if (this.IsSafeChar( (int) s[i] ) )
 					sb.Append( s[i] );
 
 			return sb.ToString();
@@ -467,13 +470,13 @@ namespace LocalCommons.Network
         /// <returns>Readed Safe String.</returns>
 		public string ReadUTF8StringSafe()
 		{
-			if ( m_Index >= m_Size )
+			if (this.m_Index >= this.m_Size )
 				return String.Empty;
 
 			int count = 0;
-			int index = m_Index;
+			int index = this.m_Index;
 
-			while ( index < m_Size && m_Data[index++] != 0 )
+			while ( index < this.m_Size && this.m_Data[index++] != 0 )
 				++count;
 
 			index = 0;
@@ -481,7 +484,7 @@ namespace LocalCommons.Network
 			byte[] buffer = new byte[count];
 			int value = 0;
 
-			while ( m_Index < m_Size && (value = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < this.m_Size && (value = this.m_Data[this.m_Index++]) != 0 )
 				buffer[index++] = (byte)value;
 
 			string s = Encoding.UTF8.GetString( buffer );
@@ -489,7 +492,7 @@ namespace LocalCommons.Network
 			bool isSafe = true;
 
 			for ( int i = 0; isSafe && i < s.Length; ++i )
-				isSafe = IsSafeChar( (int) s[i] );
+				isSafe = this.IsSafeChar( (int) s[i] );
 
 			if ( isSafe )
 				return s;
@@ -498,7 +501,7 @@ namespace LocalCommons.Network
 
 			for ( int i = 0; i < s.Length; ++i )
 			{
-				if ( IsSafeChar( (int) s[i] ) )
+				if (this.IsSafeChar( (int) s[i] ) )
 					sb.Append( s[i] );
 			}
 
@@ -511,13 +514,13 @@ namespace LocalCommons.Network
         /// <returns>Readed String</returns>
 		public string ReadUTF8String()
 		{
-			if ( m_Index >= m_Size )
+			if (this.m_Index >= this.m_Size )
 				return String.Empty;
 
 			int count = 0;
-			int index = m_Index;
+			int index = this.m_Index;
 
-			while ( index < m_Size && m_Data[index++] != 0 )
+			while ( index < this.m_Size && this.m_Data[index++] != 0 )
 				++count;
 
 			index = 0;
@@ -525,7 +528,7 @@ namespace LocalCommons.Network
 			byte[] buffer = new byte[count];
 			int value = 0;
 
-			while ( m_Index < m_Size && (value = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < this.m_Size && (value = this.m_Data[this.m_Index++]) != 0 )
 				buffer[index++] = (byte)value;
 
 			return Encoding.UTF8.GetString( buffer );
@@ -541,7 +544,7 @@ namespace LocalCommons.Network
 
 			int c;
 
-			while ( m_Index < m_Size && (c = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < this.m_Size && (c = this.m_Data[this.m_Index++]) != 0 )
 				sb.Append( (char)c );
 
 			return sb.ToString();
@@ -557,9 +560,9 @@ namespace LocalCommons.Network
 
 			int c;
 
-			while ( m_Index < m_Size && (c = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < this.m_Size && (c = this.m_Data[this.m_Index++]) != 0 )
 			{
-				if ( IsSafeChar( c ) )
+				if (this.IsSafeChar( c ) )
 					sb.Append( (char)c );
 			}
 
@@ -573,23 +576,23 @@ namespace LocalCommons.Network
         /// <returns>Readed String</returns>
 		public string ReadUnicodeStringSafe( int fixedLength )
 		{
-			int bound = m_Index + (fixedLength << 1);
+			int bound = this.m_Index + (fixedLength << 1);
 			int end   = bound;
 
-			if ( bound > m_Size )
-				bound = m_Size;
+			if ( bound > this.m_Size )
+				bound = this.m_Size;
 
 			StringBuilder sb = new StringBuilder();
 
 			int c;
 
-			while ( (m_Index + 1) < bound && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0 )
+			while ( (this.m_Index + 1) < bound && (c = ((this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++])) != 0 )
 			{
-				if ( IsSafeChar( c ) )
+				if (this.IsSafeChar( c ) )
 					sb.Append( (char)c );
 			}
 
-			m_Index = end;
+			this.m_Index = end;
 
 			return sb.ToString();
 		}
@@ -601,20 +604,20 @@ namespace LocalCommons.Network
         /// <returns>Readed String</returns>
 		public string ReadUnicodeString( int fixedLength )
 		{
-			int bound = m_Index + (fixedLength << 1);
+			int bound = this.m_Index + (fixedLength << 1);
 			int end   = bound;
 
-			if ( bound > m_Size )
-				bound = m_Size;
+			if ( bound > this.m_Size )
+				bound = this.m_Size;
 
 			StringBuilder sb = new StringBuilder();
 
 			int c;
 
-			while ( (m_Index + 1) < bound && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0 )
+			while ( (this.m_Index + 1) < bound && (c = ((this.m_Data[this.m_Index++] << 8) | this.m_Data[this.m_Index++])) != 0 )
 				sb.Append( (char)c );
 
-			m_Index = end;
+			this.m_Index = end;
 
 			return sb.ToString();
 		}
@@ -626,23 +629,23 @@ namespace LocalCommons.Network
         /// <returns>Readed String.</returns>
 		public string ReadStringSafe( int fixedLength )
 		{
-			int bound = m_Index + fixedLength;
+			int bound = this.m_Index + fixedLength;
 			int end   = bound;
 
-			if ( bound > m_Size )
-				bound = m_Size;
+			if ( bound > this.m_Size )
+				bound = this.m_Size;
 
 			StringBuilder sb = new StringBuilder();
 
 			int c;
 
-			while ( m_Index < bound && (c = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < bound && (c = this.m_Data[this.m_Index++]) != 0 )
 			{
-				if ( IsSafeChar( c ) )
+				if (this.IsSafeChar( c ) )
 					sb.Append( (char)c );
 			}
 
-			m_Index = end;
+			this.m_Index = end;
 
 			return sb.ToString();
 		}
@@ -654,20 +657,20 @@ namespace LocalCommons.Network
         /// <returns>Readed String.</returns>
 		public string ReadString( int fixedLength )
 		{
-			int bound = m_Index + fixedLength;
+			int bound = this.m_Index + fixedLength;
 			int end   = bound;
 
-			if ( bound > m_Size )
-				bound = m_Size;
+			if ( bound > this.m_Size )
+				bound = this.m_Size;
 
 			StringBuilder sb = new StringBuilder();
 
 			int c;
 
-			while ( m_Index < bound && (c = m_Data[m_Index++]) != 0 )
+			while (this.m_Index < bound && (c = this.m_Data[this.m_Index++]) != 0 )
 				sb.Append( (char)c );
 
-			m_Index = end;
+			this.m_Index = end;
 
 			return sb.ToString();
 		}
@@ -678,20 +681,20 @@ namespace LocalCommons.Network
         /// <returns>Readed String.</returns>
         public string ReadHexString(int fixedLength)
         {
-            int bound = m_Index + fixedLength;
+            int bound = this.m_Index + fixedLength;
             int end = bound;
 
-            if (bound > m_Size)
-                bound = m_Size;
+            if (bound > this.m_Size)
+                bound = this.m_Size;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while (m_Index < bound && (c = m_Data[m_Index++]) != 0)
+            while (this.m_Index < bound && (c = this.m_Data[this.m_Index++]) != 0)
                 sb.Append(c.ToString("x0").PadLeft(2, '0'));
 
-            m_Index = end;
+	        this.m_Index = end;
 
             return sb.ToString();
         }

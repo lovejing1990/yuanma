@@ -1,7 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
-
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace LocalCommons.World
@@ -120,7 +117,7 @@ namespace LocalCommons.World
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format(CultureInfo.InvariantCulture, "{0}, {1}, {2}, {3}", MapId, X, Y, Z);
+			return string.Format(CultureInfo.InvariantCulture, "{0}, {1}, {2}, {3}", this.MapId, this.X, this.Y, this.Z);
 		}
 	}
 }

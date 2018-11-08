@@ -1,10 +1,10 @@
-﻿using ArcheAge.ArcheAge.Network.Connections;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ArcheAgeGame.ArcheAge.Network.Connections;
 
-namespace ArcheAge.ArcheAge.Structuring
+namespace ArcheAgeGame.ArcheAge.Structuring
 {
     //Event Definitions - Used For Invoking When Any Event Happen.
 

@@ -18,35 +18,35 @@ namespace ArcheAgeLogin.ArcheAge.Network
 
         public ArcheAgeConnection(Socket socket) : base(socket)
         {
-            Logger.Trace("Client IP: {0} connected", this);
-            DisconnectedEvent += ArcheAgeConnection_DisconnectedEvent;
-            m_LittleEndian = true;
+            Log.Info("Client IP: {0} connected", this);
+	        this.DisconnectedEvent += this.ArcheAgeConnection_DisconnectedEvent;
+	        this.m_LittleEndian = true;
         }
 
         void ArcheAgeConnection_DisconnectedEvent(object sender, EventArgs e)
         {
-            if (CurrentAccount != null)
+            if (this.CurrentAccount != null)
             {
-                if(GameServerController.AuthorizedAccounts.ContainsKey(CurrentAccount.Session)) //AccountID
+                if(ArcheAgeGameController.AuthorizedAccounts.ContainsKey(this.CurrentAccount.Session)) //AccountID
                 {
-                    GameServerController.AuthorizedAccounts.Remove(CurrentAccount.Session); //AccountID
+                    ArcheAgeGameController.AuthorizedAccounts.Remove(this.CurrentAccount.Session); //AccountID
                 }
-                //Removing Account From All GameServers
-                foreach (GameServer server in GameServerController.CurrentGameServers.Values)
+                //Removing Account From All ArcheAgeGames
+                foreach (ArcheAgeGame server in ArcheAgeGameController.CurrentArcheAgeGames.Values)
                 {
-                    if (server.CurrentAuthorized.Contains(CurrentAccount.AccountId))
-                        server.CurrentAuthorized.Remove(CurrentAccount.AccountId);
+                    if (server.CurrentAuthorized.Contains(this.CurrentAccount.AccountId))
+                        server.CurrentAuthorized.Remove(this.CurrentAccount.AccountId);
                 }
-                if (CurrentAccount.Token!= null) //If you been fully authroized.
+                if (this.CurrentAccount.Token!= null) //If you been fully authroized.
                 {
-                    CurrentAccount.LastEnteredTime = Utility.CurrentTimeMilliseconds();
-                    AccountHolder.InsertOrUpdate(CurrentAccount);
+	                this.CurrentAccount.LastEnteredTime = Utility.CurrentTimeMilliseconds();
+                    AccountHolder.InsertOrUpdate(this.CurrentAccount);
                 }
             }
-            string arg = MovedToGame ? "moved to Game" : "disconnected";
+            string arg = this.MovedToGame ? "moved to Game" : "disconnected";
             ArcheAgeConnection archeAgeConnection = this;
-            Logger.Trace("ArcheAge: {0} {1}", CurrentAccount == null ? archeAgeConnection.ToString() : CurrentAccount.Name, arg);
-            Dispose();
+            Log.Info("ArcheAge: {0} {1}", this.CurrentAccount == null ? archeAgeConnection.ToString() : this.CurrentAccount.Name, arg);
+	        this.Dispose();
         }
 
         public override void HandleReceived(byte[] data)
@@ -55,16 +55,16 @@ namespace ArcheAgeLogin.ArcheAge.Network
             ushort opcode = reader.ReadLEUInt16();
             if (opcode > PacketList.LHandlers.Length)
             {
-                Logger.Trace("Not enough length for LHandlers, disposing...");
-                Dispose();
+                Log.Info("Not enough length for LHandlers, disposing...");
+	            this.Dispose();
                 return;
             }
 
-            PacketHandler<ArcheAgeConnection> handler = PacketList.LHandlers[opcode];
+            PacketHandler0<ArcheAgeConnection> handler = PacketList.LHandlers[opcode];
             if (handler != null)
                 handler.OnReceive(this, reader);
             else
-                Logger.Trace("Received undefined packet 0x{0:x2}", opcode);
+                Log.Info("Received undefined packet 0x{0:x2}", opcode);
 
             reader = null;
         }

@@ -20,15 +20,15 @@ namespace ArcheAgeStream.ArcheAge.Network
         private static int m_next;
         private static int m_count;
 
-        private static PacketHandler<StreamConnection>[] m_GHandlers;
+        private static PacketHandler0<StreamConnection>[] m_GHandlers;
         //private static string clientVersion;
-        public static PacketHandler<StreamConnection>[] GHandlers
+        public static PacketHandler0<StreamConnection>[] GHandlers
         {
             get { return m_GHandlers; }
         }
         public static void Initialize()
         {
-            m_GHandlers = new PacketHandler<StreamConnection>[0x10];
+            m_GHandlers = new PacketHandler0<StreamConnection>[0x10];
 
             Registration();
         }
@@ -48,7 +48,7 @@ namespace ArcheAgeStream.ArcheAge.Network
             long AccountID = reader.ReadLEInt64();
             int cookie = reader.ReadLEInt32();
 
-            byte success = 0; //GameServerController.RegisterGameServer(id, password, net, port, ip);
+            byte success = 0; //ArcheAgeGameController.RegisterArcheAgeGame(id, password, net, port, ip);
             //отправляем на него TCJoinResponse_0x01
             net.SendAsync(new NET_TCJoinResponse_0x01(success));
             m_idx = 100;  //0 - разрешаем пакеты. Временно отключаем
@@ -432,7 +432,7 @@ namespace ArcheAgeStream.ArcheAge.Network
         #endregion
         private static void Register(ushort opcode, OnPacketReceive<StreamConnection> e)
         {
-            m_GHandlers[opcode] = new PacketHandler<StreamConnection>(opcode, e);
+            m_GHandlers[opcode] = new PacketHandler0<StreamConnection>(opcode, e);
             m_Maintained++;
         }
     }

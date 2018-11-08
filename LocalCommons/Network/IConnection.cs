@@ -38,7 +38,7 @@ namespace LocalCommons.Network
         /// </summary>
         public Socket CurrentChannel
         {
-            get { return m_CurrentChannel; }
+            get { return this.m_CurrentChannel; }
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace LocalCommons.Network
         /// </summary>
         public bool BlockAllPackets
         {
-            get { return m_BlockAllPackets; }
-            set { m_BlockAllPackets = value; }
+            get { return this.m_BlockAllPackets; }
+            set { this.m_BlockAllPackets = value; }
         }
 
         /// <summary>
@@ -65,24 +65,24 @@ namespace LocalCommons.Network
         /// <param name="socket">Accepted Socket.</param>
         public IConnection(Socket socket)
         {
-            m_CurrentChannel = socket;
-            m_ConnectedOn = DateTime.Now;
-            m_RecvBuffer = m_RecvBufferPool.AcquireBuffer();
+	        this.m_CurrentChannel = socket;
+	        this.m_ConnectedOn = DateTime.Now;
+	        this.m_RecvBuffer = m_RecvBufferPool.AcquireBuffer();
             //-------------Async Receive ----------------------
-            m_AsyncReceive = new SocketAsyncEventArgs();
-            m_AsyncReceive.Completed += M_AsyncReceive_Completed;
-            m_AsyncReceive.SetBuffer(m_RecvBuffer, 0, m_RecvBuffer.Length);
+	        this.m_AsyncReceive = new SocketAsyncEventArgs();
+	        this.m_AsyncReceive.Completed += this.M_AsyncReceive_Completed;
+	        this.m_AsyncReceive.SetBuffer(this.m_RecvBuffer, 0, this.m_RecvBuffer.Length);
             //-------------------------------------------------
-            m_PacketQueue = new Queue<NetPacket>();
+	        this.m_PacketQueue = new Queue<NetPacket>();
             //-----------------------------------------------
-            m_Address = ((IPEndPoint)m_CurrentChannel.RemoteEndPoint).Address.ToString();
-            if (m_CurrentChannel == null)
+	        this.m_Address = ((IPEndPoint) this.m_CurrentChannel.RemoteEndPoint).Address.ToString();
+            if (this.m_CurrentChannel == null)
             {
                 return;
             }
 
-            RunReceive();
-            m_Running = true;
+	        this.RunReceive();
+	        this.m_Running = true;
         }
 
         /// <summary>
@@ -100,27 +100,27 @@ namespace LocalCommons.Network
                 bool res = false;
                 do
                 {
-                    if (m_AsyncReceive == null) //Disposed
+                    if (this.m_AsyncReceive == null) //Disposed
                     {
                         break;
                     }
 
-                    lock (m_SyncRoot)
+                    lock (this.m_SyncRoot)
                     {
-                        res = !m_CurrentChannel.ReceiveAsync(m_AsyncReceive);
+                        res = !this.m_CurrentChannel.ReceiveAsync(this.m_AsyncReceive);
                     }
 
                     if (res)
                     {
-                        ProceedReceiving(m_AsyncReceive);
+	                    this.ProceedReceiving(this.m_AsyncReceive);
                     }
                 }
                 while (res);
             }
             catch (Exception e)
             {
-                Logger.Trace(e.ToString());
-                DisconnectedEvent?.Invoke(this, EventArgs.Empty);
+                Log.Info(e.ToString());
+	            this.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -135,8 +135,8 @@ namespace LocalCommons.Network
                 Thread.Sleep(CoalesceSleep);
             }
 
-            m_PacketQueue.Enqueue(packet);
-            M_AsyncSend_Do();
+	        this.m_PacketQueue.Enqueue(packet);
+	        this.M_AsyncSend_Do();
         }
 
         /// <summary>
@@ -146,14 +146,14 @@ namespace LocalCommons.Network
         {
             try
             {
-                if (m_PacketQueue.Count <= 0)
+                if (this.m_PacketQueue.Count <= 0)
                 {
                     return;
                 }
 
-                var packet = m_PacketQueue.Dequeue();
+                var packet = this.m_PacketQueue.Dequeue();
                 var compiled = packet.Compile();
-                m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None); //отправляем пакет
+	            this.m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None); //отправляем пакет
                 //--- Console Hexadecimal 
                 //вывод лога пакетов в консоль
                 var builder = new StringBuilder();
@@ -171,13 +171,13 @@ namespace LocalCommons.Network
                 }
 
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Logger.Trace(builder.ToString());
+                Log.Info(builder.ToString());
                 Console.ResetColor();
             }
             catch (Exception e)
             {
-                Logger.Trace(e.ToString());
-                DisconnectedEvent?.Invoke(this, EventArgs.Empty);
+                Log.Info(e.ToString());
+	            this.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -194,7 +194,7 @@ namespace LocalCommons.Network
             }
 
             var compiled = packet.Compile2();
-            m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None);
+	        this.m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None);
             //--- Console Hexadecimal 
             var builder = new StringBuilder();
             builder.Append("Send: ");
@@ -209,7 +209,7 @@ namespace LocalCommons.Network
             }
 
             Console.ForegroundColor = ConsoleColor.Gray;
-            Logger.Trace(builder.ToString());
+            Log.Info(builder.ToString());
             Console.ResetColor();
 #if DEBUG
             //--- File Hexadecimal
@@ -238,10 +238,10 @@ namespace LocalCommons.Network
             var transfered = e.BytesTransferred;
             if (e.SocketError != SocketError.Success || transfered <= 0)
             {
-                DisconnectedEvent?.Invoke(this, EventArgs.Empty);
+	            this.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
                 return;
             }
-            var reader = new PacketReader(m_RecvBuffer, 0);
+            var reader = new PacketReader(this.m_RecvBuffer, 0);
             var size = reader.Size;
             var length = reader.ReadLEUInt16();
             ushort offset = 2;
@@ -250,7 +250,7 @@ namespace LocalCommons.Network
                 try
                 {
                     byte[] data = new byte[length];
-                    Buffer.BlockCopy(m_RecvBuffer, offset, data, 0, length);
+                    Buffer.BlockCopy(this.m_RecvBuffer, offset, data, 0, length);
                     //--- Console Hexadecimal 
                     //сначало надо вывести лог пакета в консоль
                     var builder = new StringBuilder();
@@ -266,7 +266,7 @@ namespace LocalCommons.Network
                     if (data[2] != 0x12)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Logger.Trace(builder.ToString());
+                        Log.Info(builder.ToString());
                         Console.ResetColor();
                     }
 #if DEBUG
@@ -287,11 +287,11 @@ namespace LocalCommons.Network
                     length = reader.ReadLEUInt16(); //проверяем, есть ли еще пакет
                     offset += 2;
                     //и только затем отправить на обработку
-                    HandleReceived(data); //отправляем на обработку данные пакета
+	                this.HandleReceived(data); //отправляем на обработку данные пакета
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("Errors when parsing glued packets : {0}", ex.Message);
+                    Log.Info("Errors when parsing glued packets : {0}", ex.Message);
                     break;
                 }
             } while (length > 0 && offset < size);
@@ -310,7 +310,7 @@ namespace LocalCommons.Network
         /// <returns></returns>
         public override string ToString()
         {
-            return m_Address;
+            return this.m_Address;
         }
 
         /// <summary>
@@ -320,10 +320,10 @@ namespace LocalCommons.Network
         /// <param name="e"></param>
         private void M_AsyncReceive_Completed(object sender, SocketAsyncEventArgs e)
         {
-            ProceedReceiving(e);
-            if (!m_Disposing)
+	        this.ProceedReceiving(e);
+            if (!this.m_Disposing)
             {
-                RunReceive();
+	            this.RunReceive();
             }
         }
 
@@ -333,7 +333,7 @@ namespace LocalCommons.Network
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+	        this.Dispose(true);
             GC.SuppressFinalize(this);
         }
         /// <summary>
@@ -345,40 +345,42 @@ namespace LocalCommons.Network
             if (disposing)
             {
                 // dispose managed resources
-                if (m_CurrentChannel == null || m_Disposing)
+                if (this.m_CurrentChannel == null || this.m_Disposing)
                 {
                     return;
                 }
 
-                m_Disposing = true;
+	            this.m_Disposing = true;
 
-                try { m_CurrentChannel.Shutdown(SocketShutdown.Both); }
-                catch (SocketException ex) { Logger.Trace(ex.ToString()); }
+                try {
+	                this.m_CurrentChannel.Shutdown(SocketShutdown.Both); }
+                catch (SocketException ex) { Log.Info(ex.ToString()); }
 
-                try { m_CurrentChannel.Close(); }
-                catch (SocketException ex) { Logger.Trace(ex.ToString()); }
+                try {
+	                this.m_CurrentChannel.Close(); }
+                catch (SocketException ex) { Log.Info(ex.ToString()); }
 
-                if (m_RecvBuffer != null)
+                if (this.m_RecvBuffer != null)
                 {
-                    m_RecvBufferPool.ReleaseBuffer(m_RecvBuffer);
+                    m_RecvBufferPool.ReleaseBuffer(this.m_RecvBuffer);
                 }
 
-                m_CurrentChannel.Close();
-                m_AsyncReceive.Dispose();
-                m_CurrentChannel = null;
-                m_RecvBuffer = null;
-                m_AsyncReceive = null;
-                if (m_PacketQueue.Count <= 0)
+	            this.m_CurrentChannel.Close();
+	            this.m_AsyncReceive.Dispose();
+	            this.m_CurrentChannel = null;
+	            this.m_RecvBuffer = null;
+	            this.m_AsyncReceive = null;
+                if (this.m_PacketQueue.Count <= 0)
                 {
-                    lock (m_PacketQueue)
+                    lock (this.m_PacketQueue)
                     {
-                        m_PacketQueue.Clear();
+	                    this.m_PacketQueue.Clear();
                     }
                 }
 
-                m_PacketQueue = null;
-                m_Disposing = false;
-                m_Running = false;
+	            this.m_PacketQueue = null;
+	            this.m_Disposing = false;
+	            this.m_Running = false;
             }
             // free native resources
         }

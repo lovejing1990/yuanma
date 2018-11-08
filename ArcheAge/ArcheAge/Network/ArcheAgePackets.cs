@@ -1,7 +1,7 @@
 ﻿using LocalCommons.Network;
 using System.Threading;
 
-namespace ArcheAge.ArcheAge.Network
+namespace ArcheAgeGame.ArcheAge.Network
 {
     public sealed class NP_EnterGame_008A : NetPacket
     {
