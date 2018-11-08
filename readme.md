@@ -12,9 +12,6 @@ The tables are here: ArcheAge\bin\Debug\sql\*.sql, ArcheAgeLogin\bin\Debug\sql\*
 
 You can contact us on Discord.
 
-Progress
-![avatar](/doc/img/Progress.png)
-
 ![avatar](/doc/img/Screenshot_1.png)
 ![avatar](/doc/img/Screenshot_9.png)
 ![avatar](/doc/img/Screenshot_10.png)
