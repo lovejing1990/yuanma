@@ -42,6 +42,7 @@ namespace ArcheAgeGame.ArcheAge.Network.Connections
             //Записываем счетчик обратно
 	        this.NumPck = NetPacket.NumPckSc;//将计数回写
         }
+
         public void SendAsyncd(NetPacket packet)
         {
             packet.IsArcheAgePacket = false;

@@ -1,0 +1,3 @@
+2018/11/9 20:50:35 [Info] - Initializing database...
+2018/11/9 20:50:36 [Error] - Failed to initialize database: Unable to connect to any of the specified MySQL hosts.
+2018/11/9 20:50:36 [Info] - Press Enter to exit.

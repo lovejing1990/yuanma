@@ -108,7 +108,12 @@ namespace ArcheAgeGame.ArcheAge.Network
 					Register(0x01, 0x0001, OnPacketReceive_0x01_CSLeaveWorld_0x0001);
 					Register(0x01, 0x0021, OnPacketReceive_0x01_CSCreateCharacter_0x0021);
 					Register(0x01, 0x0023, OnPacketReceive_0x01_CSDeleteCharacter_0x0023);
-					Register(0x01, 0x0027, OnPacketReceive_0x01_CSNotifyInGame_0x0027);
+					Register(0x01, 0x0027, OnPacketReceive_0x01_CSNotifyInGame_0x0027);//task
+
+					Register(0x01, 0x0028, OnPacketReceive_0x01_CSNotifyInGame_0x0028);//welcome
+
+					Register(0x01, 0x0061, OnPacketReceive_0x01_NP_CSChatPacket_0x0061);//收到客户机信息
+
 					Register(0x01, 0x0088, OnPacketReceive_0x01_NP_CSMoveUnitPacket_0x0088);
 					//02
 					Register(0x02, 0x0001, (net, reader) => OnPacketReceive_0x02_FinishState_0x0001(_clientVersion, net, reader)); //02, 03, 09, 10, 11, 12, 14, 15
@@ -519,7 +524,12 @@ namespace ArcheAgeGame.ArcheAge.Network
 					}
 					else
 					{
+						//从客户列表读取登陆用户后写入当前SOCKET中
 						net.CurrentAccount = m_Authorized;
+						//todo 将当前客户
+						m_Authorized.Connection = net;
+						//反写当前客户到客户列表，用于后续的在线列表读取，消息群发等
+						ClientConnection.CurrentAccounts[cookie01] = m_Authorized;
 
 
 						CharacterList = CharacterHolder.LoadCharacterData(accountId01); //считываем данные имеющихся персонажей на аккаунте
@@ -769,6 +779,57 @@ namespace ArcheAgeGame.ArcheAge.Network
 			net.SendAsyncHex(new NP_Hex("8A00DD01660004003A580001C33CE70F00BC047A4CBF742AC20382FFD503F0FF000003007F00010005D8CA0001C33CE70F00FB807A713675A29C034EFE7503C7FF000009007F00010005F65E0001C33CE70F00F6717ABA2975229E0368036FFE5FFF0000D8007F000100057EC40001C33CE70F00EF0E7A1EA0741BC8039EFCE60083FF00001A007F00010005"));
 			net.SendAsyncHex(new NP_Hex("AB00DD01660005008E110101413DE70F006CE7796E7974CBC303DF01D7005E000000ED0066000100053A580001413DE70F00AE047ABCBF7427C20382FFD203F0FF000003007F00010005D8CA0001413DE70F00D5807ABE3675989C034EFE7403C6FF000009007F00010005F65E0001413DE70F0059727A8D2975FE9D036A036FFE5FFF0000D8007F000100057EC40001413DE70F00A30E7A33A07405C8036CFCF7007AFF00001A007F00010005"));
 			//net.SendAsyncHex(new NP_Hex(""));
+		}
+
+
+		public static void OnPacketReceive_0x01_CSNotifyInGame_0x0028(ClientConnection net, PacketReader reader)
+		{
+			string welcome = "Welcome :" + net.CurrentAccount.Character.CharName + "!\nThis is a Private ArcheRage emulation server.\nHave fun.";
+			net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, -2, "system", welcome));
+		}
+
+		/// <summary>
+		/// 1.1406 recv 16 00 00 01 61 00 00 00 00 00 00 00 00 00 00 00 01 00 31 09 00 00 00 00
+		/// 3.0.3.0 send 2d00dd055ed5c000d2a2724212e3b3832963f4c6fd66340fdd30754516e2b6c7244395c697414010e0b09176c1f020
+		/// 2d00dd05CFB4F10100000000000000007A4000026902000A0895000000040041736462010031000000001027000000
+		/// </summary>
+		/// <param name="net"></param>
+		/// <param name="reader"></param>
+		private static void OnPacketReceive_0x01_NP_CSChatPacket_0x0061(ClientConnection net, PacketReader reader)
+		{
+			//获取聊天类型ID
+			short chatId = reader.ReadLEInt16();
+			//未知
+			short var1 = reader.ReadLEInt16();
+			//未知
+			reader.Offset += 6;
+
+
+			//私聊
+			//if (chatId == -3)
+			//{
+			//	net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, -2,"System", "No support for whispers."));
+			//	return;
+			//}
+
+			//读取信息
+			short msgLen = reader.ReadInt16();
+			string msg = reader.ReadUTF8StringSafe(msgLen);
+
+			//SCChatMessagePacket
+			string name = net.CurrentAccount.Character.CharName; //角色名称
+			//net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, chatId, msg1, msg2));
+
+			//ClientConnection.CurrentAccounts
+			//群发消息
+			foreach(KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
+			{
+				if (account.Value.Connection != null)
+				{
+					account.Value.Connection.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, chatId, name, msg));
+				}
+				
+			}
 		}
 
 		public static void OnPacketReceive_0x01_CSListCharacter_0x001F(ClientConnection net, PacketReader reader)
