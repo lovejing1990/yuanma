@@ -1,4 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
 using LocalCommons.Logging;
 using System;
@@ -13,15 +13,15 @@ namespace LocalCommons.Utilities
 
         private static readonly string[] Logo = new string[]
         {
-            @"    ___                         ___                      ",
-            @"   / _ \                       / _ \                     ",
-            @"  / /_\ \  __  _  __.   ___.  / /_\ \    ___.    ___.    ",
-            @" /\ \__\ \/\ \/ \/ __) / __ \/\ \__\ \  / __ \  / __ \   ",
-            @" \ \ \_/\ \ \  //\ \__/\  __/\ \ \_/\ \/\ \_\ \/\  __/   ",
-            @"  \ \_\\ \_\ \_\\ \___) \____\\ \_\\ \_\ \__/\ \ \____\  ",
-            @"   \/_/ \/_/\/_/ \/__/ \/____/ \/_/ \/_/\/__/_\ \/____/  ",
-            @"                                            /\___\       ",
-            @"                                            \/___/       ",
+            @"    ___                                 ___                      ",
+            @"   / _ \             __                / _ \                     ",
+            @"  / /_\ \  __  _  __/\ \  __    ___   / /_\ \    ___     ___     ",
+            @" /\ \__\ \/\ \/ \/ __)\ \/  \  / __ \/\ \__\ \  / __ \  / __ \   ",
+            @" \ \ \_/\ \ \  //\ \_\ \  /\ \/\  __/\ \ \_/\ \/\ \_\ \/\  __/   ",
+            @"  \ \_\\ \_\ \_\\ \___) \_\ \_\ \____\\ \_\\ \_\ \__/\ \ \____\  ",
+            @"   \/_/ \/_/\/_/ \/__/ \/_/\/_/\/___/  \/_/ \/_/\/__/_\ \/____/  ",
+            @"                                                    /\___\       ",
+            @"                                                    \/___/       ",
         };
 
         private static readonly string[] Credits = new string[]
