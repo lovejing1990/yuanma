@@ -1,4 +1,0 @@
-2018/11/9 20:48:36 [Warning] - login.conf: Start map 'f_siauliai_west' not found, using default location.
-2018/11/9 20:48:36 [Info] - Initializing database...
-2018/11/9 20:48:37 [Error] - Failed to initialize database: Unable to connect to any of the specified MySQL hosts.
-2018/11/9 20:48:37 [Info] - Press Enter to exit.

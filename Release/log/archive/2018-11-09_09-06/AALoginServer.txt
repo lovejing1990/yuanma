@@ -1,4 +1,0 @@
-2018/11/9 21:06:28 [Warning] - login.conf: Start map 'f_siauliai_west' not found, using default location.
-2018/11/9 21:06:28 [Info] - Initializing database...
-2018/11/9 21:06:28 [Error] - Failed to initialize database: The host 127.0.0.1 does not support SSL connections.
-2018/11/9 21:06:28 [Info] - Press Enter to exit.
