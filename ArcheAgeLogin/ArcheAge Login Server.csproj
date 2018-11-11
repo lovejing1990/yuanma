@@ -76,7 +76,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
+    <Compile Include="Properties\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LocalCommons\ArcheAge Commons.csproj">
