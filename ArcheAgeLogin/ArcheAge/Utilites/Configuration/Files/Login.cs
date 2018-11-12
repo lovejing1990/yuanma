@@ -31,7 +31,7 @@ namespace ArcheAgeLogin.ArcheAge.Utilites.Configuration.Files
 		/// <returns></returns>
 		private Location LoadStartLocation()
 		{
-			var startLocation = this.GetString("start_location", "f_siauliai_west, -628, 260, -1025");
+			var startLocation = this.GetString("start_location", "w_gweonid_forest_1, -628, 260, -1025");
 			var split = startLocation.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			if (split.Length != 4)
 			{
