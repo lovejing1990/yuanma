@@ -69,7 +69,6 @@
     <Compile Include="Const\Option.cs" />
     <Compile Include="Const\Properties.cs" />
     <Compile Include="Const\SessionObjects.cs" />
-    <Compile Include="Cookie\Cookie.cs" />
     <Compile Include="Cryptography\BCrypt.cs" />
     <Compile Include="Cryptography\Encrypt.cs" />
     <Compile Include="Database\Commands.cs" />

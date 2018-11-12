@@ -243,26 +243,31 @@ namespace LocalCommons.Network
 			}
 			var reader = new PacketReader(this.m_RecvBuffer, 0);
 			var size = reader.Size;
-			var length = reader.ReadLEUInt16();
-			ushort offset = 2;
-			byte[] data = new byte[size]; //создадим один раз
+			var length = (int)reader.ReadLEUInt16();
+			var offset = 2;
+			var data = new byte[size]; //создадим один раз
 			do
 			{
 				Buffer.BlockCopy(this.m_RecvBuffer, offset, data, 0, length);
-				//--- Console Hexadecimal 
-				//сначало надо вывести лог пакета в консоль
-				var builder = new StringBuilder();
-				builder.Append("Recv: ");
-				builder.Append(Utility.IntToHex(length));
-				builder.Append(" ");
-				for (ushort i = 0; i < length; i++)
+				//не выводим Ping
+				if (data[2] == 0x7b)
 				{
-					builder.AppendFormat("{0:X2} ", data[i]);
+					//
 				}
 
-				//не выводим Ping
 				if (data[2] != 0x12)
 				{
+					//--- Console Hexadecimal 
+					//сначало надо вывести лог пакета в консоль
+					var builder = new StringBuilder();
+					builder.Append("Recv: ");
+					builder.Append(Utility.IntToHex(length));
+					builder.Append(" ");
+					for (ushort i = 0; i < length; i++)
+					{
+						builder.AppendFormat("{0:X2} ", data[i]);
+					}
+
 					Console.ForegroundColor = ConsoleColor.DarkGray;
 					Log.Info(builder.ToString());
 					Console.ResetColor();
@@ -285,9 +290,9 @@ namespace LocalCommons.Network
 					//и только затем отправить на обработку
 					this.HandleReceived(data); //отправляем на обработку данные пакета
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
-					Log.Info("Errors when parsing glued packets : {0}", ex.Message);
+					Log.Info("Errors when parsing glued packets"); //: {0}, ex.Message);
 					//throw;
 				}
 				offset += length;
