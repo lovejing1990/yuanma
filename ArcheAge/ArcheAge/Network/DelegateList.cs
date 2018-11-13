@@ -250,8 +250,11 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//      2500 0001 8800 2D0801 01   336D0200 00    097C7A 248775 499503 0000  0000  0000  00    00    C4    00     00     00     01       00          00
 			//      2500 0001 8800 2D0801 01   E96D0200 04    097C7A 248775 499503 0000  0000  0000  00    00    C4    00     00     00     01       00          14
 
-			var bc = reader.ReadUInt24();
-			reader.Offset += 6; //
+			var bc = reader.ReadUInt24();//LiveObject
+			byte type = reader.ReadByte();
+			int time = reader.ReadLEInt32();
+			byte flag = reader.ReadByte();
+			//reader.Offset += 6; 
 
 			var x = LocalCommons.Utilities.Helpers.ConvertX(reader.ReadByteArray(3)) + 1.0f;
 			var y = LocalCommons.Utilities.Helpers.ConvertY(reader.ReadByteArray(3)) + 1.0f;
@@ -270,12 +273,14 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 			//MoveUnit
 
+			String move = Utility.ByteArrayToString(reader.Buffer);
+			move = move.Substring(7*2,move.Length-7*2-2);
 			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 			{
 				//If role is not online, it will not be sent.
 				if (account.Value.Connection != null)
 				{
-					account.Value.Connection.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net));
+					account.Value.Connection.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net, move));
 				}
 
 			}

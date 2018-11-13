@@ -1,0 +1,8 @@
+2018/11/13 23:39:50 [Info] - Initializing database...
+2018/11/13 23:39:51 [Info] - Checking for updates...
+2018/11/13 23:39:51 [Info] - Loading from Servers.xml 1 servers
+2018/11/13 23:39:51 [Info] - Load to 3 accounts
+2018/11/13 23:39:51 [Info] - Installed GameConnection at 127.0.0.1:1231
+2018/11/13 23:39:51 [Info] - Installed ArcheAgeConnection at 127.0.0.1:1237
+2018/11/13 23:39:51 [Info] - Type 'help' for a list of console commands.
+2018/11/13 23:39:51 [Info] - ArcheAgeGame IP: 127.0.0.1 connected

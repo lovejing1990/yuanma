@@ -245,9 +245,10 @@ namespace LocalCommons.Network
 			var size = reader.Size;
 			var length = reader.ReadLEUInt16();
 			ushort offset = 2;
-			byte[] data = new byte[size]; //создадим один раз
+			
 			do
 			{
+				byte[] data = new byte[length]; //создадим один раз
 				Buffer.BlockCopy(this.m_RecvBuffer, offset, data, 0, length);
 				//--- Console Hexadecimal 
 				//сначало надо вывести лог пакета в консоль

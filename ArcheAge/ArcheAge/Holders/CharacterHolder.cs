@@ -633,12 +633,16 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     //parameters.Add("@spr", MySqlDbType.Int32).Value = character.Spr;
                     //parameters.Add("@dex", MySqlDbType.Int32).Value = character.Dex;
                     //
-                    m_DbCharacters.Add(character);
+                   
 
                     if (m_DbCharacters.Contains(character))
                     {
                         parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
-                    }
+					}
+					else
+					{
+						m_DbCharacters.Add(character);
+					}
 
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
