@@ -19,14 +19,20 @@ namespace DevTool
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			UnPackDD05 unPackDD05  =  new UnPackDD05();
-			unPackDD05.Show();
+			UnPackDD05 wind =  new UnPackDD05();
+			wind.Show();
 		}
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			UnPackDD04 unPackDD04 = new UnPackDD04();
-			unPackDD04.Show();
+			UnPackDD04 wind = new UnPackDD04();
+			wind.Show();
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			Coordinate wind = new Coordinate();
+			wind.Show();
 		}
 	}
 }

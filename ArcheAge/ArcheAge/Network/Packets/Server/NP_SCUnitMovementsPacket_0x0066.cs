@@ -6,7 +6,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 {
     public sealed class NP_SCUnitMovementsPacket_0x0066 : NetPacket
     {
-        public NP_SCUnitMovementsPacket_0x0066(ClientConnection net, float x, float y, float z) : base(01, 0x0066)
+        public NP_SCUnitMovementsPacket_0x0066(ClientConnection net) : base(01, 0x0066)
         {
             //1.0.1406
             //SCUnitMovementsPacket
@@ -16,17 +16,17 @@ namespace ArcheAgeGame.ArcheAge.Network
             //2700 DD01 6600   0100  77C000 01 F2C90B00 00   CAAB79 AC3578 6A7303 0000  0000  0000  00    00    39    00     00     00     01  00  04
             //2700 DD01 6600   0100  7DFA00 01 99BE1A00 00   CAA979 BA3678 6A7303 23FF  4CFE  0000  00    00    3B    00     00     00     01  00  04
 
-			ns.WriteHex("2700DD016600010077C00001F2C90B0000AAA57A0518764A5C03000000000000000039000000010004");
+			//ns.WriteHex("2700DD016600010077C00001F2C90B0000AAA57A0518764A5C03000000000000000039000000010004");
 //	        ns.WriteHex("3500DD0166000100042D01039356010000AAA57A0518764A5C03FCFFFBFFFFFF1E00EAFF033C78BE163A0DAB6FBAE31E923A0000B30000");
 
 
 
-			return;
+			//return;
 
             //c: 1-actor; 2-vehicle; 3-ship; 4-shipRequest; 5-transfer; 6-default;
-	        Uint24 X = Float24.ToInt32(LocalCommons.Utilities.Helpers.ConvertX(x));
-	        Uint24 Y = Float24.ToInt32(LocalCommons.Utilities.Helpers.ConvertX(y));
-			Uint24 Z = Float24.ToInt32(LocalCommons.Utilities.Helpers.ConvertX(z));
+	  //      Uint24 X = Float24.ToInt32(LocalCommons.Utilities.Helpers.ConvertX(x));
+	  //      Uint24 Y = Float24.ToInt32(LocalCommons.Utilities.Helpers.ConvertX(y));
+			//Uint24 Z = Float24.ToInt32(LocalCommons.Utilities.Helpers.ConvertX(z));
             //0100
 			short count = 1; //count h
             ns.Write((short)count); //count h id=0 
@@ -56,10 +56,13 @@ namespace ArcheAgeGame.ArcheAge.Network
                 switch (c) //  - <switch id="1">
                 {
                     case 1: //  - <case id="1">
-                        ns.Write((Uint24)X); //ix d3 
-                        ns.Write((Uint24)Y); //iy d3 
-                        ns.Write((Uint24)Z); //iz d3 
-                        ns.Write((short)0); //vel.x h 
+							//ns.Write((Uint24)X); //ix d3 
+							//ns.Write((Uint24)Y); //iy d3 
+							//ns.Write((Uint24)Z); //iz d3 
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+						ns.Write((short)0); //vel.x h 
                         ns.Write((short)0); //vel.y h 
                         ns.Write((short)0); //vel.z h 
                         ns.Write((byte)0); //rot.x C 
@@ -76,10 +79,14 @@ namespace ArcheAgeGame.ArcheAge.Network
                             case 0x20: //  - <case id="0x20">
                                 ns.Write((byte)0); //actor.gcFlags C 
                                 ns.Write((byte)0); //actor.gcPartId C 
-                                ns.Write((Uint24)X); //ix d3 
-                                ns.Write((Uint24)Y); //iy d3 
-                                ns.Write((Uint24)Z); //iz d3 
-                                ns.Write((byte)0); //rot.x C 
+
+												   //ns.Write((Uint24)X); //ix d3 
+												   //ns.Write((Uint24)Y); //iy d3 
+												   //ns.Write((Uint24)Z); //iz d3 
+								ns.Write(LocalCommons.Utilities.Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
+								ns.Write(LocalCommons.Utilities.Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
+								ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+								ns.Write((byte)0); //rot.x C 
                                 ns.Write((byte)0); //rot.y C 
                                 ns.Write((byte)0); //rot.z C 
                                 break; //  </case>
@@ -97,10 +104,13 @@ namespace ArcheAgeGame.ArcheAge.Network
                         } //  </bitwise_switch>
                         break; //  </case>
                     case 2: //  - <case id="2">
-                        ns.Write((Uint24)X); //ix d3 
-                        ns.Write((Uint24)Y); //iy d3 
-                        ns.Write((Uint24)Z); //iz d3 
-                        ns.Write((short)0); //vel.x h 
+							//ns.Write((Uint24)X); //ix d3 
+							//ns.Write((Uint24)Y); //iy d3 
+							//ns.Write((Uint24)Z); //iz d3 
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+						ns.Write((short)0); //vel.x h 
                         ns.Write((short)0); //vel.y h 
                         ns.Write((short)0); //vel.z h 
                         ns.Write((short)0); //rot.x h 
@@ -113,10 +123,13 @@ namespace ArcheAgeGame.ArcheAge.Network
                         ns.Write((byte)0); //vehicle.wheelVelCount C 
                         break; //  </case>
                     case 3: //  - <case id="3">
-                        ns.Write((Uint24)X); //ix d3 
-                        ns.Write((Uint24)Y); //iy d3 
-                        ns.Write((Uint24)Z); //iz d3 
-                        ns.Write((short)0); //vel.x h 
+							//ns.Write((Uint24)X); //ix d3 
+							//ns.Write((Uint24)Y); //iy d3 
+							//ns.Write((Uint24)Z); //iz d3 
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+						ns.Write((short)0); //vel.x h 
                         ns.Write((short)0); //vel.y h 
                         ns.Write((short)0); //vel.z h 
                         ns.Write((short)0); //rot.x h 
@@ -135,10 +148,13 @@ namespace ArcheAgeGame.ArcheAge.Network
                         ns.Write((byte)0); //shipRequest.steering C 
                         break; //  </case>
                     case 5: //  - <case id="5">
-                        ns.Write((Uint24)X); //ix d3 
-                        ns.Write((Uint24)Y); //iy d3 
-                        ns.Write((Uint24)Z); //iz d3 
-                        ns.Write((short)0); //vel.x h 
+							//ns.Write((Uint24)X); //ix d3 
+							//ns.Write((Uint24)Y); //iy d3 
+							//ns.Write((Uint24)Z); //iz d3 
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+						ns.Write((short)0); //vel.x h 
                         ns.Write((short)0); //vel.y h 
                         ns.Write((short)0); //vel.z h 
                         ns.Write((short)0); //rot.x h 
@@ -153,10 +169,13 @@ namespace ArcheAgeGame.ArcheAge.Network
                         ns.Write((byte)0); //transfer.reverse C 
                         break; //  </case>
                     default: //  - <case id="default">
-                        ns.Write((Uint24)X); //ix d3 
-                        ns.Write((Uint24)Y); //iy d3 
-                        ns.Write((Uint24)Z); //iz d3 
-                        ns.Write((short)0); //vel.x h 
+							 //ns.Write((Uint24)X); //ix d3 
+							 //ns.Write((Uint24)Y); //iy d3 
+							 //ns.Write((Uint24)Z); //iz d3 
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
+						ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+						ns.Write((short)0); //vel.x h 
                         ns.Write((short)0); //vel.y h 
                         ns.Write((short)0); //vel.z h 
                         ns.Write((short)0); //rot.x h 

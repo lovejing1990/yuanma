@@ -76,6 +76,7 @@
             this.SourceTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.SourceTextBox.Size = new System.Drawing.Size(759, 203);
             this.SourceTextBox.TabIndex = 6;
+            this.SourceTextBox.Text = resources.GetString("SourceTextBox.Text");
             // 
             // label1
             // 
@@ -110,6 +111,7 @@
             this.Controls.Add(this.SourceTextBox);
             this.Controls.Add(this.label1);
             this.Name = "UnPackDD04";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UnPackDD04";
             this.ResumeLayout(false);
             this.PerformLayout();

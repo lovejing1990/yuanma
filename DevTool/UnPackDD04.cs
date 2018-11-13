@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using LocalCommons.Utilities;
-using LocalCommons.Cryptography;
+//using LocalCommons.Cryptography;
 
 namespace DevTool
 {
@@ -26,13 +26,16 @@ namespace DevTool
 				return;
 			}
 
-			string msg2 = msg1.Substring(4, msg1.Length - 4);
+			string msg2 = msg1;//.Substring(4, msg1.Length - 4);
 
 			byte[] cipherbytes = Utility.StringToByteArray(msg2);
-			cipherbytes =   Compress.BytesDeflater(cipherbytes);
+
+			cipherbytes = LocalCommons.Compression.Compressing.Compress(cipherbytes);
+			//cipherbytes =   Compress.BytesDeflater(cipherbytes);
+
 			string msg3 = Utility.ByteArrayToString(cipherbytes);
 
-			ResultTextBox.Text = "DD040900"+msg3;
+			ResultTextBox.Text = msg3;
 		}
 
 		/// <summary>
@@ -50,13 +53,14 @@ namespace DevTool
 				return;
 			}
 
-			string msg2 = msg1.Substring(4, msg1.Length - 4);
+			string msg2 = msg1;//.Substring(8, msg1.Length - 8);
 
 			byte[] cipherbytes = Utility.StringToByteArray(msg2);
-			cipherbytes = Compress.ByteInflater(cipherbytes);
+			//cipherbytes = Compress.ByteInflater(cipherbytes);
+			cipherbytes = LocalCommons.Compression.Compressing.Decompress(cipherbytes);
 			string msg3 = Utility.ByteArrayToString(cipherbytes);
 
-			SourceTextBox.Text = "DD01"+msg3;
+			SourceTextBox.Text = msg3;
 		}
 	}
 }

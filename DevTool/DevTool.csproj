@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coordinate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Coordinate.Designer.cs">
+      <DependentUpon>Coordinate.cs</DependentUpon>
+    </Compile>
     <Compile Include="DevTools.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,6 +72,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Coordinate.resx">
+      <DependentUpon>Coordinate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DevTools.resx">
       <DependentUpon>DevTools.cs</DependentUpon>
     </EmbeddedResource>

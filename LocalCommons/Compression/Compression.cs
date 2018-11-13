@@ -3,7 +3,7 @@ using System.IO.Compression;
 
 namespace LocalCommons.Compression
 {
-	public static class Сompressing
+	public static class Compressing
 	{
 		/// <summary>
 		/// Decompress DD04 packets

@@ -96,6 +96,7 @@
             this.Controls.Add(this.SourceTextBox);
             this.Controls.Add(this.label1);
             this.Name = "UnPackDD05";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UnPackDD05";
             this.ResumeLayout(false);
             this.PerformLayout();
