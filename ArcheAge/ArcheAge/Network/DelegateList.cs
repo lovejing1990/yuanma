@@ -800,7 +800,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 					//给对方投放self Object
 					account.Value.Connection.SendAsync(new NP_SCUnitStatePacket_0x0064(net));
 					//同时拉取对方模型给自己
-					net.SendAsync(new NP_SCCooldownsPacket_0x0045(account.Value.Connection));
+					net.SendAsync(new NP_SCUnitStatePacket_0x0064(account.Value.Connection));
 				}
 
 			}
@@ -902,8 +902,8 @@ namespace ArcheAgeGame.ArcheAge.Network
 					case "/dev"://开发命令
 						msg2 = "Online Number  /on \n" +
 								"Development Command /dev \n" +
-								"Online User List /oul" +
-								"Online Character /ocl";
+								"Online User List /oul\n" +
+								"Online Character /ocl\n";
 						break;
 					case "/on"://在线人数
 						msg2 = ClientConnection.CurrentAccounts.Count.ToString();
@@ -938,7 +938,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 								//给对方投放self Object
 								account.Value.Connection.SendAsync(new NP_SCUnitStatePacket_0x0064(net));
 								//同时拉取对方模型给自己
-								net.SendAsync(new NP_SCCooldownsPacket_0x0045(account.Value.Connection));
+								net.SendAsync(new NP_SCUnitStatePacket_0x0064(account.Value.Connection));
 							}
 
 						}

@@ -26,3 +26,4 @@ Local language
 ![avatar](/doc/img/Screenshot_17.png)
 ![avatar](/doc/img/Screenshot_18.png)
 ![avatar](/doc/img/Screenshot_19.png)
+![avatar](/doc/img/Screenshot_20.png)
