@@ -181,7 +181,7 @@ namespace LocalCommons.Logging
                         Console.Write("[{0}]", level);
                     }
 
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    //Console.ForegroundColor = ConsoleColor.Gray;
 
                     if (level != LogLevel.None)
                     {
