@@ -203,7 +203,8 @@ namespace LocalCommons.Network
 				builder.AppendFormat("{0:X2} ", b);
 			}
 			//не выводим Pong
-			if (compiled[4] == 0x13)
+			if (compiled[4] == 0x13 && !(compiled[1] == 0x01 && compiled[2] == 0x88 && compiled[3] == 0x00))
+				//if (compiled[4] == 0x13)
 			{
 				return;
 			}
@@ -263,8 +264,8 @@ namespace LocalCommons.Network
 
 				//не выводим Ping
 				//Heartbeat and Move Hidden
-				//if ((data[2] != 0x12) && !(data[1] == 0x01 && data[2] == 0x88 && data[3] == 0x00))
-				if ((data[2] != 0x12))
+				if ((data[2] != 0x12) && !(data[1] == 0x01 && data[2] == 0x88 && data[3] == 0x00))
+					//if ((data[2] != 0x12))
 				{
 					Console.ForegroundColor = ConsoleColor.DarkGray;
 					Log.Info(builder.ToString());
