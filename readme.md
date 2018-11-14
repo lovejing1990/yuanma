@@ -21,8 +21,8 @@ Now you can see wandering around the world. And multiple language support.
 ![avatar](/doc/img/Screenshot_12.png)
 ![avatar](/doc/img/Screenshot_14.png)
 ![avatar](/doc/img/Screenshot_15.png)
-
+![avatar](/doc/img/Screenshot_16.png)
 Local language
-![avatar](/doc/img/unknown (1).png)
-![avatar](/doc/img/unknown (2).png)
-![avatar](/doc/img/unknown.png)
+![avatar](/doc/img/Screenshot_17.png)
+![avatar](/doc/img/Screenshot_18.png)
+![avatar](/doc/img/Screenshot_19.png)
