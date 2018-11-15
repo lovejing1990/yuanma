@@ -69,62 +69,62 @@ namespace ArcheAgeGame.ArcheAge.Holders
             return uid;
         }
 
-        ///// <summary>
-        ///// Fully Load Account Data From Current MySql DataBase.
-        ///// </summary>
-        //public static void LoadAccountData()
-        //{
-        //    _mDbAccounts = new List<Account>();
-        //    var con = new MySqlConnection(Settings.Default.DataBaseConnectionString);
-        //    try
-        //    {
-        //        con.Open();
-        //        var command = new MySqlCommand("SELECT * FROM `accounts`", con);
-        //        var reader = command.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            var account = new Account();
-        //            var character = new Character();
+        /// <summary>
+        /// Fully Load Account Data From Current MySql DataBase.
+        /// </summary>
+        public static void LoadAccountData()
+        {
+            _mDbAccounts = new List<Account>();
+            var con = new MySqlConnection(Settings.Default.DataBaseConnectionString);
+            try
+            {
+                con.Open();
+                var command = new MySqlCommand("SELECT * FROM `accounts`", con);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var account = new Account();
+                    var character = new Character();
 
-        //            account.AccessLevel = reader.GetByte("mainaccess");
-        //            account.AccountId = reader.GetUInt32("accountid");
-        //            account.Name = reader.GetString("name");
-        //            account.Token = reader.GetString("token");
-        //            account.LastEnteredTime = reader.GetInt64("last_online");
-        //            account.LastIp = reader.GetString("last_ip");
-        //            account.Membership = reader.GetByte("useraccess");
-        //            account.CharactersCount = reader.GetByte("characters");
-        //            account.Session = reader.GetInt32("cookie");
-        //            account.Character = character; //заполним пустыми данными
+                    account.AccessLevel = reader.GetByte("mainaccess");
+                    account.AccountId = reader.GetUInt32("accountid");
+                    account.Name = reader.GetString("name");
+                    account.Token = reader.GetString("token");
+                    account.LastEnteredTime = reader.GetInt64("last_online");
+                    account.LastIp = reader.GetString("last_ip");
+                    account.Membership = reader.GetByte("useraccess");
+                    account.CharactersCount = reader.GetByte("characters");
+                    account.Session = reader.GetInt32("cookie");
+                    account.Character = character; //заполним пустыми данными
 
-        //            _mDbAccounts.Add(account);
-        //        }
-        //        command.Dispose();
-        //        reader.Close();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e.Message.IndexOf("using password: YES") >= 0)
-        //        {
-        //            Log.Info("Error: Incorrect username or password");
-        //        }
-        //        else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
-        //        {
-        //            Log.Info("Error: Unable to connect to database");
-        //        }
-        //        else
-        //        {
-        //            Log.Info("Error: Unknown error");
-        //        }
-        //        //Console.ReadKey();
-        //        //Message = "Authentication to host '127.0.0.1' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES)"
-        //    }
-        //    finally
-        //    {
-        //        con.Close();
-        //        Log.Info("Load to {0} accounts", _mDbAccounts.Count);
-        //    }
-        //}
+                    _mDbAccounts.Add(account);
+                }
+                command.Dispose();
+                reader.Close();
+            }
+            catch (Exception e)
+            {
+                if (e.Message.IndexOf("using password: YES") >= 0)
+                {
+                    Log.Info("Error: Incorrect username or password");
+                }
+                else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
+                {
+                    Log.Info("Error: Unable to connect to database");
+                }
+                else
+                {
+                    Log.Info("Error: Unknown error");
+                }
+                //Console.ReadKey();
+                //Message = "Authentication to host '127.0.0.1' for user 'root' using method 'mysql_native_password' failed with message: Access denied for user 'root'@'localhost' (using password: YES)"
+            }
+            finally
+            {
+                con.Close();
+                Log.Info("Load to {0} accounts", _mDbAccounts.Count);
+            }
+        }
 
         /// <summary>
         /// Inserts Or Update Existing Account Into your current Login Server MySql DataBase.

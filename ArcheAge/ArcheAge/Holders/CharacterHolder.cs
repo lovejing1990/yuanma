@@ -106,7 +106,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// <param name="charRace">раса персонажа</param>
         /// <param name="charGender">пол персонажа</param>
         /// <returns>возвращает значение body для персонажа</returns>
-        public static void LoadCharacterBodyCoord( ref Character chr, byte charRace, byte charGender)
+        public static void LoadCharacterBodyCoord(Character chr, byte charRace, byte charGender)
         {
             using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -141,7 +141,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
             }
         }
 
-        public static void LoadZoneFaction( ref Character chr, byte charRace, byte charGender)
+        public static void LoadZoneFaction(Character chr, byte charRace, byte charGender)
         {
             using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -173,7 +173,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
             }
         }
 
-        public static void LoadClothsData(ref Character chr, int itemSet)
+        public static void LoadClothsData(Character chr, int itemSet)
         {
             using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -207,7 +207,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
                 }
             }
         }
-        public static void LoadWeaponsData( ref Character chr, int itemSet)
+        public static void LoadWeaponsData(Character chr, int itemSet)
         {
             using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -241,7 +241,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
             }
         }
 
-        public static void LoadEquipPacksData(ref Character chr, int ability_id)
+        public static void LoadEquipPacksData(Character chr, int ability_id)
         {
             using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -276,10 +276,10 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// <summary>
         /// Fully Load Character Data From Current MySql DataBase
         /// </summary>
-        //public static Character LoadCharacterData(ClientConnection net,uint CharactId)
-        //{
-        //    return net.CurrentAccount.Characters.Find(a => a.CharacterId == CharactId);
-        //}
+        public static Character LoadCharacterData(ClientConnection net,uint CharactId)
+        {
+            return net.CurrentAccount.Characters.Find(a => a.CharacterId == CharactId);
+        }
 
         /// <summary>
         /// Returns true if a character with the given name exists.

@@ -50,7 +50,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 
             ns.Write((byte)last); //"last" type="c"
-            if (totalChars == 0 || num+1>totalChars)
+            if (totalChars == 0)
             {
                 ns.Write((byte)0); //totalChars); //"count" type="c"
                 return; //если пустой список, заканчиваем работу
@@ -59,18 +59,16 @@ namespace ArcheAgeGame.ArcheAge.Network
             {
                 ns.Write((byte)1); //totalChars); //"count" type="c"
             }
-			Character chr = net.CurrentAccount.Characters[num];
-			//int aa = 0;
-			//foreach (Character chr in net.CurrentAccount.Characters)
-			//{
-			//    if (num == aa) //параметр NUM отвечает, которого чара выводить в пакете (может быть от 0 до 2)
-			//    {
-			Character chr2 = chr;
-                    CharacterHolder.LoadEquipPacksData(ref chr2, chr2.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
-                    CharacterHolder.LoadClothsData(ref chr2, chr2.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
-                    CharacterHolder.LoadWeaponsData(ref chr2, chr2.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
-                    CharacterHolder.LoadCharacterBodyCoord(ref chr2, chr.CharRace, chr2.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
-                    CharacterHolder.LoadZoneFaction(ref chr2, chr2.CharRace, chr2.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
+            int aa = 0;
+            foreach (Character chr in net.CurrentAccount.Characters)
+            {
+                if (num == aa) //параметр NUM отвечает, которого чара выводить в пакете (может быть от 0 до 2)
+                {
+                    CharacterHolder.LoadEquipPacksData(chr, chr.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
+                    CharacterHolder.LoadClothsData(chr, chr.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
+                    CharacterHolder.LoadWeaponsData(chr, chr.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
+                    CharacterHolder.LoadCharacterBodyCoord(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
+                    CharacterHolder.LoadZoneFaction(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
 
                     //D7940100
                     ns.Write((int)chr.CharacterId); //type d
@@ -138,9 +136,9 @@ namespace ArcheAgeGame.ArcheAge.Network
                     //for (int i = 0; i < 3; i++)
                     {
                         //ns.Write((byte)chr.Ability[i]); //"ability[] c"
-                        ns.Write((byte)chr2.Ability[0]);
-                        ns.Write((byte)chr2.Ability[1]);
-                        ns.Write((byte)chr2.Ability[2]);
+                        ns.Write((byte)chr.Ability[0]);
+                        ns.Write((byte)chr.Ability[1]);
+                        ns.Write((byte)chr.Ability[2]);
                     }
                     //pos в пакете нет, в коде 01
                     ns.Write((long)0x0007045E3D800000); //x q
@@ -256,9 +254,9 @@ namespace ArcheAgeGame.ArcheAge.Network
                     ns.Write((long)0x5B3F9014); //updated q
                     ns.Write((byte)0x00); //forceNameChange c
                     ns.Write((int)0x00); //highAbilityRsc d
-            //    }
-            //    ++aa;
-            //}
+                }
+                ++aa;
+            }
         }
     }
 
