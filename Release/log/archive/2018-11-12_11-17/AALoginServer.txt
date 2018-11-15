@@ -1,0 +1,19 @@
+2018/11/12 23:13:17 [Info] - Initializing database...
+2018/11/12 23:13:18 [Info] - Checking for updates...
+2018/11/12 23:13:18 [Info] - Loading from Servers.xml 1 servers
+2018/11/12 23:13:18 [Info] - Load to 2 accounts
+2018/11/12 23:13:18 [Info] - Installed GameConnection at 127.0.0.1:1231
+2018/11/12 23:13:18 [Info] - Installed ArcheAgeConnection at 127.0.0.1:1237
+2018/11/12 23:13:18 [Info] - Type 'help' for a list of console commands.
+2018/11/12 23:13:19 [Info] - ArcheAgeGame IP: 127.0.0.1 connected
+2018/11/12 23:13:19 [Info] - Recv: 10 00 00 00 01 D7 04 31 32 37 2E 30 2E 30 2E 31 00 00 
+2018/11/12 23:13:19 [Info] - Game Server ID: 1 registered
+2018/11/12 23:13:19 [Info] - Send: 03 00 00 00 01 
+2018/11/12 23:14:38 [Info] - Client IP: 127.0.0.1 connected
+2018/11/12 23:14:39 [Info] - Recv: 3F 00 04 00 0A 00 00 00 07 00 00 00 00 08 00 00 00 00 00 00 00 00 00 06 00 61 61 74 65 73 74 20 00 31 E3 4F 2B 72 D9 3B B2 5D 5F 27 BE 8A 94 C4 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+2018/11/12 23:14:39 [Info] - Received undefined packet 0x04
+2018/11/12 23:15:42 [Info] - ArcheAge: 127.0.0.1 disconnected
+2018/11/12 23:16:48 [Info] - Client IP: 127.0.0.1 connected
+2018/11/12 23:16:48 [Info] - Recv: 3F 00 04 00 0A 00 00 00 07 00 00 00 00 08 00 00 00 00 00 00 00 00 00 06 00 61 61 74 65 73 74 20 00 31 E3 4F 2B 72 D9 3B B2 5D 5F 27 BE 8A 94 C4 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+2018/11/12 23:16:48 [Info] - Received undefined packet 0x04
+2018/11/12 23:17:14 [Info] - ArcheAge: 127.0.0.1 disconnected

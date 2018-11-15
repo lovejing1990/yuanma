@@ -12,6 +12,8 @@ The tables are here: ArcheAge\bin\Debug\sql\*.sql, ArcheAgeLogin\bin\Debug\sql\*
 
 You can contact us on Discord.
 
+Now you can see wandering around the world. And multiple language support.
+
 ![avatar](/doc/img/Screenshot_1.png)
 ![avatar](/doc/img/Screenshot_9.png)
 ![avatar](/doc/img/Screenshot_10.png)
@@ -19,3 +21,9 @@ You can contact us on Discord.
 ![avatar](/doc/img/Screenshot_12.png)
 ![avatar](/doc/img/Screenshot_14.png)
 ![avatar](/doc/img/Screenshot_15.png)
+![avatar](/doc/img/Screenshot_16.png)
+Local language
+![avatar](/doc/img/Screenshot_17.png)
+![avatar](/doc/img/Screenshot_18.png)
+![avatar](/doc/img/Screenshot_19.png)
+![avatar](/doc/img/Screenshot_20.png)

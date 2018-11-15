@@ -1,28 +1,27 @@
-﻿using LocalCommons.Logging;
-using LocalCommons.Utilities;
-using LocalCommons.World;
-using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using ArcheAgeGame.ArcheAge.Network.Connections;
 using ArcheAgeGame.ArcheAge.Structuring;
 using ArcheAgeGame.Properties;
+using LocalCommons.Logging;
+using LocalCommons.World;
+using MySql.Data.MySqlClient;
 
 namespace ArcheAgeGame.ArcheAge.Holders
 {
-    public class CharacterHolder
+	public class CharacterHolder
     {
-        private static List<Character> m_DbCharacters;
+        private List<Character> m_DbCharacters;
 
         /// <summary>
         /// Loaded List of Characters.
         /// </summary>
-        public static List<Character> CharactersList
+        public List<Character> CharactersList
         {
             get { return m_DbCharacters; }
         }
 
-        public static int GetCount()
+        public int GetCount()
         {
             return CharactersList.Count;
         }
@@ -32,20 +31,21 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// </summary>
         /// <param name="charName"></param>
         /// <returns></returns>
-        public static Character GetCharacter(string charName)
-        {
-            foreach (var acc in CharactersList)
-            {
-                if (acc.CharName == charName)
-                {
-                    return acc;
-                }
-            }
-            return null;
-        }
+        //public static Character GetCharacter(string charName)
+        //{
+        //    foreach (var acc in CharactersList)
+        //    {
+        //        if (acc.CharName == charName)
+        //        {
+        //            return acc;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         /// <summary>
         /// Возвращает максимальный использованный ID
+		/// 返回最大使用ID
         /// </summary>
         /// <returns></returns>
         public static uint MaxCharacterUid()
@@ -56,21 +56,9 @@ namespace ArcheAgeGame.ArcheAge.Holders
                 try
                 {
                     conn.Open();
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM `character_records`", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        Character character = new Character();
-                        character.CharacterId = reader.GetUInt32("characterid");
-                        if (uid < character.CharacterId)
-                        {
-                            uid = character.CharacterId;
-                        }
-                    }
-
+                    MySqlCommand command = new MySqlCommand("SELECT max( characterid )  FROM `character_records`", conn);
+                    uid = (uint)command.ExecuteScalar();
                     command.Dispose();
-                    reader.Close();
-                    reader.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -288,49 +276,9 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// <summary>
         /// Fully Load Character Data From Current MySql DataBase
         /// </summary>
-        public static Character LoadCharacterData(uint accountId, uint chcracterId)
+        public static Character LoadCharacterData(ClientConnection net,uint CharactId)
         {
-            var character = new Character();
-            var serverid = Settings.Default.Game_Id;
-            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    using (var command = new MySqlCommand("SELECT * FROM `character_records` WHERE `accountid` = '" + accountId + "' AND `characterid` = '" + chcracterId + "'", conn))
-                    {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            GetData(reader);
-                            command.Dispose();
-                            reader.Close();
-                            reader.Dispose();
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (e.Message.IndexOf("using password: YES") >= 0)
-                    {
-                        Log.Info("Error: Incorrect username or password");
-                    }
-                    else if (e.Message.IndexOf("Unable to connect to any of the specified MySQL hosts") >= 0)
-                    {
-                        Log.Info("Error: Unable to connect to database");
-                    }
-                    else
-                    {
-                        Log.Info("Error: Unknown error +  {0}", e);
-                    }
-                }
-                finally
-                {
-                    conn.Close();
-                    //Log.Info("Load to {0} characters", CharactersList.GetCount());
-                }
-            }
-
-            return character;
+            return net.CurrentAccount.Characters.Find(a => a.CharacterId == CharactId);
         }
 
         /// <summary>
@@ -358,9 +306,9 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// <summary>
         /// Fully Load Characters Data From Current MySql DataBase.
         /// </summary>
-        public static List<Character> LoadCharacterData(uint accountId)
+        public static List<Character> LoadCharacterData(ClientConnection net)
         {
-            m_DbCharacters = new List<Character>();
+            //m_DbCharacters = new List<Character>();
             var serverid = Settings.Default.Game_Id;
             using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -369,10 +317,10 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     conn.Open();
                     var command =
                         new MySqlCommand(
-                            "SELECT * FROM `character_records` WHERE `accountid` = '" + accountId + "' AND `worldid` = '" +
+                            "SELECT * FROM `character_records` WHERE `accountid` = '" + net.CurrentAccount.AccountId + "' AND `worldid` = '" +
                             serverid + "'", conn);
                     var reader = command.ExecuteReader();
-                    GetData(reader);
+                    GetData(reader,net);
                     command.Dispose();
                     reader.Close();
                     reader.Dispose();
@@ -398,10 +346,10 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     //Log.Info("Load to {0} characters", CharactersList.GetCount());
                 }
             }
-            return CharactersList;
+            return net.CurrentAccount.Characters;
         }
 
-        private static void GetData(MySqlDataReader reader)
+        private static void GetData(MySqlDataReader reader,ClientConnection net)
         {
             while (reader.Read())
             {
@@ -479,22 +427,22 @@ namespace ArcheAgeGame.ArcheAge.Holders
                 float z = reader.GetFloat("z");
                 character.Position = new Position(x, y, z);
 
-                //character.Exp = reader.GetInt32("exp");
-                //character.MaxExp = reader.GetInt32("maxexp");
-                //character.TotalExp = reader.GetInt32("totalexp");
-                //character.Hp = reader.GetInt32("hp");
-                //character.MaxHp = reader.GetInt32("maxHp");
-                //character.Sp = reader.GetInt32("sp");
-                //character.MaxSp = reader.GetInt32("maxSp");
-                //character.Stamina = reader.GetInt32("stamina");
-                //character.MaxStamina = reader.GetInt32("maxStamina");
-                //character.Str = reader.GetInt32("str");
-                //character.Con = reader.GetInt32("con");
-                //character.Int = reader.GetInt32("int");
-                //character.Spr = reader.GetInt32("spr");
-                //character.Dex = reader.GetInt32("dex");
-                //
-                m_DbCharacters.Add(character);
+				//character.Exp = reader.GetInt32("exp");
+				//character.MaxExp = reader.GetInt32("maxexp");
+				//character.TotalExp = reader.GetInt32("totalexp");
+				//character.Hp = reader.GetInt32("hp");
+				//character.MaxHp = reader.GetInt32("maxHp");
+				//character.Sp = reader.GetInt32("sp");
+				//character.MaxSp = reader.GetInt32("maxSp");
+				//character.Stamina = reader.GetInt32("stamina");
+				//character.MaxStamina = reader.GetInt32("maxStamina");
+				//character.Str = reader.GetInt32("str");
+				//character.Con = reader.GetInt32("con");
+				//character.Int = reader.GetInt32("int");
+				//character.Spr = reader.GetInt32("spr");
+				//character.Dex = reader.GetInt32("dex");
+				//
+				net.CurrentAccount.Characters.Add(character);
             }
         }
 
@@ -502,7 +450,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// Inserts Or Update Existing Character Into your current Login Server MySql DataBase.
         /// </summary>
         /// <param name="character">Your Character Which you want Insert(If Not Exist) Or Update(If Exist)</param>
-        public static List<Character> InsertOrUpdate(Character character)
+        public static List<Character> InsertOrUpdate(Character character,ClientConnection net)
         {
             using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
@@ -511,7 +459,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     conn.Open(); //Устанавливаем соединение с базой данных
                     var cmd = new MySqlCommand();
                     cmd.Connection = conn;
-                    if (m_DbCharacters.Contains(character))
+                    if (net.CurrentAccount.Characters.Contains(character))
                     {
                         cmd.CommandText =
                             "UPDATE `character_records` SET `characterid` = @characterid, `accountid` = @accountid, `chargender` = @chargender, `charname` = @charname," +
@@ -633,12 +581,16 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     //parameters.Add("@spr", MySqlDbType.Int32).Value = character.Spr;
                     //parameters.Add("@dex", MySqlDbType.Int32).Value = character.Dex;
                     //
-                    m_DbCharacters.Add(character);
+                   
 
-                    if (m_DbCharacters.Contains(character))
-                    {
-                        parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
-                    }
+     //               if (m_DbCharacters.Contains(character))
+     //               {
+     //                   parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
+					//}
+					//else
+					//{
+					//	m_DbCharacters.Add(character);
+					//}
 
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
@@ -653,7 +605,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     conn.Close();
                 }
             }
-            return CharactersList;
+            return net.CurrentAccount.Characters;
         }
 
     }

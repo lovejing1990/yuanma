@@ -42,6 +42,7 @@ namespace ArcheAgeGame.ArcheAge.Network.Connections
             //Записываем счетчик обратно
 	        this.NumPck = NetPacket.NumPckSc;//将计数回写
         }
+
         public void SendAsyncd(NetPacket packet)
         {
             packet.IsArcheAgePacket = false;
@@ -49,6 +50,16 @@ namespace ArcheAgeGame.ArcheAge.Network.Connections
         }
         void ClientConnection_DisconnectedEvent(object sender, EventArgs e)
         {
+			//从在线客户集合移除当前用户
+			try
+			{
+				ClientConnection.CurrentAccounts.Remove(this.CurrentAccount.Session);
+			}
+			catch
+			{
+				Log.Warning("Client IP: {0} disconnected,But the remove fail", this);
+			}
+			
             Log.Info("Client IP: {0} disconnected", this);
 	        this.Dispose();
         }

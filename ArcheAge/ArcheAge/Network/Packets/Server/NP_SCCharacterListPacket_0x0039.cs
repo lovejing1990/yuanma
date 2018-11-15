@@ -21,8 +21,8 @@ namespace ArcheAgeGame.ArcheAge.Network.Packets.Server
         public NP_CharacterListPacket_0x0039(ClientConnection net, int num, int last) : base(01, 0x0039)
         {
             var accountId = net.CurrentAccount.AccountId;
-            List<Character> charList = CharacterHolder.LoadCharacterData(accountId);
-            var totalChars = CharacterHolder.GetCount();
+            //List<Character> charList = CharacterHolder.LoadCharacterData(accountId,net);
+            var totalChars = net.CurrentAccount.Characters.Count;
 
             ns.Write((byte)last); //last c
             if (totalChars == 0)
@@ -35,7 +35,7 @@ namespace ArcheAgeGame.ArcheAge.Network.Packets.Server
                 ns.Write((byte)1); //totalChars); //count c
             }
             int aa = 0;
-            foreach (Character chr in charList)
+            foreach (Character chr in net.CurrentAccount.Characters)
             {
                 if (num == aa) //параметр NUM отвечает, которого чара выводить в пакете (может быть от 0 до 2)
                 {

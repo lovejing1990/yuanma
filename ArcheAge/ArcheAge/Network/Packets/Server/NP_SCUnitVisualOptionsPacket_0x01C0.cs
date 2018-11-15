@@ -1,4 +1,4 @@
-using ArcheAgeGame.ArcheAge.Holders;
+Ôªøusing ArcheAgeGame.ArcheAge.Holders;
 using ArcheAgeGame.ArcheAge.Network.Connections;
 using ArcheAgeGame.ArcheAge.Structuring;
 using LocalCommons.Network;
@@ -11,14 +11,14 @@ namespace ArcheAgeGame.ArcheAge.Network
         {
             uint accountId = net.CurrentAccount.AccountId;
 
-            uint characterId = net.CurrentAccount.Character.CharacterId; // = 1706495; //‰Îˇ ÚÂÒÚ‡
+            uint characterId = net.CurrentAccount.Character.CharacterId; // = 1706495; //ÊΩÜÔ£µ ËùàËÄ±?
 
-            Character chr = CharacterHolder.LoadCharacterData(accountId, characterId);
+            //Character chr = CharacterHolder.LoadCharacterData(net);
 
             string cmd = "character_option";
             string cmd2 = "g_hide_tutorial 1\r\n";
 
-            net.SendAsync(new NP_SCUnitVisualOptionsPacket_0x01C0(net, chr, cmd, cmd2));
+            net.SendAsync(new NP_SCUnitVisualOptionsPacket_0x01C0(net, net.CurrentAccount.Character, cmd, cmd2));
 
             cmd = "key_binding";
             cmd2 = "key_binding\r\nprimary\r\n    builtin\r\n        escape open_config\r\n        CTRL-SHIFT-1 godmode\r\n        CTRL-SHIFT-2 flymode\r\n        " +
@@ -51,7 +51,7 @@ namespace ArcheAgeGame.ArcheAge.Network
                "second\r\n    builtin\r\n        CTRL-ALT-f1 godmode\r\n        ALT-SHIFT-f1 flymode\r\n        up moveforward\r\n        left turnleft\r\n        " +
                "right turnright\r\n        down moveback\r\n        mouse4 autorun\r\nremoved\r\n";
 
-            net.SendAsync(new NP_SCUnitVisualOptionsPacket_0x01C0(net, chr, cmd, cmd2));
+            net.SendAsync(new NP_SCUnitVisualOptionsPacket_0x01C0(net, net.CurrentAccount.Character, cmd, cmd2));
         }
 
         public NP_SCUnitVisualOptionsPacket_0x01C0(ClientConnection net, Character chr, string cmd, string cmd2) : base(01, 0x01C0)

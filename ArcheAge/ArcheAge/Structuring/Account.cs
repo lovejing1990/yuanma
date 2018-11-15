@@ -1,4 +1,5 @@
-﻿using ArcheAgeGame.ArcheAge.Network.Connections;
+﻿using System.Collections.Generic;
+using ArcheAgeGame.ArcheAge.Network.Connections;
 
 namespace ArcheAgeGame.ArcheAge.Structuring
 {
@@ -9,6 +10,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring
 	{
 		public uint AccountId { get; set; }
 		public byte CharactersCount { get; set; }
+		public List<Character> Characters { get; set;}
 		public int Session { get; set; } //cookie
 		public bool IsWaitingForReAuthorization { get; set; }
 		public ClientConnection Connection { get; set; } //текущее соединение

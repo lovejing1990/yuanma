@@ -1,0 +1,3 @@
+2018/11/9 13:43:01 [Info] - Initializing database...
+2018/11/9 13:43:02 [Error] - Failed to initialize database: The host 127.0.0.1 does not support SSL connections.
+2018/11/9 13:43:02 [Info] - Press Enter to exit.

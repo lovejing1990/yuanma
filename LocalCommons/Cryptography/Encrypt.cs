@@ -27,15 +27,8 @@ namespace LocalCommons.Cryptography
 
 		public static byte Crc8(byte[] data)
 		{
-			var len = data.Length;
-			uint checksum = 0;
-			for (var i = 0; i <= len - 1; i++)
-			{
-				checksum = checksum * 0x13;
-				checksum += data[i];
-			}
-
-			return (byte)(checksum);
+			var size = data.Length;
+			return Crc8(data, size);
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -60,20 +53,10 @@ namespace LocalCommons.Cryptography
 		/// <returns>возвращает адрес на подготовленные данные</returns>
 		public static byte[] StoCEncrypt(byte[] bodyPacket)
 		{
-			var array = new byte[bodyPacket.Length];
-			var cry = (uint)(bodyPacket.Length ^ 0x1F2175A0);
-			var n = 4 * (bodyPacket.Length / 4);
-			for (var i = n - 1; i >= 0; i--)
-			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
-			}
-
-			for (var i = n; i < bodyPacket.Length; i++)
-			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
-			}
-
-			return array;
+			var length = bodyPacket.Length;
+			var array = new byte[length];
+			var cry = (uint)(length ^ 0x1F2175A0);
+			return ByteXOR(bodyPacket, length, array, cry);
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -89,40 +72,44 @@ namespace LocalCommons.Cryptography
 		/// <param name="xorKey">xor key </param>
 		/// <param name="offset">xor decryption can start from some offset (don't know the rule yet)</param>
 		/// <returns>xor decrypted packet</returns>
-		private static byte[] DecryptXor(byte[] bodyPacket, uint msgKey, uint xorKey, int offset = 0)
+		private static byte[] DeXORing(byte[] bodyPacket, uint msgKey, uint xorKey, int offset = 0)
 		{
 			var length = bodyPacket.Length;
 			var array = new byte[length];
-
 			var mul = xorKey * msgKey;
-			var key = (0x75a024a4 ^ mul) ^ 0xC3903b6a;
-			var n = 4 * (length / 4);
-			for (var i = n - offset - 1; i >= 0; i--)
-			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref key));
-			}
+			var cry = (0x75a024a4 ^ mul) ^ 0xC3903b6a;
+			return ByteXOR(bodyPacket, length, array, cry, offset);
+		}
 
+		private static byte[] ByteXOR(byte[] bodyPacket, int length, byte[] array, uint cry, int offset = 0)
+		{
+			var n = 4 * (length / 4);
+			for (var i = n - 1 - offset; i >= 0; i--)
+			{
+				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
+			}
 			for (var i = n - offset; i < length; i++)
 			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref key));
+				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
 			}
-
 			return array;
 		}
 
 		//--------------------------------------------------------------------------------------
 		public static byte[] CtoSEncrypt(byte[] bodyPacket, uint xorKey)
 		{
+			var offset = 0;
 			uint msgKey = 0;
+
 			var length = bodyPacket.Length;
 			var mBodyPacket = new byte[length - 5];
 			Buffer.BlockCopy(bodyPacket, 5, mBodyPacket, 0, length - 5);
 			var packet = new byte[mBodyPacket.Length];
 
-			int caseSwitch = bodyPacket[4];
+			var caseSwitch = bodyPacket[4];
 			switch (caseSwitch)
 			{
-				case 0x30: //вроде бы, нас интересует только первая цифра
+				case 0x30: //вроде бы, нас интересует только вторая цифра - 0
 					msgKey = 0x01; //0X11; //0x2F
 					break;
 				case 0x31:
@@ -172,12 +159,12 @@ namespace LocalCommons.Cryptography
 					break;
 			}
 
+			// Hardcoded offset rules
 			Num += 1; //глобальный подсчет клиентских пакетов
-					  // Hardcoded offset rules
 			switch (Num)
 			{
 				case 0:
-					packet = DecryptXor(mBodyPacket, xorKey, msgKey, 7);
+					offset = 7;
 					break;
 				case 1:
 				case 5:
@@ -195,11 +182,11 @@ namespace LocalCommons.Cryptography
 				case 48:
 				case 50:
 				case 52:
-					packet = DecryptXor(mBodyPacket, xorKey, msgKey, 1);
+					offset = 1;
 					break;
 				case 15:
 				case 41:
-					packet = DecryptXor(mBodyPacket, xorKey, msgKey, 5);
+					offset = 5;
 					break;
 				case 16:
 				case 25:
@@ -207,16 +194,12 @@ namespace LocalCommons.Cryptography
 				case 37:
 				case 44:
 				case 51:
-					packet = DecryptXor(mBodyPacket, xorKey, msgKey, 2);
+					offset = 2;
 					break;
-				//case ??:
-				//    packet = Decryptxor(mBodyPacket, xorKey, msgKey, 3);
-				//    break;
 				default:
-					packet = DecryptXor(mBodyPacket, xorKey, msgKey);
 					break;
 			}
-
+			packet = DeXORing(mBodyPacket, xorKey, msgKey, offset);
 			return packet;
 		}
 

@@ -203,7 +203,8 @@ namespace LocalCommons.Network
 				builder.AppendFormat("{0:X2} ", b);
 			}
 			//не выводим Pong
-			if (compiled[4] == 0x13)
+			if (compiled[4] == 0x13 && !(compiled[1] == 0x01 && compiled[2] == 0x88 && compiled[3] == 0x00))
+				//if (compiled[4] == 0x13)
 			{
 				return;
 			}
@@ -243,11 +244,12 @@ namespace LocalCommons.Network
 			}
 			var reader = new PacketReader(this.m_RecvBuffer, 0);
 			var size = reader.Size;
-			var length = (int)reader.ReadLEUInt16();
-			var offset = 2;
-			var data = new byte[size]; //создадим один раз
+			var length = reader.ReadLEUInt16();
+			ushort offset = 2;
+			
 			do
 			{
+				byte[] data = new byte[length]; //создадим один раз
 				Buffer.BlockCopy(this.m_RecvBuffer, offset, data, 0, length);
 				//не выводим Ping
 				if (data[2] == 0x7b)
