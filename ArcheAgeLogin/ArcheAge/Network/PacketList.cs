@@ -164,8 +164,6 @@ namespace ArcheAgeLogin.ArcheAge.Network
 			//int i2 = Float24.ToInt32(BitConverter.GetBytes(1));
 			//int у = 0;
 
-
-
 			#region MyTestDecrypt
 
 			//для теста
@@ -199,11 +197,11 @@ namespace ArcheAgeLogin.ArcheAge.Network
 			Log.Info("Encode2:     " + Utility.ByteArrayToString(arraBytes));
 			*/
 
-			uint xorKey = 0xFFC54C94; //xor_key
-			xorKey = xorKey * xorKey & 0xffffffff; //TODO: найти откуда берется!!!;
-			byte[] aesKey = Utility.StringToByteArrayFastest("A9B3F6A8A7D53C7CB525EACA39FAF3E8"); //TODO: найти откуда берется!!!;
-			byte[] iv = new byte[16]; //GenerateIv(); //для дешифрации первого пакета iv = 16 нулей 
-									  //для дешифрации следующих пакетов iv = шифрованный предыдущий пакет
+			//uint xorKey = 0xFFC54C94; //xor_key
+			//xorKey = xorKey * xorKey & 0xffffffff; //TODO: найти откуда берется!!!;
+			//byte[] aesKey = Utility.StringToByteArrayFastest("A9B3F6A8A7D53C7CB525EACA39FAF3E8"); //TODO: найти откуда берется!!!;
+			//byte[] iv = new byte[16]; //GenerateIv(); //для дешифрации первого пакета iv = 16 нулей 
+			//для дешифрации следующих пакетов iv = шифрованный предыдущий пакет
 
 			//string msg = "13000005396D07058A4B4A74C112C53F02B73B9362";
 			//Log.Info("Encode: " + msg);
@@ -387,9 +385,9 @@ namespace ArcheAgeLogin.ArcheAge.Network
 			//------------------------------------------------------------------------------------------------
 			Register(0x00, Handle_RegisterArcheAgeGame);//Level registration server
 			Register(0x02, Handle_UpdateCharacters);//Level registration server
-													//------------------------------------------------------------------------------------------------
-													//END Game Server Delegates Packets
-													//------------------------------------------------------------------------------------------------
+			//------------------------------------------------------------------------------------------------
+			//END Game Server Delegates Packets
+			//------------------------------------------------------------------------------------------------
 
 			//------------------------------------------------------------------------------------------------
 			//Client Delegates Packets
@@ -397,17 +395,17 @@ namespace ArcheAgeLogin.ArcheAge.Network
 			switch (_clientVersion)
 			{
 				case "1"://1.0.1406 Feb 11 2014
-						 //последовательность пакетов при подключении клиента к LoginServer
-						 //Register(0x01, Handle_CARequestAuthPacket_0x01);
-						 //Register(0x00, Handle_ACJoinResponsePacket_0x00);
-						 //Register(0x04, Handle_ACChallendge2Packet_0x04);
-						 //Register(0x06, Handle_CAChallendgeResponse2Packet_0x06);
-						 //Register(0x03, Handle_ACAuthResponsePacket_0x03);
-						 //Register(0x0A, Handle_CAListWorldPacket_0x0A);
-						 //Register(0x08, Handle_ACWorldListPacket_0x08);
-						 //Register(0x0B, Handle_CAEnterWorldPacket_0x0B);
-						 //Register(0x0A, Handle_ACWorldCookie_0x0A);
-						 //-------------------------------------
+				    //последовательность пакетов при подключении клиента к LoginServer
+				    //Register(0x01, Handle_CARequestAuthPacket_0x01);
+				    //Register(0x00, Handle_ACJoinResponsePacket_0x00);
+				    //Register(0x04, Handle_ACChallendge2Packet_0x04);
+				    //Register(0x06, Handle_CAChallendgeResponse2Packet_0x06);
+				    //Register(0x03, Handle_ACAuthResponsePacket_0x03);
+				    //Register(0x0A, Handle_CAListWorldPacket_0x0A);
+				    //Register(0x08, Handle_ACWorldListPacket_0x08);
+				    //Register(0x0B, Handle_CAEnterWorldPacket_0x0B);
+				    //Register(0x0A, Handle_ACWorldCookie_0x0A);
+				    //-------------------------------------
 					Register(0x01, Handle_CARequestAuthPacket_0x01);
 					Register(0x04, Handle_CARequestAuth_0x04); //пакет №1 от клиента
 					Register(0x0A, Handle_CAListWorld_0x0A);  //
