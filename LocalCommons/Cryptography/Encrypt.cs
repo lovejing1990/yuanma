@@ -27,15 +27,8 @@ namespace LocalCommons.Cryptography
 
 		public static byte Crc8(byte[] data)
 		{
-			var len = data.Length;
-			uint checksum = 0;
-			for (var i = 0; i <= len - 1; i++)
-			{
-				checksum = checksum * 0x13;
-				checksum += data[i];
-			}
-
-			return (byte)(checksum);
+			var size = data.Length;
+			return Crc8(data, size);
 		}
 
 		//--------------------------------------------------------------------------------------
