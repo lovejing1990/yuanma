@@ -1,30 +1,25 @@
-14.11.2018 21:20:26 [Info] - Initializing database...
-14.11.2018 21:20:27 [Info] - Loading data...
-14.11.2018 21:20:27 [Info] -   done loading 11727 entries from items.txt
-14.11.2018 21:20:27 [Info] -   done loading 79 entries from jobs.txt
-14.11.2018 21:20:27 [Info] -   done loading 1625 entries from stanceconditions.txt
-14.11.2018 21:20:27 [Info] -   done loading 5 entries from maps.txt
-14.11.2018 21:20:27 [Info] -   done loading 2 entries from monsters.txt
-14.11.2018 21:20:27 [Info] -   done loading 2 entries from servers.txt
-14.11.2018 21:20:27 [Info] -   done loading 3 entries from barracks.txt
-14.11.2018 21:20:27 [Info] -   done loading 56 entries from shops.txt
-14.11.2018 21:20:27 [Info] -   done loading 930 entries from skills.txt
-14.11.2018 21:20:27 [Info] -   done loading 596 entries from skilltree.txt
-14.11.2018 21:20:27 [Info] -   done loading 1318 entries from abilities.txt
-14.11.2018 21:20:27 [Info] -   done loading 888 entries from abilitytree.txt
-14.11.2018 21:20:27 [Info] -   done loading 650 entries from exp.txt
-14.11.2018 21:20:27 [Info] -   done loading 15357 entries from dialogues.txt
-14.11.2018 21:20:27 [Info] -   done loading 98 entries from help.txt
-14.11.2018 21:20:27 [Info] -   done loading 43 entries from customcommands.txt
-14.11.2018 21:20:27 [Info] -   done loading 10 entries from chatmacros.txt
-14.11.2018 21:20:27 [Info] - Initializing world...
-14.11.2018 21:20:27 [Info] -   done loading 5 maps.
-14.11.2018 21:20:27 [Info] - Loading scripts...
-14.11.2018 21:20:27 [Info] -   done loading 2 scripts (of 2).
-14.11.2018 21:20:27 [Info] - Connected to LoginServer, installing data...
-14.11.2018 21:20:27 [Info] - Send: 10 00 00 00 01 D7 04 31 32 37 2E 30 2E 30 2E 31 00 00 
-14.11.2018 21:20:27 [Info] - Installed ClientConnection at 127.0.0.1:1239
-14.11.2018 21:20:27 [Info] - Type 'help' for a list of console commands.
-14.11.2018 21:20:27 [Info] - Recv: 03 00 00 00 01 
-14.11.2018 21:20:27 [Info] - LoginServer successfully installed
-14.11.2018 21:44:31 [Info] - LoginServer IP: 127.0.0.1 disconnected
+15.11.2018 13:14:09 [Info] - Initializing database...
+15.11.2018 13:14:11 [Info] - Loading data...
+15.11.2018 13:14:11 [Info] -   done loading 11727 entries from items.txt
+15.11.2018 13:14:11 [Info] -   done loading 79 entries from jobs.txt
+15.11.2018 13:14:11 [Info] -   done loading 1625 entries from stanceconditions.txt
+15.11.2018 13:14:11 [Info] -   done loading 5 entries from maps.txt
+15.11.2018 13:14:11 [Info] -   done loading 2 entries from monsters.txt
+15.11.2018 13:14:11 [Info] -   done loading 2 entries from servers.txt
+15.11.2018 13:14:11 [Info] -   done loading 3 entries from barracks.txt
+15.11.2018 13:14:11 [Info] -   done loading 56 entries from shops.txt
+15.11.2018 13:14:11 [Info] -   done loading 930 entries from skills.txt
+15.11.2018 13:14:11 [Info] -   done loading 596 entries from skilltree.txt
+15.11.2018 13:14:11 [Info] -   done loading 1318 entries from abilities.txt
+15.11.2018 13:14:11 [Info] -   done loading 888 entries from abilitytree.txt
+15.11.2018 13:14:11 [Info] -   done loading 650 entries from exp.txt
+15.11.2018 13:14:11 [Info] -   done loading 15357 entries from dialogues.txt
+15.11.2018 13:14:11 [Info] -   done loading 98 entries from help.txt
+15.11.2018 13:14:11 [Info] -   done loading 43 entries from customcommands.txt
+15.11.2018 13:14:11 [Info] -   done loading 10 entries from chatmacros.txt
+15.11.2018 13:14:11 [Info] - Initializing world...
+15.11.2018 13:14:11 [Info] -   done loading 5 maps.
+15.11.2018 13:14:11 [Info] - Loading scripts...
+15.11.2018 13:14:11 [Info] -   done loading 2 scripts (of 2).
+15.11.2018 13:14:15 [Error] - Error on startup: NullReferenceException, Ссылка на объект не указывает на экземпляр объекта.
+15.11.2018 13:14:15 [Info] - Press Enter to exit.
