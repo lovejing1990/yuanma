@@ -163,25 +163,24 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 		private static void OnPacketReceive_0x01_CSSetLpManageCharacter_0x00FB(ClientConnection net, PacketReader reader)
 		{
-
 			//CharacterList = CharacterHolder.LoadCharacterData(net.CurrentAccount.AccountId,net); //считываем данные имеющихся персонажей на аккаунте
 
 			var characterId = reader.ReadLEUInt32(); //characterId D считываем UID выбранного (входящего в мир) персонажа
 
 			//считаем его данные
-			foreach (var chr in net.CurrentAccount.Characters)
-			{
-				if (chr.CharacterId == characterId)
-				{
-					CharacterHolder.LoadEquipPacksData(chr, chr.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
-					CharacterHolder.LoadClothsData(chr, chr.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
-					CharacterHolder.LoadWeaponsData(chr, chr.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
-					CharacterHolder.LoadCharacterBodyCoord(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
-					CharacterHolder.LoadZoneFaction(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
-
-					net.CurrentAccount.Character = chr; //сохраним для дальнейшего использования
-				}
-			}
+			//foreach (var chr in net.CurrentAccount.Characters)
+			//{
+			//	if (chr.CharacterId == characterId)
+			//	{
+			//		CharacterHolder.LoadEquipPacksData(chr, chr.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
+			//		CharacterHolder.LoadClothsData(chr, chr.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
+			//		CharacterHolder.LoadWeaponsData(chr, chr.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
+			//		CharacterHolder.LoadCharacterBodyCoord(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
+			//		CharacterHolder.LoadZoneFaction(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
+			//																			//Console.WriteLine("这里被屏蔽,不做处理");
+			//		net.CurrentAccount.Character = chr; //сохраним для дальнейшего использования
+			//	}
+			//}
 		}
 
 		private static void CharacterListPacket(string clientVersion, ClientConnection net)
@@ -278,7 +277,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 			{
 				//If role is not online, it will not be sent.
-				if (account.Value.Connection != null)
+				if (account.Value.Character != null)
 				{
 					account.Value.Connection.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net, move));
 				}
@@ -402,7 +401,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			newCharacter.Level = reader.ReadByte(); //level c
 
 			//начальная позиция при создании персонажа
-			CharacterHolder.LoadCharacterBodyCoord(newCharacter, newCharacter.CharRace, newCharacter.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
+			CharacterHolder.LoadCharacterBodyCoord(ref newCharacter, newCharacter.CharRace, newCharacter.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
 
 			var x = LocalCommons.Utilities.Helpers.ConvertX(BitConverter.GetBytes(newCharacter.X));
 			var y = LocalCommons.Utilities.Helpers.ConvertY(BitConverter.GetBytes(newCharacter.Y));
@@ -582,17 +581,19 @@ namespace ArcheAgeGame.ArcheAge.Network
 						net.CurrentAccount.Characters = new List<Character>();
 						CharacterHolder.LoadCharacterData(net); //считываем данные имеющихся персонажей на аккаунте
 
-						foreach (var chr in net.CurrentAccount.Characters)
-						{
-							CharacterHolder.LoadEquipPacksData(chr, chr.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
-							CharacterHolder.LoadClothsData(chr, chr.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
-							CharacterHolder.LoadWeaponsData(chr, chr.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
-							CharacterHolder.LoadCharacterBodyCoord(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
-							CharacterHolder.LoadZoneFaction(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
+						//foreach (var chr in net.CurrentAccount.Characters)
+						//{
+						//	CharacterHolder.LoadEquipPacksData(ref chr, chr.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
+						//	CharacterHolder.LoadClothsData(chr, chr.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
+						//	CharacterHolder.LoadWeaponsData(chr, chr.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
+						//	CharacterHolder.LoadCharacterBodyCoord(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
+						//	CharacterHolder.LoadZoneFaction(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
 
-							net.CurrentAccount.Character = chr; //сохраним для дальнейшего использования
+						//	//取消写入Character,用于表示非在线
+						//	//net.CurrentAccount.Character = chr; //сохраним для дальнейшего использования
+					
 
-						}
+						//}
 
 						Log.Info("Account ID: {0} logged in, continue...", net);
 						net.SendAsync(new NP_X2EnterWorldResponsePacket01_0x0000());
@@ -715,28 +716,29 @@ namespace ArcheAgeGame.ArcheAge.Network
 			var gm = reader.ReadByte();
 
 			var character = new Character();
-			net.CurrentAccount.Character = character;
+			//net.CurrentAccount.Character = net.CurrentAccount.Characters.Find(ch=>ch.CharacterId==characterId);
+			character = net.CurrentAccount.Characters.Find(ch=>ch.CharacterId==characterId);
 
-			var accountId = net.CurrentAccount.AccountId;
+			//var accountId = net.CurrentAccount.AccountId;
 
 			//CharacterList = CharacterHolder.LoadCharacterData(accountId,net);
 
 			//считаем данные для всех созданых на аккаунте персонажей
-			foreach (var chr in net.CurrentAccount.Characters)
-			{
-				CharacterHolder.LoadEquipPacksData(chr, chr.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
-				CharacterHolder.LoadClothsData(chr, chr.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
-				CharacterHolder.LoadWeaponsData(chr, chr.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
-				CharacterHolder.LoadCharacterBodyCoord(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
-				CharacterHolder.LoadZoneFaction(chr, chr.CharRace, chr.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
+			//foreach (var chr in net.CurrentAccount.Characters)
+			//{
+				CharacterHolder.LoadEquipPacksData(ref character, character.Ability[0]); //дополнительно прочитать NewbieClothPackId, NewbieWeaponPackId из таблицы character_equip_packs
+				CharacterHolder.LoadClothsData(ref character, character.NewbieClothPackId); //дополнительно прочитать Head,Chest,Legs,Gloves,Feet из таблицы equip_pack_cloths
+				CharacterHolder.LoadWeaponsData(ref character, character.NewbieWeaponPackId); //дополнительно прочитать Weapon,WeaponExtra,WeaponRanged,Instrument из таблицы equip_pack_weapons
+				CharacterHolder.LoadCharacterBodyCoord(ref character, character.CharRace, character.CharGender); //дополнительно прочитать body, x, y, z из таблицы charactermodel
+				CharacterHolder.LoadZoneFaction(ref character, character.CharRace, character.CharGender); //дополнительно прочитать FactionId,StartingZoneId из таблицы characters
 
-				if (chr.CharacterId == characterId)
-				{
-					net.CurrentAccount.Character = chr; //сохраним для дальнейшего использования
-				}
-			}
-
-			net.CurrentAccount.Character.CharacterId = characterId; //запомним текущего персонажа, которым заходим в игру
+			//if (chr.CharacterId == characterId)
+			//{
+			net.CurrentAccount.Character = character; //сохраним для дальнейшего использования
+												//}
+												//}
+												//这一步是不需要的
+												//net.CurrentAccount.Character.CharacterId = characterId; //запомним текущего персонажа, которым заходим в игру
 
 			//SC CharacterStatePacket
 			net.SendAsync(new NP_SCCharacterStatePacket_0x003B(net, characterId)); //net.SendAsyncHex(new NP_Hex("4205DD013B000000000010000E4FC3755AE17949B1F626620F354A9300000000FF091A000B004A757374746F636865636B010203C4010000CE010000B3000000650000000000000000000000000000000000000000005B5B00004618C1000000000000000100000001000000005500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B00000000000000000000000000000000000000005C5B00004718C1000000000000000100000001000000004600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B00000000000000000000000000000000000000005E5B00004818C1000000000000000100000001000000002300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000D61700004918C1000000000000000100000001000000009100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B0000000000000000000000000000000000000000EF1700004A18C1000000000000000100000001000000008200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B000000000000000000000000000000003A1800004B18C1000000000000000100000001000000008200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000B000000000000000000000000000000007F4D0000D85D00000000000000000000000000001B020000000000000000000000000000070B0B00000000A8B7CF03000000006090A603EFFC104303BE1000000400000000000000000000000000803F0000803F0000000000000000000000000000803FCF0100000000803FA60000000000803F000000008FC2353F0000000000000000000000000000803FE37B8BFFAFECEFFFAFECEFFF000000FF00000000800000EF00EF00EE0017D40000000000001000000000000000063BB900D800EE00D400281BEBE100E700F037230000000000640000000000000064000000F0000000000000002BD50000006400000000F9000000E000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000036007F422F530000000000000C302B5300000000000000000C302B530000000000000000B4412F5300000000C200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001E00000000000000000000000000000000000000000000000000000000000000000000000000000000B33F2F53000000000000000000000000DBFB17C092070000000000000000000056010000460000000000000000000000000000000000000000000000000000000000000092070000000000000000000000000000000000000000000000000000323200C200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000C72C000022A21C530000000000"));
@@ -795,7 +797,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 			{
 				//判断不能是自己的角色，防止重复
-				if (account.Value.Connection != null && account.Value.AccountId != net.CurrentAccount.AccountId)
+				if (account.Value.Character != null && account.Value.AccountId != net.CurrentAccount.AccountId)
 				{
 					//给对方投放self Object
 					account.Value.Connection.SendAsync(new NP_SCUnitStatePacket_0x0064(net));
@@ -889,14 +891,14 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//私聊
 			//if (chatId == -3)
 			//{
-			//	net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, -2,"System", "No support for whispers."));
+			//	net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, -2, "System", "No support for whispers."));
 			//	return;
 			//}
 
 			//debug
 			if (chatId == 6)
 			{
-				string msg2 = "The information you sent is not recognized.\n你发送的信息不能被识别";
+				string msg2 = "The information you sent is not recognized.";
 				switch (msg)
 				{
 					case "/dev"://开发命令
@@ -920,7 +922,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 						msg2 = "Online Character List :\n";
 						foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 						{
-							if (account.Value.Connection != null)
+							if (account.Value.Character != null)
 							{
 								msg2 += account.Value.Character.CharName+"\n";
 							}
@@ -933,7 +935,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 						foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 						{
 							//判断不能是自己的角色，防止重复
-							if (account.Value.Connection != null && account.Value.AccountId != net.CurrentAccount.AccountId)
+							if (account.Value.Character != null && account.Value.AccountId != net.CurrentAccount.AccountId)
 							{
 								//给对方投放self Object
 								account.Value.Connection.SendAsync(new NP_SCUnitStatePacket_0x0064(net));

@@ -16,7 +16,8 @@ namespace ArcheAgeGame.ArcheAge.Network
             //00
             //FF091A00 0000000000000000
             //- <packet id="0x006401" name="SCUnitStatePacket">
-            net.CurrentAccount.Character.LiveObjectId = ArcheAgeGame.LiveObjectUid.Next(); //liveObjectId d3
+			if(net.CurrentAccount.Character.LiveObjectId==null)//做额外判断,防止同一个角色被投放不同的LiveObjectUid
+				net.CurrentAccount.Character.LiveObjectId = ArcheAgeGame.LiveObjectUid.Next(); //liveObjectId d3
             ns.Write((Uint24)net.CurrentAccount.Character.LiveObjectId); //liveObjectId d3 "F52700"
             ns.WriteUTF8Fixed(net.CurrentAccount.Character.CharName,
                 net.CurrentAccount.Character.CharName.Length); //name SS 
@@ -103,9 +104,9 @@ namespace ArcheAgeGame.ArcheAge.Network
             //
             ns.WriteHex("000000"); //bc b" size="3 
             //90B00000
-            ns.Write((int)0xb090); //preciseHealth d 
+            ns.Write((int)0xb090); //preciseHealth d 精确的HP 两位小数
             //78B40000
-            ns.Write((int)0xb478); //preciseMana d 
+            ns.Write((int)0xb478); //preciseMana d  精确的MP 两位小数
             //<!--  this part is not 100% correct, need more sniffs --> 
             //FF
             byte point = 0xff;
