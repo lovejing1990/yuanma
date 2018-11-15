@@ -53,18 +53,14 @@ namespace LocalCommons.Cryptography
 		/// <returns>возвращает адрес на подготовленные данные</returns>
 		public static byte[] StoCEncrypt(byte[] bodyPacket)
 		{
-			var array = new byte[bodyPacket.Length];
+			var length = bodyPacket.Length;
+			var array = new byte[length];
+			//var array = new byte[bodyPacket.Length];
 			var cry = (uint)(bodyPacket.Length ^ 0x1F2175A0);
-			var n = 4 * (bodyPacket.Length / 4);
-			for (var i = n - 1; i >= 0; i--)
-			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
-			}
 
-			for (var i = n; i < bodyPacket.Length; i++)
-			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
-			}
+			var offset = 0;
+
+			array = ByteXOR(bodyPacket, offset, length, array, cry);
 
 			return array;
 		}
@@ -88,18 +84,24 @@ namespace LocalCommons.Cryptography
 			var array = new byte[length];
 
 			var mul = xorKey * msgKey;
-			var key = (0x75a024a4 ^ mul) ^ 0xC3903b6a;
+			var cry = (0x75a024a4 ^ mul) ^ 0xC3903b6a;
+
+			array = ByteXOR(bodyPacket, offset, length, array, cry);
+
+			return array;
+		}
+
+		private static byte[] ByteXOR(byte[] bodyPacket, int offset, int length, byte[] array, uint cry)
+		{
 			var n = 4 * (length / 4);
 			for (var i = n - 1 - offset; i >= 0; i--)
 			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref key));
+				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
 			}
-
 			for (var i = n - offset; i < length; i++)
 			{
-				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref key));
+				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref cry));
 			}
-
 			return array;
 		}
 
@@ -115,7 +117,7 @@ namespace LocalCommons.Cryptography
 			int caseSwitch = bodyPacket[4];
 			switch (caseSwitch)
 			{
-				case 0x30: //вроде бы, нас интересует только первая цифра
+				case 0x30: //вроде бы, нас интересует только вторая цифра - 0
 					msgKey = 0x01; //0X11; //0x2F
 					break;
 				case 0x31:
