@@ -472,7 +472,7 @@ namespace ArcheAgeGame.ArcheAge.Holders
                             " `Weight7` = @Weight7, `Weight8` = @Weight8, `Weight9` = @Weight9, `Weight10` = @Weight10, `Weight11` = @Weight11, `Weight12` = @Weight12," +
                             " `Weight13` = @Weight13, `Weight14` = @Weight14, `Weight15` = @Weight15, `Weight16` = @Weight16, `Weight17` = @Weight17," +
                             " `worldid` = @worldid, `ability0` = @ability0, `ability1` = @ability1, `ability2` = @ability2," + //" `liveobjectid` = @liveobjectid," +
-                            " `zone` = @zone, `x` = @x, `y` = @y, `z` = @z, `rotx` = rotx, `roty` = roty, `rotz` = rotz " +
+                            " `zone` = @zone, `x` = @x, `y` = @y, `z` = @z, `rotx` = @rotx, `roty` = @roty, `rotz` = @rotz " +
                             " WHERE `charname` = @charname";
                     }
                     else

@@ -944,6 +944,10 @@ namespace ArcheAgeGame.ArcheAge.Network
 						}
 						msg2 = "Refresh the success";
 						break;
+					case "/hp":
+						net.CurrentAccount.Character.Hp += 100;
+						net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(net));
+						break;
 					default:
 
 						break;

@@ -6,9 +6,9 @@ using LocalCommons.World;
 
 namespace ArcheAgeGame.ArcheAge.Network
 {
-    public sealed class NP_SCUnitStatePacket_0x0064 : NetPacket
+    public sealed class NP_SCUnitStatePacket_0x0064_debug : NetPacket
     {
-        public NP_SCUnitStatePacket_0x0064(ClientConnection net) : base(01, 0x0064)
+        public NP_SCUnitStatePacket_0x0064_debug(ClientConnection net) : base(01, 0x0064)
         {
             //B504 DD01 6400
             //F52700
@@ -104,7 +104,7 @@ namespace ArcheAgeGame.ArcheAge.Network
             //
             ns.WriteHex("000000"); //bc b" size="3 
             //90B00000
-            ns.Write((int)0xb090); //preciseHealth d 
+            ns.Write((int)net.CurrentAccount.Character.Hp); //preciseHealth d 
             //78B40000
             ns.Write((int)0xb478); //preciseMana d 
             //<!--  this part is not 100% correct, need more sniffs --> 

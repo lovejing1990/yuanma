@@ -138,6 +138,7 @@
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitPointsPacket_0x01B2.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitMovementsPacket_0x0066.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCResultRestrictCheck_0x01C3.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitStatePacket_0x0064_debug.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitStatePacket_0x0064.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitVisualOptionsPacket_0x01C0.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SetGameType_0x000F.cs" />
