@@ -90,7 +90,7 @@ namespace LocalCommons.Cryptography
 			var mul = xorKey * msgKey;
 			var key = (0x75a024a4 ^ mul) ^ 0xC3903b6a;
 			var n = 4 * (length / 4);
-			for (var i = n - offset - 1; i >= 0; i--)
+			for (var i = n - 1 - offset; i >= 0; i--)
 			{
 				array[i] = (byte)(bodyPacket[i] ^ (uint)Inline(ref key));
 			}
