@@ -122,5 +122,10 @@ namespace ArcheAgeGame.ArcheAge.Structuring
 		/// </summary>
 		public int Dex { get; set; }
 
+		/// <summary>
+		/// 最后加载NPC坐标
+		/// </summary>
+		public Position LastLoadedNPC { get; set; } = new Position(0, 0, 0);
+
 	}
 }

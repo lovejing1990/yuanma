@@ -158,9 +158,9 @@ namespace ArcheAgeGame.ArcheAge.Network.Connections
                     Log.Info("Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Log.Info("Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
+                Log.Exception(ex,"Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
                 throw;
             }
         }

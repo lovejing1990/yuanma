@@ -9,6 +9,9 @@ using ArcheAgeGame.ArcheAge.Holders;
 using ArcheAgeGame.ArcheAge.Network.Connections;
 using ArcheAgeGame.ArcheAge.Network.Packets.Server;
 using ArcheAgeGame.ArcheAge.Structuring;
+using System.IO;
+using System.Threading;
+using ArcheAgeGame.ArcheAge.Structuring.NPC;
 
 namespace ArcheAgeGame.ArcheAge.Network
 {
@@ -278,12 +281,26 @@ namespace ArcheAgeGame.ArcheAge.Network
 			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 			{
 				//If role is not online, it will not be sent.
-				if (account.Value.Connection != null)
+				if (account.Value.Character != null)
 				{
 					account.Value.Connection.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net, move));
 				}
 
 			}
+
+			// 根据条件判断是否加载NPC
+			if(net.CurrentAccount.Character.LastLoadedNPC.X-x>25|| net.CurrentAccount.Character.LastLoadedNPC.X - x < 25
+				||
+				net.CurrentAccount.Character.LastLoadedNPC.Y - y > 25 || net.CurrentAccount.Character.LastLoadedNPC.Y - y < 25)
+			{
+				//todo 待完成 2018年11月16日
+			}
+
+			////查询NPC，AND Send to Client
+
+			//Thread thread = new Thread(new ThreadStart(method));//创建线程
+
+			//thread.Start();                                                           //启动线程
 		}
 
 		//OnPacketReceive_0x01_NP_CSGiveupTaskPacket_0x00D3
@@ -945,8 +962,15 @@ namespace ArcheAgeGame.ArcheAge.Network
 						msg2 = "Refresh the success";
 						break;
 					case "/hp":
-						net.CurrentAccount.Character.Hp += 100;
-						net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(net));
+						net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X,net.CurrentAccount.Character.Position.Y)));
+						break;
+					case "npc":
+						net.SendAsyncHex(new NP_Hex("DD00dd0164000d0e000000013ED5000d0e0000000000000000E69479A4F477267A033333733F02440500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002B0A473020200000000000000000000D8590000B8880000FFFF04003E0000000100010200000001000000000000B0000800A66201000000650000000000000000000000"));
+						return;
+						//break;
+					case "hex":
+						string text = File.ReadAllText(@"testhex.txt");
+						net.SendAsyncHex(new NP_Hex(text.Trim()));
 						break;
 					default:
 

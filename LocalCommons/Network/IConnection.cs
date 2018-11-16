@@ -203,7 +203,7 @@ namespace LocalCommons.Network
 				builder.AppendFormat("{0:X2} ", b);
 			}
 			//не выводим Pong
-			if (compiled[4] == 0x13 && !(compiled[1] == 0x01 && compiled[2] == 0x88 && compiled[3] == 0x00))
+			if (compiled[4] == 0x13 && !(compiled[1] == 0x01 && compiled[2] == 0x66 && compiled[3] == 0x00))
 				//if (compiled[4] == 0x13)
 			{
 				return;
@@ -250,7 +250,7 @@ namespace LocalCommons.Network
 			do
 			{
 				byte[] data = new byte[length]; //создадим один раз
-				Buffer.BlockCopy(this.m_RecvBuffer, offset, data, 0, length);
+				Buffer.BlockCopy(reader.Buffer, offset, data, 0, length);
 				//--- Console Hexadecimal 
 				//сначало надо вывести лог пакета в консоль
 				var builder = new StringBuilder();

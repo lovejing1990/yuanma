@@ -34,5 +34,11 @@ namespace DevTool
 			Coordinate wind = new Coordinate();
 			wind.Show();
 		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			int ModelMaxID = 1483;
+			int ModelMinID = 1;
+		}
 	}
 }
