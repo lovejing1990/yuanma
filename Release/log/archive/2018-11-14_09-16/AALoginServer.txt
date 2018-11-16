@@ -1,7 +1,0 @@
-2018/11/14 21:16:15 [Info] - Initializing database...
-2018/11/14 21:16:15 [Info] - Checking for updates...
-2018/11/14 21:16:16 [Info] - Loading from Servers.xml 1 servers
-2018/11/14 21:16:16 [Info] - Load to 2 accounts
-2018/11/14 21:16:16 [Info] - Installed GameConnection at 127.0.0.1:1231
-2018/11/14 21:16:16 [Info] - Installed ArcheAgeConnection at 127.0.0.1:1237
-2018/11/14 21:16:16 [Info] - Type 'help' for a list of console commands.
