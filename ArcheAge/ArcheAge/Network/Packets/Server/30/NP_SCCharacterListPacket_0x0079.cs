@@ -145,9 +145,9 @@ namespace ArcheAge.ArcheAge.Network.Packets.Server
                     ns.Write((long)0x0021F96715C40000); //y q
                     ns.Write((int)0x42CFA1CB);          //z d
 
-                    ns.Write(Helpers.ConvertX(net.CurrentAccount.Character.Position.X), 0, 3);
-                    ns.Write(Helpers.ConvertY(net.CurrentAccount.Character.Position.Y), 0, 3);
-                    ns.Write(Helpers.ConvertZ(net.CurrentAccount.Character.Position.Z), 0, 3);
+                    ns.Write(Helpers.ConvertX(chr.Position.X), 0, 3);
+                    ns.Write(Helpers.ConvertY(chr.Position.Y), 0, 3);
+                    ns.Write(Helpers.ConvertZ(chr.Position.Z), 0, 3);
 
                     ns.Write((byte)chr.Ext); //ext c
                     switch (chr.Ext)

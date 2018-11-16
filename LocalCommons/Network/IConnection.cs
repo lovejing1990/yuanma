@@ -154,25 +154,23 @@ namespace LocalCommons.Network
                 var packet = m_PacketQueue.Dequeue();
                 var compiled = packet.Compile();
                 m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None); //отправляем пакет
-                //--- Console Hexadecimal 
-                //вывод лога пакетов в консоль
-                var builder = new StringBuilder();
-                builder.Append("Send: ");
-                //builder.Append(Utility.IntToHex(compiled.Length));
-                //builder.Append(" ");
-                foreach (var t in compiled)
-                {
-                    builder.AppendFormat("{0:X2} ", t);
-                }
                 //не выводим Pong
-                if (compiled[4] == 0x13)
+                if (compiled[4] != 0x13)
                 {
-                    return;
+                    //--- Console Hexadecimal 
+                    //вывод лога пакетов в консоль
+                    var builder = new StringBuilder();
+                    builder.Append("Send: ");
+                    //builder.Append(Utility.IntToHex(compiled.Length));
+                    //builder.Append(" ");
+                    foreach (var t in compiled)
+                    {
+                        builder.AppendFormat("{0:X2} ", t);
+                    }
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Logger.Trace(builder.ToString());
+                    Console.ResetColor();
                 }
-
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Logger.Trace(builder.ToString());
-                Console.ResetColor();
             }
             catch (Exception e)
             {
@@ -194,23 +192,21 @@ namespace LocalCommons.Network
             }
 
             var compiled = packet.Compile2();
-            m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None);
-            //--- Console Hexadecimal 
-            var builder = new StringBuilder();
-            builder.Append("Send: ");
-            foreach (var b in compiled)
-            {
-                builder.AppendFormat("{0:X2} ", b);
-            }
+            m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None); //отправляем пакет
             //не выводим Pong
-            if (compiled[4] == 0x13)
+            if (compiled[4] != 0x13)
             {
-                return;
+                //--- Console Hexadecimal 
+                var builder = new StringBuilder();
+                builder.Append("Send: ");
+                foreach (var b in compiled)
+                {
+                    builder.AppendFormat("{0:X2} ", b);
+                }
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Logger.Trace(builder.ToString());
+                Console.ResetColor();
             }
-
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Logger.Trace(builder.ToString());
-            Console.ResetColor();
 #if DEBUG
             //--- File Hexadecimal
             //не выводим Pong
@@ -224,7 +220,6 @@ namespace LocalCommons.Network
             //    fs.Close();
             //}
 #endif
-            //отправляем пакет
         }
 
         /// <summary>
@@ -245,26 +240,25 @@ namespace LocalCommons.Network
             var size = reader.Size;
             var length = reader.ReadLEUInt16();
             ushort offset = 2;
-            do
+            while (length > 0 && offset < size - 2)
             {
                 try
                 {
                     byte[] data = new byte[length];
-                    Buffer.BlockCopy(m_RecvBuffer, offset, data, 0, length);
-                    //--- Console Hexadecimal 
-                    //сначало надо вывести лог пакета в консоль
-                    var builder = new StringBuilder();
-                    builder.Append("Recv: ");
-                    builder.Append(Utility.IntToHex(length));
-                    builder.Append(" ");
-                    for (ushort i = 0; i < length; i++)
-                    {
-                        builder.AppendFormat("{0:X2} ", data[i]);
-                    }
-
+                    Buffer.BlockCopy(reader.Buffer, offset, data, 0, length);
                     //не выводим Ping
                     if (data[2] != 0x12)
                     {
+                        //--- Console Hexadecimal 
+                        //сначало надо вывести лог пакета в консоль
+                        var builder = new StringBuilder();
+                        builder.Append("Recv: ");
+                        builder.Append(Utility.IntToHex(length));
+                        builder.Append(" ");
+                        for (ushort i = 0; i < length; i++)
+                        {
+                            builder.AppendFormat("{0:X2} ", data[i]);
+                        }
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                         Logger.Trace(builder.ToString());
                         Console.ResetColor();
@@ -282,19 +276,19 @@ namespace LocalCommons.Network
                     //    fs.Close();
                     //}
 #endif
+                    HandleReceived(data); //и только затем отправить на обработку данные пакета
+
                     offset += length;
                     reader.Offset = offset;
                     length = reader.ReadLEUInt16(); //проверяем, есть ли еще пакет
                     offset += 2;
-                    //и только затем отправить на обработку
-                    HandleReceived(data); //отправляем на обработку данные пакета
                 }
                 catch (Exception ex)
                 {
                     Logger.Trace("Errors when parsing glued packets : {0}", ex.Message);
                     break;
                 }
-            } while (length > 0 && offset < size);
+            }
             reader.Clear(); //почистим буфер, инача считываются старые данные
         }
 

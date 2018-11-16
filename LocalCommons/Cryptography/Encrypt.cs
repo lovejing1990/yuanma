@@ -53,7 +53,7 @@ namespace LocalCommons.Cryptography
 			var length = bodyPacket.Length;
 			var array = new byte[length];
 			var cry = (uint)(length ^ 0x1F2175A0);
-			return ByteXOR(bodyPacket, length, array, cry);
+			return ByteXor(bodyPacket, length, array, cry);
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -75,10 +75,10 @@ namespace LocalCommons.Cryptography
 			var array = new byte[length];
 			var mul = xorKey * msgKey;
 			var cry = (0x75a024a4 ^ mul) ^ 0xC3903b6a;
-			return ByteXOR(bodyPacket, length, array, cry, offset);
+			return ByteXor(bodyPacket, length, array, cry, offset);
 		}
 
-		private static byte[] ByteXOR(byte[] bodyPacket, int length, byte[] array, uint cry, int offset = 0)
+		private static byte[] ByteXor(byte[] bodyPacket, int length, byte[] array, uint cry, int offset = 0)
 		{
 			var n = 4 * (length / 4);
 			for (var i = n - 1 - offset; i >= 0; i--)

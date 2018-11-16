@@ -145,7 +145,7 @@ namespace ArcheAge.ArcheAge.Network.Connections
 
             if (!DelegateList.ClientHandlers.ContainsKey(header))
             {
-                Logger.Trace("Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
+                Logger.Trace("DelegateList: Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
                 return;
             }
             try
@@ -157,12 +157,12 @@ namespace ArcheAge.ArcheAge.Network.Connections
                 }
                 else
                 {
-                    Logger.Trace("Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
+                    Logger.Trace("OnReceive: Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Trace("Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2}", seq, header, opcode);
+                Logger.Trace("Exception: Received undefined packet - seq: {0}, header: {1}, opcode: 0x{2:X2} : {3}", seq, header, opcode, ex.Message);
                 throw;
             }
         }

@@ -149,6 +149,8 @@ namespace ArcheAge.ArcheAge.Network
                     Register(0x05, 0x008D, OnPacketReceive_EnterWorld_0x008D); //вход в игру4
                     Register(0x05, 0x008E, OnPacketReceive_EnterWorld_0x008E); //вход в игру5
                     Register(0x05, 0x008F, OnPacketReceive_EnterWorld_0x008F); //вход в игру6
+                    //Unknown packets
+                    //Register(0x01, 0xE17B, OnUnkPacketReceive); //для проверки
                     break;
                 default:
                     break;
@@ -577,6 +579,11 @@ namespace ArcheAge.ArcheAge.Network
         #endregion
 
         #region Version3.0
+        private static void OnUnkPacketReceive(ClientConnection net, PacketReader reader)
+        {
+            //Unk
+        }
+       
         ///<summary>
         ///Verify user login permissions
         ///</summary>
@@ -737,6 +744,7 @@ namespace ArcheAge.ArcheAge.Network
                     break;
             }
         }
+        
         public static void OnPacketReceive_EnterWorld_0x008A(ClientConnection net, PacketReader reader)
         {
             if (!enter1) //регулируем последовательность входа
@@ -883,6 +891,7 @@ namespace ArcheAge.ArcheAge.Network
 
         public static void OnPacketReceive_ClientE4FB(ClientConnection net, PacketReader reader)
         {
+            //12000001FBE486010010FF38000C990200000000
             var number1 = reader.ReadLEInt32();
             //net.SendAsync(new NP_ChangeState(0));
         }
