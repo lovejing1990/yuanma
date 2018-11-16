@@ -289,18 +289,31 @@ namespace ArcheAgeGame.ArcheAge.Network
 			}
 
 			// 根据条件判断是否加载NPC
-			if(net.CurrentAccount.Character.LastLoadedNPC.X-x>25|| net.CurrentAccount.Character.LastLoadedNPC.X - x < 25
+			if(net.CurrentAccount.Character.LastLoadedNPC.X-x>25|| net.CurrentAccount.Character.LastLoadedNPC.X - x < -25
 				||
-				net.CurrentAccount.Character.LastLoadedNPC.Y - y > 25 || net.CurrentAccount.Character.LastLoadedNPC.Y - y < 25)
+				net.CurrentAccount.Character.LastLoadedNPC.Y - y > 25 || net.CurrentAccount.Character.LastLoadedNPC.Y - y < -25)
 			{
 				//todo 待完成 2018年11月16日
+				net.CurrentAccount.Character.LastLoadedNPC = net.CurrentAccount.Character.Position;
+
+				////查询NPC，AND Send to Client
+				////创建委托线程
+				Thread thread = new Thread(new ParameterizedThreadStart(GetRangeNpcList));
+				//启动线程
+				thread.Start(net);
 			}
 
-			////查询NPC，AND Send to Client
 
-			//Thread thread = new Thread(new ThreadStart(method));//创建线程
+		}
 
-			//thread.Start();                                                           //启动线程
+		public static void GetRangeNpcList(Object con)
+		{
+
+			ClientConnection net = con as ClientConnection;
+
+			List<NPC> npcs = NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X, net.CurrentAccount.Character.Position.Y);
+			if(npcs.Count>0)
+				net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(npcs));
 		}
 
 		//OnPacketReceive_0x01_NP_CSGiveupTaskPacket_0x00D3

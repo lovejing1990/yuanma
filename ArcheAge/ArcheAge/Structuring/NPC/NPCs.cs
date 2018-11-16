@@ -96,8 +96,8 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 					{
 						limit = " limit @limit";
 					}
-
-					MySqlCommand command = new MySqlCommand("SELECT *  FROM `npc_map_data` WHERE `X`>=@Xmin and `X`<= @Xmax and `Y`>=@Ymin and `Y`<=@Ymax" + limit, conn);
+					// BUG 此处未考虑到同一NPC在多处分身。如 野兽 为多个不同的分布
+					MySqlCommand command = new MySqlCommand("SELECT *  FROM `npc_map_data` WHERE `X`>=@Xmin and `X`<= @Xmax and `Y`>=@Ymin and `Y`<=@Ymax" + limit+" group by id", conn);
 					command.Parameters.Add("@Xmin", MySqlDbType.Float).Value = X - RangeX / 2;
 					command.Parameters.Add("@Xmax", MySqlDbType.Float).Value = X + RangeX / 2;
 					command.Parameters.Add("@Ymin", MySqlDbType.Float).Value = Y - RangeX / 2;
