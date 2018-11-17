@@ -51,16 +51,16 @@ namespace ArcheAge.ArcheAge.Holders
         public static uint MaxCharacterUid()
         {
             uint uid = 0;
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM `character_records`", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var command = new MySqlCommand("SELECT * FROM `character_records`", conn);
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Character character = new Character();
+                        var character = new Character();
                         character.CharacterId = reader.GetUInt32("characterid");
                         if (uid < character.CharacterId)
                         {
@@ -86,13 +86,13 @@ namespace ArcheAge.ArcheAge.Holders
 
         public static void DeleteCharacterData(uint characterId)
         {
-            int serverid = Settings.Default.Game_Id;
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            var serverid = Settings.Default.Game_Id;
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open(); //Устанавливаем соединение с базой данных
-                    MySqlCommand cmd = new MySqlCommand();
+                    var cmd = new MySqlCommand();
                     cmd.Connection = conn;
                     cmd.CommandText = "DELETE FROM `character_records` WHERE `characterid` = '" + characterId +
                                       "' AND `worldid` = '" + serverid + "'";
@@ -120,15 +120,15 @@ namespace ArcheAge.ArcheAge.Holders
         /// <returns>возвращает значение body для персонажа</returns>
         public static void LoadCharacterBodyCoord(Character chr, byte charRace, byte charGender)
         {
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command =
+                    var command =
                         new MySqlCommand(
                             "SELECT * FROM `charactermodel` WHERE `race` = '" + charRace + "' AND `gender` = '" + charGender + "'", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         chr.CharBody = reader.GetInt32("body");
@@ -155,15 +155,15 @@ namespace ArcheAge.ArcheAge.Holders
 
         public static void LoadZoneFaction(Character chr, byte charRace, byte charGender)
         {
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command =
+                    var command =
                         new MySqlCommand(
                             "SELECT * FROM `characters` WHERE `char_race_id` = '" + charRace + "' AND `char_gender_id` = '" + charGender + "'", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         chr.FactionId = reader.GetInt32("faction_id");
@@ -187,15 +187,15 @@ namespace ArcheAge.ArcheAge.Holders
 
         public static void LoadClothsData(Character chr, int itemSet)
         {
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command =
+                    var command =
                         new MySqlCommand(
                             "SELECT * FROM `equip_pack_cloths` WHERE `id` = '" + itemSet + "'", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         chr.Head = reader.GetInt32("headgear_id");
@@ -221,15 +221,15 @@ namespace ArcheAge.ArcheAge.Holders
         }
         public static void LoadWeaponsData(Character chr, int itemSet)
         {
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command =
+                    var command =
                         new MySqlCommand(
                             "SELECT * FROM `equip_pack_weapons` WHERE `id` = '" + itemSet + "'", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         chr.Weapon = reader.GetInt32("mainhand_id");
@@ -255,15 +255,15 @@ namespace ArcheAge.ArcheAge.Holders
 
         public static void LoadEquipPacksData(Character chr, int ability_id)
         {
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command =
+                    var command =
                         new MySqlCommand(
                             "SELECT * FROM `character_equip_packs` WHERE `ability_id` = '" + ability_id + "'", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         chr.NewbieClothPackId = reader.GetInt32("newbie_cloth_pack_id");
@@ -469,14 +469,14 @@ namespace ArcheAge.ArcheAge.Holders
                 //character.LiveObjectId = reader.GetUInt32("liveobjectid");
                 character.MapId = reader.GetInt32("zone");
 
-                short rotx = reader.GetInt16("rotx");
-                short roty = reader.GetInt16("roty");
-                short rotz = reader.GetInt16("rotz");
+                var rotx = reader.GetInt16("rotx");
+                var roty = reader.GetInt16("roty");
+                var rotz = reader.GetInt16("rotz");
                 character.Heading = new Direction(rotx, roty, rotz);
 
-                float x = reader.GetFloat("x");
-                float y = reader.GetFloat("y");
-                float z = reader.GetFloat("z");
+                var x = reader.GetFloat("x");
+                var y = reader.GetFloat("y");
+                var z = reader.GetFloat("z");
                 character.Position = new Position(x, y, z);
 
                 //character.Exp = reader.GetInt32("exp");
@@ -524,7 +524,7 @@ namespace ArcheAge.ArcheAge.Holders
                             " `Weight7` = @Weight7, `Weight8` = @Weight8, `Weight9` = @Weight9, `Weight10` = @Weight10, `Weight11` = @Weight11, `Weight12` = @Weight12," +
                             " `Weight13` = @Weight13, `Weight14` = @Weight14, `Weight15` = @Weight15, `Weight16` = @Weight16, `Weight17` = @Weight17," +
                             " `worldid` = @worldid, `ability0` = @ability0, `ability1` = @ability1, `ability2` = @ability2," +
-                            " `zone` = @zone, `x` = @x, `y` = @y, `z` = @z, `rotx` = rotx, `roty` = roty, `rotz` = rotz " +
+                            " `zone` = @zone, `x` = @x, `y` = @y, `z` = @z, `rotx` = @rotx, `roty` = @roty, `rotz` = @rotz " +
                             " WHERE `charname` = @charname";
                     }
                     else
@@ -543,7 +543,7 @@ namespace ArcheAge.ArcheAge.Holders
                             " @zone, @x, @y, @z, @rotx, @roty, @rotz)";
                     }
 
-                    MySqlParameterCollection parameters = cmd.Parameters;
+                    var parameters = cmd.Parameters;
 
                     parameters.Add("@characterid", MySqlDbType.UInt32).Value = character.CharacterId;
                     parameters.Add("@accountid", MySqlDbType.UInt32).Value = character.AccountId;

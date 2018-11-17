@@ -119,8 +119,6 @@ namespace ArcheAgeLogin.ArcheAge.Network
             ViewDecode2(msg);
             msg = "";
             ViewDecode2(msg);
-            msg = "";
-            ViewDecode2(msg);
 */
         }
         ///для теста
@@ -178,7 +176,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
             #region MyTestDecrypt
 
             //расшифровать пакет DD05
-            //ViewDecodeDD05();
+            ViewDecodeDD05();
 
             ////для теста 0005
             //uint xorKey = 0xFFC54C94; //xor_key

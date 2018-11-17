@@ -38,16 +38,16 @@ namespace ArcheAge.ArcheAge.Holders
         public static uint MaxAccountUid()
         {
             uint uid = 0;
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM `accounts`", conn);
-                    MySqlDataReader reader = command.ExecuteReader();
+                    var command = new MySqlCommand("SELECT * FROM `accounts`", conn);
+                    var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Account account = new Account();
+                        var account = new Account();
                         account.AccountId = reader.GetUInt32("accountid");
                         if (uid < account.AccountId)
                         {
@@ -75,16 +75,16 @@ namespace ArcheAge.ArcheAge.Holders
         public static void LoadAccountData()
         {
             m_DbAccounts = new List<Account>();
-            MySqlConnection con = new MySqlConnection(Settings.Default.DataBaseConnectionString);
+            var con = new MySqlConnection(Settings.Default.DataBaseConnectionString);
             try
             {
                 con.Open();
-                MySqlCommand command = new MySqlCommand("SELECT * FROM `accounts`", con);
-                MySqlDataReader reader = command.ExecuteReader();
+                var command = new MySqlCommand("SELECT * FROM `accounts`", con);
+                var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Account account = new Account();
-                    Character character = new Character();
+                    var account = new Account();
+                    var character = new Character();
 
                     account.AccessLevel = reader.GetByte("mainaccess");
                     account.AccountId = reader.GetUInt32("accountid");
@@ -132,7 +132,7 @@ namespace ArcheAge.ArcheAge.Holders
         /// <param name="account">Your Account Which you want Insert(If Not Exist) Or Update(If Exist)</param>
         public static void InsertOrUpdate(Account account)
         {
-            MySqlConnection con = new MySqlConnection(Settings.Default.DataBaseConnectionString);
+            var con = new MySqlConnection(Settings.Default.DataBaseConnectionString);
             try
             {
                 con.Open();
@@ -156,7 +156,7 @@ namespace ArcheAge.ArcheAge.Holders
 
                     //command.Parameters.Add("@accountid", MySqlDbType.UInt32).Value = Program.AccountUid.Next();  //incr index key
                 }
-                MySqlParameterCollection parameters = command.Parameters;
+                var parameters = command.Parameters;
 
                 parameters.Add("@accountid", MySqlDbType.String).Value = account.AccountId;
                 parameters.Add("@name", MySqlDbType.String).Value = account.Name;
