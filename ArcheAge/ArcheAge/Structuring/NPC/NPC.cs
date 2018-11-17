@@ -37,7 +37,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 		/// <summary>
 		/// scale 中文不知道
 		/// </summary>
-		public UInt32 Scale { get; set; }
+		public float Scale { get; set; }
 
 		/// <summary>
 		/// Level

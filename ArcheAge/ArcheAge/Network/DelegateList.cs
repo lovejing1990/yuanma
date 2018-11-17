@@ -288,16 +288,16 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 			}
 
-			// 根据条件判断是否加载NPC
-			if(net.CurrentAccount.Character.LastLoadedNPC.X-x>25|| net.CurrentAccount.Character.LastLoadedNPC.X - x < -25
+			// 根据条件判断是否加载NPC  50m 距离
+			if(net.CurrentAccount.Character.LastLoadedNPC.X-x>50|| net.CurrentAccount.Character.LastLoadedNPC.X - x < -50
 				||
-				net.CurrentAccount.Character.LastLoadedNPC.Y - y > 25 || net.CurrentAccount.Character.LastLoadedNPC.Y - y < -25)
+				net.CurrentAccount.Character.LastLoadedNPC.Y - y > 50 || net.CurrentAccount.Character.LastLoadedNPC.Y - y < -50)
 			{
 				//todo 待完成 2018年11月16日
 				net.CurrentAccount.Character.LastLoadedNPC = net.CurrentAccount.Character.Position;
 
-				////查询NPC，AND Send to Client
-				////创建委托线程
+				//查询NPC，AND Send to Client
+				//创建委托线程
 				Thread thread = new Thread(new ParameterizedThreadStart(GetRangeNpcList));
 				//启动线程
 				thread.Start(net);
@@ -924,7 +924,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//}
 
 			//debug
-			if (chatId == 6)
+			if (chatId == 0)
 			{
 				string msg2 = "The information you sent is not recognized.\n你发送的信息不能被识别";
 				switch (msg)
@@ -983,7 +983,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 						//break;
 					case "hex":
 						string text = File.ReadAllText(@"testhex.txt");
-						net.SendAsyncHex(new NP_Hex(text.Trim()));
+						net.SendAsyncHex(new NP_Hex(text.Replace(" ","")));
 						break;
 					default:
 

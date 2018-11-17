@@ -104,9 +104,9 @@ namespace ArcheAgeGame.ArcheAge.Network
             //
             ns.WriteHex("000000"); //bc b" size="3 
             //90B00000
-            ns.Write((int)0xb090); //preciseHealth d 
+            ns.Write((int)0x10b701); //preciseHealth d 
             //78B40000
-            ns.Write((int)0xb478); //preciseMana d 
+            ns.Write((int)0xa09f01); //preciseMana d 
             //<!--  this part is not 100% correct, need more sniffs --> 
             //FF
             byte point = 0xff;

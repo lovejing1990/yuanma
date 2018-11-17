@@ -1,16 +1,13 @@
-﻿using LocalCommons.Network;
-using LocalCommons.Utilities;
-using ArcheAgeGame.ArcheAge.Network.Connections;
-using ArcheAgeGame.ArcheAge.Network.Packets.Server.Utils;
-using LocalCommons.World;
-using ArcheAgeGame.ArcheAge.Structuring.NPC;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using ArcheAgeGame.ArcheAge.Structuring.NPC;
 using LocalCommons.Logging;
+using LocalCommons.Network;
+using LocalCommons.Utilities;
 
 namespace ArcheAgeGame.ArcheAge.Network
 {
-    public sealed class NP_SCUnitStatePacket_0x0064_debug : NetPacket
+	public sealed class NP_SCUnitStatePacket_0x0064_debug : NetPacket
     {
         public NP_SCUnitStatePacket_0x0064_debug(List<NPC> list) : base(04, 0x0009)
         {
@@ -39,18 +36,34 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 				foreach (NPC npc in list)
 				{
+					if (npc == null)
+					{
+						continue;
+					}
+
 					//opcode
 					ns.Write((short)0x64);
 					if (npc.LiveObjectID == 0)
+					{
+						//获取当前NPC的在线索引
+						int index = NPCs.OnlineNPCList.IndexOf(npc);
+
+						//获取LiveObjectID
 						npc.LiveObjectID = ArcheAgeGame.LiveObjectUid.Next();
+						
+						//更新当前NPC
+						NPCs.OnlineNPCList[index] = npc;
+					}
+						
 					//liveobjectid
 					ns.Write(npc.LiveObjectID);
 					//len
 					ns.Write((short)0x0000);
 					//type
 					ns.Write((byte)0x01);
-					///bc
-					ns.Write((Uint24)0x9BE500);
+					///bc 我不知道BC代表什么意思
+					//ns.Write((Uint24)0x9BE500);
+					ns.Write(npc.LiveObjectID);
 					ns.Write(npc.ID);
 					//tpye 2
 					ns.Write(0);
@@ -59,16 +72,47 @@ namespace ArcheAgeGame.ArcheAge.Network
 					ns.Write(LocalCommons.Utilities.Helpers.ConvertY(npc.Position.Y), 0, 3);
 					ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(npc.Position.Z), 0, 3);
 					//ns.Write(npc.Scale);
-					ns.WriteHex("0000803F");
+					ns.WriteHex("0000803F");//100%=>1065353216  90%=>1064514355
 					ns.Write(npc.Level);
 					ns.Write(npc.ModelID);
-					ns.WriteHex("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002B0A473020200000000000000000000D8590000B8880000FFFF04003E0000000100010200000001000000000000B0000800A66201000000650000000000000000000000");
+					//未知
+					ns.WriteHex("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+					//未知
+					ns.WriteHex("02B0A473020200000000000000000000");
+					//HP  1.00
+					ns.Write(100*100);
+					//MP
+					ns.Write(100*100);
+					//
+					ns.WriteHex("FFFF");
+					//姿势 NPC独有  怪兽没有
+					ns.Write((short)0x04);//len
+					ns.WriteHex("3E000000");
+					//姿势 动作 
+					ns.Write((byte)0x00);//len
+					ns.Write((byte)0x0);
+
+					//
+					//ns.Write((short)0x0201);
+					ns.WriteHex("010200000001000000000000");
+
+					//rot
+					ns.Write((byte)0xB0);
+
+					//
+					ns.WriteHex("000800A66201000000");
+					//factionID
+					ns.Write(npc.FactionId);
+
+					ns.WriteHex("0000000000000000");
+
+
 
 				}
 			}
 			catch(Exception ex)
 			{
-				Log.Exception(ex, "Send NPCs Error ns is null");
+				Log.Exception(ex, "Write NPCs Send Stream Error");
 			}
 
 		}
