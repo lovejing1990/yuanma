@@ -40,7 +40,11 @@ namespace ArcheAgeLogin.ArcheAge.Database
                 {
                     // Run update
                     using (var cmd = new MySqlCommand(File.ReadAllText(Path.Combine("sql", updateFile)), conn))
-                        cmd.ExecuteNonQuery();
+                    {
+	                    Log.Info("GameServer need to connect only after loading all SQL! We are waiting for a long download of large SQL files!");
+	                    cmd.CommandTimeout = 3600; //ждем долгой загрузки больших SQL файлов. Обычно, это значение - десятки секунд.
+	                    cmd.ExecuteNonQuery();
+                    }
 
                     // Log update
                     using (var cmd = new InsertCommand("INSERT INTO `updates` {0}", conn))
