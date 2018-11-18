@@ -50,26 +50,37 @@ namespace ArcheAgeGame.ArcheAge.Holders
         /// <returns></returns>
         public static uint MaxCharacterUid()
         {
-            uint uid = 0;
-            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    MySqlCommand command = new MySqlCommand("SELECT max( characterid )  FROM `character_records`", conn);
-                    uid = (uint)command.ExecuteScalar();
-                    command.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Log.Info("Error: characters {0}", ex.Message);
-                }
-                finally
-                {
-                    conn.Close();
-                }
-            }
-            return uid;
+	        uint uid = 0;
+	        using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+	        {
+		        try
+		        {
+			        conn.Open();
+			        var command = new MySqlCommand("SELECT `characterid` FROM `character_records`", conn);
+			        var reader = command.ExecuteReader();
+			        if (!reader.Read()) { return uid; }
+			        do
+			        {
+				        var character = new Character();
+				        character.CharacterId = reader.GetUInt32("characterid");
+				        if (uid < character.CharacterId)
+				        {
+					        uid = character.CharacterId;
+				        }
+			        } while (reader.Read());
+			        command.Dispose();
+			        reader.Close();
+		        }
+		        catch (Exception ex)
+		        {
+			        Log.Info("Error: {0}", ex.Message);
+		        }
+		        finally
+		        {
+			        conn.Close();
+		        }
+	        }
+	        return uid;
         }
 
         public static void DeleteCharacterData(uint characterId)

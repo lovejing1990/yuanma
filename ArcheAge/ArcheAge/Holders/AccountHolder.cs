@@ -43,17 +43,18 @@ namespace ArcheAgeGame.ArcheAge.Holders
                 try
                 {
                     conn.Open();
-                    var command = new MySqlCommand("SELECT * FROM `accounts`", conn);
+                    var command = new MySqlCommand("SELECT `accountid` FROM `accounts`", conn);
                     var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var account = new Account();
-                        account.AccountId = reader.GetUInt32("accountid");
-                        if (uid < account.AccountId)
-                        {
-                            uid = (uint) account.AccountId;
-                        }
-                    }
+	                if (!reader.Read()) { return uid; }
+	                do
+	                {
+		                var account = new Account();
+		                account.AccountId = reader.GetUInt32("accountid");
+		                if (uid < account.AccountId)
+		                {
+			                uid = (uint) account.AccountId;
+		                }
+	                } while (reader.Read());
                     command.Dispose();
                     reader.Close();
                 }
