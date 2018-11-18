@@ -43,13 +43,24 @@ namespace ArcheAge.ArcheAge.Holders
                 try
                 {
                     conn.Open();
-                    var command = new MySqlCommand("SELECT max( accountid )  FROM `accounts`", conn);
-                    uid = (uint)command.ExecuteScalar();
+                    var command = new MySqlCommand("SELECT `accountid` FROM `accounts`", conn);
+                    var reader = command.ExecuteReader();
+                    if (!reader.Read()) { return uid; }
+                    do
+                    {
+                        var account = new Account();
+                        account.AccountId = reader.GetUInt32("accountid");
+                        if (uid < account.AccountId)
+                        {
+                            uid = account.AccountId;
+                        }
+                    } while (reader.Read());
                     command.Dispose();
+                    reader.Close();
                 }
                 catch (Exception ex)
                 {
-                    Logger.Trace("Error: characters {0}", ex.Message);
+                    Logger.Trace("Error: {0}", ex.Message);
                 }
                 finally
                 {
