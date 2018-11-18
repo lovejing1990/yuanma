@@ -226,25 +226,25 @@ namespace ArcheAge.ArcheAge.Network.Packets.Server
             ns.Write((byte)rg); //Gender + Race c 
             //00
             byte pish = 0;
-            ns.Write((byte)pish); //pish c" id="202 
+            ns.Write((byte)pish); //pish c id=202 
             switch (pish) //<switch id="202">
             {
                 case 0: //<case id="0">
                     //00000000
-                    ns.Write((byte)0x00); //pisc b" size="4 
+                    ns.Write((byte)0x00); //pisc b size=4 
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
                     break; //</case>
                 case 4: //<case id="4">
-                    ns.Write((byte)0x00); //pisc b" size="5 
+                    ns.Write((byte)0x00); //pisc b size=5 
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
                     break; //</case>
                 case 8: //<case id="8">
-                    ns.Write((byte)0x00); //pisc b" size="6
+                    ns.Write((byte)0x00); //pisc b size=6
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
                     ns.Write((byte)0x00);
@@ -254,7 +254,7 @@ namespace ArcheAge.ArcheAge.Network.Packets.Server
             } //</switch>
             //00
             pish = 0;
-            ns.Write((byte)pish); //pish c" id="203
+            ns.Write((byte)pish); //pish c id=203
             switch (pish) //<switch id="203">
             {
                 case 0: //<case id="0">
@@ -266,21 +266,21 @@ namespace ArcheAge.ArcheAge.Network.Packets.Server
                     ns.Write((byte)0x00);//unk c 
                     break; //</case>
                 case 4: //<case id="4">
-                    ns.WriteHex("0000000000"); //pisc b" size="5 
+                    ns.WriteHex("0000000000"); //pisc b size=5 
                     break; //</case>
                 case 5: //<case id="5">
-                    ns.WriteHex("000000000000"); //pisc b" size="6 
+                    ns.WriteHex("000000000000"); //pisc b size=6 
                     break; //</case>
                 case 16: //<case id="16">
-                    ns.WriteHex("00000000000000000000000000"); //pisc b" size="13 
+                    ns.WriteHex("00000000000000000000000000"); //pisc b size=13 
                     break; //</case>
                 case 20: //<case id="20">
-                    ns.WriteHex("00000000"); //pisc b" size="4 
+                    ns.WriteHex("00000000"); //pisc b size=4 
                     break; //</case>
                 case 21: //<case id="21">
                     //govId h 
                     ns.Write((int)net.CurrentAccount.Character.FactionId); //FactionId h 
-                    ns.WriteHex("00"); //unk b" size="3 
+                    ns.WriteHex("000000"); //unk b size=3 
                     break; //</case>
             } //</switch>
 

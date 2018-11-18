@@ -56,21 +56,9 @@ namespace ArcheAge.ArcheAge.Holders
                 try
                 {
                     conn.Open();
-                    var command = new MySqlCommand("SELECT * FROM `character_records`", conn);
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var character = new Character();
-                        character.CharacterId = reader.GetUInt32("characterid");
-                        if (uid < character.CharacterId)
-                        {
-                            uid = character.CharacterId;
-                        }
-                    }
-
+                    var command = new MySqlCommand("SELECT max( characterid )  FROM `character_records`", conn);
+                    uid = (uint)command.ExecuteScalar();
                     command.Dispose();
-                    reader.Close();
-                    reader.Dispose();
                 }
                 catch (Exception ex)
                 {
