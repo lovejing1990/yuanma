@@ -71,8 +71,9 @@ namespace ArcheAgeGame.ArcheAge.Network
 					ns.Write(LocalCommons.Utilities.Helpers.ConvertX(npc.Position.X), 0, 3);
 					ns.Write(LocalCommons.Utilities.Helpers.ConvertY(npc.Position.Y), 0, 3);
 					ns.Write(LocalCommons.Utilities.Helpers.ConvertZ(npc.Position.Z), 0, 3);
-					//ns.Write(npc.Scale);
-					ns.WriteHex("0000803F");//100%=>1065353216  90%=>1064514355
+					byte[] Scale = (byte[])BitConverter.GetBytes(npc.Scale);
+					ns.Write(Scale);
+					//ns.WriteHex("0000803F");//100%=>1065353216  90%=>1064514355
 					ns.Write(npc.Level);
 					ns.Write(npc.ModelID);
 					//未知
@@ -89,7 +90,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 					ns.Write((short)0x04);//len
 					ns.WriteHex("3E000000");
 					//姿势 动作 
-					ns.Write((byte)0x00);//len
+					ns.Write((byte)0x01);//len
 					ns.Write((byte)0x0);
 
 					//

@@ -118,7 +118,10 @@ namespace LocalCommons.Network
 		{
 			this._mStream.WriteByte(value);
 		}
-
+		public void Write(byte[] value)
+		{
+			this._mStream.Write(value,0,value.Length);
+		}
 		/// <summary>
 		/// Writes a 1-byte signed integer value to the underlying stream.
 		/// </summary>

@@ -296,20 +296,21 @@ namespace ArcheAgeGame.ArcheAge.Network
 				//todo 待完成 2018年11月16日
 				net.CurrentAccount.Character.LastLoadedNPC = net.CurrentAccount.Character.Position;
 
-				//查询NPC，AND Send to Client
-				//创建委托线程
-				Thread thread = new Thread(new ParameterizedThreadStart(GetRangeNpcList));
-				//启动线程
-				thread.Start(net);
+				////查询NPC，AND Send to Client
+				////创建委托线程
+				//Thread thread = new Thread(new ParameterizedThreadStart(GetRangeNpcList));
+				////启动线程
+				//thread.Start(net);
+				GetRangeNpcList(net);
 			}
 
 
 		}
 
-		public static void GetRangeNpcList(Object con)
+		public static void GetRangeNpcList(ClientConnection net)
 		{
 
-			ClientConnection net = con as ClientConnection;
+			//ClientConnection net = con as ClientConnection;
 
 			List<NPC> npcs = NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X, net.CurrentAccount.Character.Position.Y);
 			if(npcs.Count>0)
