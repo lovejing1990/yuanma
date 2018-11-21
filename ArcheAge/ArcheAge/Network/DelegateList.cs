@@ -275,23 +275,26 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//net.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net));
 
 			//MoveUnit
-
-			String move = Utility.ByteArrayToString(reader.Buffer);
+			float distance = 150;
+			string move = Utility.ByteArrayToString(reader.Buffer);
 			move = move.Substring(7*2,move.Length-7*2-2);
 			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
 			{
 				//If role is not online, it will not be sent.
-				if (account.Value.Character != null)
+				//todo 判断是否在自己 XX 米内 否则不通知
+				if (account.Value.Character != null
+					&& 
+					(Math.Abs(account.Value.Character.Position.X-x)<distance && Math.Abs(account.Value.Character.Position.Y-y)<distance))
 				{
 					account.Value.Connection.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net, move));
 				}
 
 			}
-
-			// 根据条件判断是否加载NPC  50m 距离
-			if(net.CurrentAccount.Character.LastLoadedNPC.X-x>50|| net.CurrentAccount.Character.LastLoadedNPC.X - x < -50
+			float movement = 50;
+			// 根据条件判断是否加载NPC  移动 50m 距离
+			if (Math.Abs(net.CurrentAccount.Character.LastLoadedNPC.X-x)> movement
 				||
-				net.CurrentAccount.Character.LastLoadedNPC.Y - y > 50 || net.CurrentAccount.Character.LastLoadedNPC.Y - y < -50)
+				Math.Abs(net.CurrentAccount.Character.LastLoadedNPC.Y - y) > movement)
 			{
 				//return;//Debug off, if necessary, please open. 2018年11月18日 19点19分
 					   //todo 待完成 2018年11月16日

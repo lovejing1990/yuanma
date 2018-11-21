@@ -82,29 +82,37 @@ namespace ArcheAgeGame.ArcheAge.Network
 					//未知
 					//ns.WriteHex("02B0A473020200000000000000000000");
 					//HP  1.00
-					ns.Write(100*100);
+					ns.Write(0);
 					//MP
-					ns.Write(100*100);
+					ns.Write(0);
 					//
 					ns.WriteHex("FFFF");
 					//姿势 NPC独有  怪兽没有
 					ns.Write((short)0x04);//len
-					ns.WriteHex("3E000000");
+					ns.Write(0x3e);//3E000000  3D000000
 					//姿势 动作 
-					ns.Write((byte)0x01);//len
-					ns.Write((byte)0x0);
+					ns.Write((short)0x01);//len
+										  //ns.Write((byte)0x0);
 
 					//
 					//ns.Write((short)0x0201);
-					ns.WriteHex("010200000001000000000000");
+					ns.Write((byte)0x01);
+					ns.Write(0x02);
+					ns.WriteHex("010000");
 
-					//rot
-					ns.Write((byte)0xB0);
+					//rot.x  guess
+					ns.Write((short)0x0);
+					//rot.y guess
+					ns.Write((short)0x0);
+					//rot.z confirm
+					ns.Write((short)0xB0);
 
 					//
-					ns.WriteHex("000800A66201000000");
-					//factionID
-					ns.Write(npc.FactionId);
+					ns.WriteHex("0800A662" +
+						"01000000");
+					//factionID confirm
+					//ns.Write(npc.FactionId);
+					ns.Write(0x65);
 
 					ns.WriteHex("0000000000000000");
 
