@@ -138,6 +138,7 @@
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitPointsPacket_0x01B2.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitMovementsPacket_0x0066.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCResultRestrictCheck_0x01C3.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitStatePacket_0x0064_debug.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitStatePacket_0x0064.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SCUnitVisualOptionsPacket_0x01C0.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_SetGameType_0x000F.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="ArcheAge\Structuring\Character.cs" />
     <Compile Include="ArcheAge\Structuring\EventDefinitions.cs" />
     <Compile Include="ArcheAge\Structuring\Main\IVisibleObject.cs" />
+    <Compile Include="ArcheAge\Structuring\NPC\NPCs.cs" />
     <Compile Include="ArcheAge\Structuring\User\User.cs" />
     <Compile Include="ArcheAge\Utilites\AbilityPriceTime.cs" />
     <Compile Include="ArcheAge\Utilites\AbilityUnlock.cs" />
@@ -170,6 +172,7 @@
     <Compile Include="ArcheAge\World\Jobs.cs" />
     <Compile Include="ArcheAge\World\Map.cs" />
     <Compile Include="ArcheAge\World\Monster.cs" />
+    <Compile Include="ArcheAge\Structuring\NPC\NPC.cs" />
     <Compile Include="ArcheAge\World\PropertyObject.cs" />
     <Compile Include="ArcheAge\World\RevealedMap.cs" />
     <Compile Include="ArcheAge\World\SessionObject.cs" />

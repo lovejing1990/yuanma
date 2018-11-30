@@ -1,5 +1,8 @@
 /.vs
 /*/obj
 /mysql
-/Release/log/archive
+/Release/log/
 /Release/MySQL
+/Release/bin/
+/DevTool/bin/
+/ArcheageLauncher/

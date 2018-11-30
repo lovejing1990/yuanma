@@ -16,6 +16,7 @@ namespace ArcheAgeGame.ArcheAge.Network
             //00
             //FF091A00 0000000000000000
             //- <packet id="0x006401" name="SCUnitStatePacket">
+			if(net.CurrentAccount.Character.LiveObjectId==0)
             net.CurrentAccount.Character.LiveObjectId = ArcheAgeGame.LiveObjectUid.Next(); //liveObjectId d3
             ns.Write((Uint24)net.CurrentAccount.Character.LiveObjectId); //liveObjectId d3 "F52700"
             ns.WriteUTF8Fixed(net.CurrentAccount.Character.CharName,
@@ -103,9 +104,9 @@ namespace ArcheAgeGame.ArcheAge.Network
             //
             ns.WriteHex("000000"); //bc b" size="3 
             //90B00000
-            ns.Write((int)0xb090); //preciseHealth d 
+            ns.Write((int)0x10b701); //preciseHealth d 
             //78B40000
-            ns.Write((int)0xb478); //preciseMana d 
+            ns.Write((int)0xa09f01); //preciseMana d 
             //<!--  this part is not 100% correct, need more sniffs --> 
             //FF
             byte point = 0xff;
@@ -208,11 +209,11 @@ namespace ArcheAgeGame.ArcheAge.Network
                 ns.Write((int)0x00);//type d 
             } //</for>
             //00
-            ns.Write((byte)0x00); //rot.x c 
+            ns.Write((byte)net.CurrentAccount.Character.Heading.X); //rot.x c 
             //00
-            ns.Write((byte)0x00); //rot.y c 
+            ns.Write((byte)net.CurrentAccount.Character.Heading.Y); //rot.y c 
             //D0
-            ns.Write((byte)0xD0); //rot.z c 
+            ns.Write((byte)net.CurrentAccount.Character.Heading.Z); //rot.z c 
             //21
             int rg = 0;
             rg += net.CurrentAccount.Character.CharGender << 4;

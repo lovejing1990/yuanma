@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using LocalCommons.Database;
 using LocalCommons.Logging;
 using LocalCommons.Utilities;
@@ -34,32 +35,64 @@ namespace ArcheAgeLogin.ArcheAge.Database
         /// <param name="updateFile"></param>
         public void RunUpdate(string updateFile)
         {
-            try
-            {
-                using (var conn = this.GetConnection())
-                {
-                    // Run update
-                    using (var cmd = new MySqlCommand(File.ReadAllText(Path.Combine("sql", updateFile)), conn))
-                    {
-	                    Log.Info("We are waiting for a long download of large SQL files!\n       - It is necessary to wait for loading of SQL and only then to start GameServer!\n       - Additional: Set parameter max_allowed_packet=16M in c:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini");
-	                    cmd.CommandTimeout = 3600; //ждем долгой загрузки больших SQL файлов. Обычно, это значение 30 секунд.
-	                    cmd.ExecuteNonQuery();
-                    }
-                    // Log update
-                    using (var cmd = new InsertCommand("INSERT INTO `updates` {0}", conn))
-                    {
-                        cmd.Set("path", updateFile);
-                        cmd.Execute();
-                    }
 
-                    Log.Info("Successfully applied '{0}'.", updateFile);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error("RunUpdate: Failed to run '{0}': {1}", updateFile, ex.Message);
-                CliUtil.Exit(1);
-            }
+			string[] result = Regex.Split(File.ReadAllText(Path.Combine("sql", updateFile)), @"([^\\];)");
+			try
+			{
+				using (var conn = this.GetConnection())
+				{
+
+					//stop autocommit
+					using (var cmd = conn.CreateCommand())
+					{
+						cmd.CommandText = "SET AUTOCOMMIT = 0";
+						cmd.ExecuteNonQuery();
+					}
+
+					// Run update
+					using (var cmd = new MySqlCommand(File.ReadAllText(Path.Combine("sql", updateFile)), conn))
+					{
+						Log.Info("GameServer need to connect only after loading all SQL! We are waiting for a long download of large SQL files!");
+						cmd.CommandTimeout = 3600; //ждем долгой загрузки больших SQL файлов. Обычно, это значение - десятки секунд.
+						cmd.ExecuteNonQuery();
+					}
+					//cmd.ExecuteNonQuery();
+					//}
+
+					// Log update
+					using (var cmd = new InsertCommand("INSERT INTO `updates` {0}", conn))
+					{
+						cmd.Set("path", updateFile);
+						cmd.Execute();
+					}
+
+					// recovery autocommit
+					using (var cmd = conn.CreateCommand())
+					{
+						cmd.CommandText = "SET AUTOCOMMIT = 1";
+						cmd.ExecuteNonQuery();
+					}
+
+					Log.Info("Successfully applied '{0}'.", updateFile);
+				}
+			}
+			catch (Exception ex)
+			{
+				using (var conn = this.GetConnection())
+				{
+					MySqlTransaction transaction = conn.BeginTransaction();
+
+					// recovery autocommit
+					using (var cmd = conn.CreateCommand())
+					{
+						cmd.CommandText = "SET AUTOCOMMIT = 1";
+						cmd.ExecuteNonQuery();
+					}
+				}
+
+				Log.Error("RunUpdate: Failed to run '{0}': {1}", updateFile, ex.Message);
+				CliUtil.Exit(1);
+			}
         }
         /// <summary>
         /// Deletes character.

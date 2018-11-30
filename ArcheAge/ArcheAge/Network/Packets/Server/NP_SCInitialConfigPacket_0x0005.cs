@@ -15,7 +15,7 @@ namespace ArcheAgeGame.ArcheAge.Network.Packets.Server
             //1.0.1406
             //SCInitialConfigPacket
             //2B00 DD01 0500 0A00 61612E6D61696C2E7275 0700 3E320F0F790033 00000000 00 0A 00 32 00 00 00 00 00 01 01 01 01 01
-            const string host = "Melua.pw";
+            const string host = "age.dg1298.com";
             ns.WriteUTF8Fixed(host, host.Length); //host_len h, host b
 
             string fset = "3E320F0F790033";

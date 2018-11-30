@@ -165,7 +165,7 @@ namespace LocalCommons.Network
 					builder.AppendFormat("{0:X2} ", t);
 				}
 				//не выводим Pong
-				if (compiled[4] == 0x13)
+				if (compiled[4] == 0x13 && !(compiled[3] == 0x01 && compiled[4] == 0x66 && compiled[5] == 0x00))
 				{
 					return;
 				}
@@ -203,8 +203,8 @@ namespace LocalCommons.Network
 				builder.AppendFormat("{0:X2} ", b);
 			}
 			//не выводим Pong
-			if (compiled[4] == 0x13 && !(compiled[1] == 0x01 && compiled[2] == 0x66 && compiled[3] == 0x00))
-				//if (compiled[4] == 0x13)
+			if (compiled[4] == 0x13 && !(compiled[3] == 0x01 && compiled[4] == 0x66 && compiled[5] == 0x00))
+			//if (compiled[4] == 0x13)
 			{
 				return;
 			}
@@ -250,26 +250,23 @@ namespace LocalCommons.Network
 			do
 			{
 				byte[] data = new byte[length]; //создадим один раз
-				Buffer.BlockCopy(this.m_RecvBuffer, offset, data, 0, length);
-				//не выводим Ping
-				if (data[2] == 0x7b)
+				Buffer.BlockCopy(reader.Buffer, offset, data, 0, length);
+				//--- Console Hexadecimal 
+				//сначало надо вывести лог пакета в консоль
+				var builder = new StringBuilder();
+				builder.Append("Recv: ");
+				builder.Append(Utility.IntToHex(length));
+				builder.Append(" ");
+				for (ushort i = 0; i < length; i++)
 				{
-					//
+					builder.AppendFormat("{0:X2} ", data[i]);
 				}
 
-				if (data[2] != 0x12)
+				//не выводим Ping
+				//Heartbeat and Move Hidden
+				if ((data[2] != 0x12) && !(data[1] == 0x01 && data[2] == 0x88 && data[3] == 0x00))
+					//if ((data[2] != 0x12))
 				{
-					//--- Console Hexadecimal 
-					//сначало надо вывести лог пакета в консоль
-					var builder = new StringBuilder();
-					builder.Append("Recv: ");
-					builder.Append(Utility.IntToHex(length));
-					builder.Append(" ");
-					for (ushort i = 0; i < length; i++)
-					{
-						builder.AppendFormat("{0:X2} ", data[i]);
-					}
-
 					Console.ForegroundColor = ConsoleColor.DarkGray;
 					Log.Info(builder.ToString());
 					Console.ResetColor();
@@ -292,9 +289,9 @@ namespace LocalCommons.Network
 					//и только затем отправить на обработку
 					this.HandleReceived(data); //отправляем на обработку данные пакета
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
-					Log.Info("Errors when parsing glued packets"); //: {0}, ex.Message);
+					Log.Info("Errors when parsing glued packets : {0}", ex.Message);
 					//throw;
 				}
 				offset += length;
