@@ -30,7 +30,7 @@ CREATE TABLE `equip_pack_body_parts` (
   `skin_color_id` int(8) DEFAULT NULL,
   `body_diffuse_map_id` int(8) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of equip_pack_body_parts

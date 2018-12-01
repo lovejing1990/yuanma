@@ -34,7 +34,7 @@ CREATE TABLE `item_body_parts` (
   `npc_only` int(1) DEFAULT NULL,
   `beautyshop_only` int(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of item_body_parts

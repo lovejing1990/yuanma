@@ -245,7 +245,7 @@ namespace LocalCommons.Network
                     var data = new byte[length];
                     Buffer.BlockCopy(reader.Buffer, offset, data, 0, length);
                     //не выводим Ping
-                    if (data[2] != 0x12 || data[2] != 0x88)
+                    if (data[2] != 0x12 && data[2] != 0x88)
                     {
                         //--- Console Hexadecimal 
                         //сначало надо вывести лог пакета в консоль

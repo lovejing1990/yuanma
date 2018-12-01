@@ -25,7 +25,7 @@ CREATE TABLE `doodad_func_attachments` (
   `space` int(8) DEFAULT NULL,
   `bond_kind_id` int(8) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of doodad_func_attachments
