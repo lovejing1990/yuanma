@@ -10,6 +10,18 @@ Database must be named "archeage".
 
 The tables are here: ArcheAge\bin\Debug\sql\*.sql, ArcheAgeLogin\bin\Debug\sql\*.sql
 
+Or:
+
+Get the AAEMU Server (compil) https://github.com/NL0bP/Archeage-Server-emulator/releases
+1. Unpack archiv in a folder "AAEMU"
+2. Run "AAEMU\start MySQL.bat"
+3. Run "AAEMU\start AAServer.bat"
+4. Run "AAEMU\Release\AAEMU-Launcher\AAEMU-Launcher.exe"
+5. Profit.
+
+You need Client is 1.0!
+Client 1.0: https://cloud.mail.ru/public/cdaf4fb889b9/Archeage_enotbox.com.rar
+
 You can contact us on Discord.
 
 Now you can see wandering around the world. And multiple language support.
