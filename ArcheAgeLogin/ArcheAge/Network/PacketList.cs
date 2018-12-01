@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using ArcheAgeLogin.ArcheAge.Holders;
 using ArcheAgeLogin.ArcheAge.Structuring;
 using ArcheAgeLogin.Properties;
+using LocalCommons.Cookie;
 using LocalCommons.Cryptography;
 using LocalCommons.Logging;
 using LocalCommons.Network;
@@ -749,7 +749,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
 					net.CurrentAccount.LastEnteredTime = Utility.CurrentTimeMilliseconds();
 					net.CurrentAccount.LastIp = net.ToString(); // IP
 																// генерируем cookie
-					var cookie = Helpers.Cookie();
+					int cookie = Cookie.Generate();
 					net.CurrentAccount.Session = cookie; //Designated session
 														 //Передаем управление Гейм серверу
 					net.MovedToGame = true;
@@ -923,7 +923,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
 																//AccountHolder.AccountList.FirstOrDefault(n => n.AccId == Convert.ToInt32(cookie));
 
 					// генерируем cookie
-					var cookie = Helpers.Cookie();
+					int cookie = Cookie.Generate();
 					net.CurrentAccount.Session = cookie; //Designated session
 
 					//Передаем управление Гейм серверу
@@ -1167,7 +1167,7 @@ namespace ArcheAgeLogin.ArcheAge.Network
 					//net.CurrentAccount.Session = num= 1323126619;//Specify session
 
 					// генерируем cookie
-					var cookie = Helpers.Cookie();
+					int cookie = Cookie.Generate();
 					net.CurrentAccount.Session = cookie; //Designated session
 
 					net.MovedToGame = true;

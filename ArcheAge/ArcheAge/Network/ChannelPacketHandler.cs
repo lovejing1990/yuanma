@@ -113,7 +113,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			// ZC_COLONY_OCCUPATION_INFO
 			// ZC_NORMAL...
 			Send.ZC_START_GAME(conn);
-			Send.ZC_OBJECT_PROPERTY(conn, character);
+			//Send.ZC_OBJECT_PROPERTY(conn, character);
 			Send.ZC_MOVE_SPEED(character);
 			// ZC_UPDATE_ALL_STATUS
 			// ZC_MOVE_SPEED
@@ -609,7 +609,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			var d1 = packet.GetFloat();
 			var d2 = packet.GetFloat();
 
-			conn.SelectedCharacter.Rotate(d1, d2);
+			//conn.SelectedCharacter.Rotate(d1, d2);
 		}
 
 		/// <summary>

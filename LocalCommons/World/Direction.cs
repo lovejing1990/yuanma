@@ -10,19 +10,19 @@ namespace LocalCommons.World
 	    /// <summary>
 	    /// X rotate (left/right).
 	    /// </summary>
-	    public readonly short X;
+	    public readonly sbyte X;
 
         /// <summary>
         /// Y rotate (up/down).
         /// </summary>
-        public readonly short Y;
+        public readonly sbyte Y;
 
         /// <summary>
         /// Z rotate (depth).
         /// </summary>
-        public readonly short Z;
+        public readonly sbyte Z;
 
-        public Direction(short x, short y, short z)
+        public Direction(sbyte x, sbyte y, sbyte z)
         {
 	        this.X = x;
 	        this.Y = y;

@@ -1,6 +1,6 @@
 ﻿using LocalCommons.Network;
 using System;
-using LocalCommons.Utilities;
+using LocalCommons.Cookie;
 
 namespace ArcheAgeGame.ArcheAge.Network
 {
@@ -57,7 +57,7 @@ namespace ArcheAgeGame.ArcheAge.Network
                     ns.Write((byte) 0x00); //gm
 
                     // генерируем cookie
-                    var cookie = LocalCommons.Utilities.Helpers.Cookie();
+                    int cookie = Cookie.Generate();
                     ns.Write((uint)cookie);     //sc        cookie
 
                     ns.Write((short) 0x04E2); //sp 1250

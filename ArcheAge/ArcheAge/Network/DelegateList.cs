@@ -254,41 +254,36 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//      2500 0001 8800 2D0801 01   E96D0200 04    097C7A 248775 499503 0000  0000  0000  00    00    C4    00     00     00     01       00          14
 
 			var bc = reader.ReadUInt24();//LiveObject
-			byte type = reader.ReadByte();
-			int time = reader.ReadLEInt32();
-			byte flag = reader.ReadByte();
+			var type = reader.ReadByte();
+			var time = reader.ReadLEInt32();
+			var flag = reader.ReadByte();
 			//reader.Offset += 6; 
 
-			var x = LocalCommons.Utilities.Helpers.ConvertX(reader.ReadByteArray(3)) + 1.0f;
-			var y = LocalCommons.Utilities.Helpers.ConvertY(reader.ReadByteArray(3)) + 1.0f;
+			var x = LocalCommons.Utilities.Helpers.ConvertX(reader.ReadByteArray(3));
+			var y = LocalCommons.Utilities.Helpers.ConvertY(reader.ReadByteArray(3));
 			var z = LocalCommons.Utilities.Helpers.ConvertZ(reader.ReadByteArray(3));
 			net.CurrentAccount.Character.Position = new Position(x, y, z); //сохраним позицию
 
 			reader.Offset += 6; //
-			short rotx = reader.ReadByte();
-			short roty = reader.ReadByte();
-			short rotz = reader.ReadByte();
+			sbyte rotx = reader.ReadSByte();
+			sbyte roty = reader.ReadSByte();
+			sbyte rotz = reader.ReadSByte();
 			net.CurrentAccount.Character.Heading = new Direction(rotx, roty, rotz); //сохраним направление взгляда
 
 			CharacterHolder.InsertOrUpdate(net.CurrentAccount.Character,net); //записываем в базу character_records
 
-			//net.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net));
-
 			//MoveUnit
-			float distance = 150;
-			string move = Utility.ByteArrayToString(reader.Buffer);
-			move = move.Substring(7*2,move.Length-7*2-2);
-			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
+			const float distance = 150;
+			var move = Utility.ByteArrayToString(reader.Buffer);
+			move = move.Substring(7 * 2, move.Length - 7 * 2 - 2);
+			foreach (var account in ClientConnection.CurrentAccounts)
 			{
 				//If role is not online, it will not be sent.
-				//todo 判断是否在自己 XX 米内 否则不通知
-				if (account.Value.Character != null
-					&& 
-					(Math.Abs(account.Value.Character.Position.X-x)<distance && Math.Abs(account.Value.Character.Position.Y-y)<distance))
+				//TODO: 判断是否在自己 XX 米内 否则不通知
+				if (account.Value.Character != null && (Math.Abs(account.Value.Character.Position.X-x)<distance && Math.Abs(account.Value.Character.Position.Y-y)<distance))
 				{
 					account.Value.Connection.SendAsync(new NP_SCUnitMovementsPacket_0x0066(net, move));
 				}
-
 			}
 			float movement = 50;
 			// 根据条件判断是否加载NPC  移动 50m 距离
@@ -297,7 +292,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 				Math.Abs(net.CurrentAccount.Character.LastLoadedNPC.Y - y) > movement)
 			{
 				//return;//Debug off, if necessary, please open. 2018年11月18日 19点19分
-					   //todo 待完成 2018年11月16日
+				//TODO: 待完成 2018年11月16日
 				net.CurrentAccount.Character.LastLoadedNPC = net.CurrentAccount.Character.Position;
 
 				////查询NPC，AND Send to Client
@@ -307,8 +302,6 @@ namespace ArcheAgeGame.ArcheAge.Network
 				//thread.Start(net);
 				GetRangeNpcList(net);
 			}
-
-
 		}
 
 		public static void GetRangeNpcList(ClientConnection net)
@@ -316,9 +309,20 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 			//ClientConnection net = con as ClientConnection;
 
-			List<NPC> npcs = NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X, net.CurrentAccount.Character.Position.Y);
-			if(npcs.Count>0)
-				net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(npcs));
+			var npcs = NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X, net.CurrentAccount.Character.Position.Y);
+			if (npcs.Count > 0)
+			{
+				//net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(npcs)); //заменил на свой пакет
+				foreach (var npc in npcs)
+				{
+					if (npc == null)
+					{
+						continue;
+					}
+					net.SendAsync(new UnitStatePacket(npc));
+					//net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(npc)); //заменил на свой пакет
+				}
+			}
 		}
 
 		//OnPacketReceive_0x01_NP_CSGiveupTaskPacket_0x00D3
@@ -330,7 +334,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 		private static void OnPacketReceive_0x01_NP_CSGiveupTaskPacket_0x00D3(ClientConnection net, PacketReader reader)
 		{
 			//read task ID
-			int taskID = reader.ReadLEInt32();
+			var taskID = reader.ReadLEInt32();
 			Log.Info(net.CurrentAccount.Character.CharName + " [Give up the Taks]：" + taskID.ToString());
 		}
 		/// <summary>
@@ -341,8 +345,8 @@ namespace ArcheAgeGame.ArcheAge.Network
 		/// <param name="reader"></param>
 		private static void OnPacketReceive_0x01_NP_CSGiveupTaskPacket_0x0114(ClientConnection net, PacketReader reader)
 		{
-			short queryNameLen = reader.ReadLEInt16();
-			string queryName = reader.ReadUTF8StringSafe(queryNameLen);
+			var queryNameLen = reader.ReadLEInt16();
+			var queryName = reader.ReadUTF8StringSafe(queryNameLen);
 			Log.Debug(net.CurrentAccount.Character.CharName+">>"+queryName);
 		}
 
@@ -445,9 +449,9 @@ namespace ArcheAgeGame.ArcheAge.Network
 			newCharacter.Position = new Position(x, y, z); //сохраним позицию
 
 			//reader.Offset += 6; //
-			//short rotx = reader.ReadLEInt16();
-			//short roty = reader.ReadLEInt16();
-			//short rotz = reader.ReadLEInt16();
+			//sbyte rotx = reader.ReadLEInt16();
+			//sbyte roty = reader.ReadLEInt16();
+			//sbyte rotz = reader.ReadLEInt16();
 			//net.CurrentAccount.Character.Heading = new Direction(rotx, roty, rotz); //сохраним направление взгляда
 
 			CharacterHolder.InsertOrUpdate(newCharacter,net); //записываем в базу character_records
@@ -827,7 +831,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 
 			//将自己的模型投放给所有用户
-			foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
+			foreach (var account in ClientConnection.CurrentAccounts)
 			{
 				//判断不能是自己的角色，防止重复
 				if (account.Value.Connection != null && account.Value.AccountId != net.CurrentAccount.AccountId)
@@ -897,7 +901,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 		public static void OnPacketReceive_0x01_CSNotifyInGame_0x0028(ClientConnection net, PacketReader reader)
 		{
-			string welcome = "Welcome :" + net.CurrentAccount.Character.CharName + "!\nThis is a Private ArcheRage emulation server.\nHave fun.";
+			var welcome = "Welcome :" + net.CurrentAccount.Character.CharName + "!\nThis is a Private ArcheRage emulation server.\nHave fun.";
 			net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, -2, "system", welcome));
 		}
 
@@ -911,15 +915,15 @@ namespace ArcheAgeGame.ArcheAge.Network
 		private static void OnPacketReceive_0x01_NP_CSChatPacket_0x0061(ClientConnection net, PacketReader reader)
 		{
 			//获取聊天类型ID
-			short chatId = reader.ReadLEInt16();
+			var chatId = reader.ReadLEInt16();
 			//未知
-			short var1 = reader.ReadLEInt16();
+			var var1 = reader.ReadLEInt16();
 			//未知
 			reader.Offset += 6;
 
 			//读取信息
-			short msgLen = reader.ReadInt16();
-			string msg = reader.ReadUTF8StringSafe(msgLen);
+			var msgLen = reader.ReadInt16();
+			var msg = reader.ReadUTF8StringSafe(msgLen);
 
 			//私聊
 			//if (chatId == -3)
@@ -931,7 +935,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//debug
 			if (chatId == 0)
 			{
-				string msg2 = "The information you sent is not recognized.\n你发送的信息不能被识别";
+				var msg2 = "The information you sent is not recognized.\n你发送的信息不能被识别";
 				switch (msg)
 				{
 					case "/dev"://开发命令
@@ -953,7 +957,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 						break;
 					case "/ocl":
 						msg2 = "Online Character List :\n";
-						foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
+						foreach (var account in ClientConnection.CurrentAccounts)
 						{
 							if (account.Value.Connection != null)
 							{
@@ -965,7 +969,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 					case "/re"://重新拉去所有用户模型
 
 						//将自己的模型投放给所有用户
-						foreach (KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
+						foreach (var account in ClientConnection.CurrentAccounts)
 						{
 							//判断不能是自己的角色，防止重复
 							if (account.Value.Connection != null && account.Value.AccountId != net.CurrentAccount.AccountId)
@@ -980,14 +984,14 @@ namespace ArcheAgeGame.ArcheAge.Network
 						msg2 = "Refresh the success";
 						break;
 					case "/hp":
-						net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X,net.CurrentAccount.Character.Position.Y)));
+						//net.SendAsync(new NP_SCUnitStatePacket_0x0064_debug(NPCs.RangeNPCs(net.CurrentAccount.Character.Position.X,net.CurrentAccount.Character.Position.Y)));
 						break;
 					case "npc":
 						net.SendAsyncHex(new NP_Hex("DD00dd0164000d0e000000013ED5000d0e0000000000000000E69479A4F477267A033333733F02440500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002B0A473020200000000000000000000D8590000B8880000FFFF04003E0000000100010200000001000000000000B0000800A66201000000650000000000000000000000"));
 						return;
 						//break;
 					case "hex":
-						string text = File.ReadAllText(@"testhex.txt");
+						var text = File.ReadAllText(@"testhex.txt");
 						net.SendAsyncHex(new NP_Hex(text.Replace(" ","")));
 						break;
 					default:
@@ -1007,12 +1011,12 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 
 			//SCChatMessagePacket
-			string name = net.CurrentAccount.Character.CharName; //角色名称
+			var name = net.CurrentAccount.Character.CharName; //角色名称
 			//net.SendAsync(new NP_SCChatMessagePacket_0x00C6(net, chatId, msg1, msg2));
 
 			//ClientConnection.CurrentAccounts
 			//群发消息
-			foreach(KeyValuePair<int, Account> account in ClientConnection.CurrentAccounts)
+			foreach(var account in ClientConnection.CurrentAccounts)
 			{
 				if (account.Value.Connection != null)
 				{

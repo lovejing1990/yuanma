@@ -9,7 +9,8 @@ namespace ArcheAgeGame.ArcheAge.Network
 {
 	public sealed class NP_SCUnitStatePacket_0x0064_debug : NetPacket
     {
-        public NP_SCUnitStatePacket_0x0064_debug(List<NPC> list) : base(04, 0x0009)
+        //public NP_SCUnitStatePacket_0x0064_debug(List<NPC> list) : base(04, 0x0009)
+	    public NP_SCUnitStatePacket_0x0064_debug(NPC npc) : base(01, 0x064)
         {
 			/**
 			 * DD00
@@ -34,15 +35,15 @@ namespace ArcheAgeGame.ArcheAge.Network
 			{
 
 
-				foreach (NPC npc in list)
-				{
-					if (npc == null)
-					{
-						continue;
-					}
+//				foreach (NPC npc in list)
+//				{
+//					if (npc == null)
+//					{
+//						continue;
+//					}
 
 					//opcode
-					ns.Write((short)0x64);
+//					ns.Write((short)0x64);
 					if (npc.LiveObjectID == 0)
 					{
 						//获取当前NPC的在线索引
@@ -75,16 +76,16 @@ namespace ArcheAgeGame.ArcheAge.Network
 					ns.Write(Scale);
 					//ns.WriteHex("0000803F");//100%=>1065353216  90%=>1064514355
 					ns.Write(npc.Level);
-					//ns.Write(npc.ModelID);
-					ns.Write(10);
+					ns.Write(npc.ModelId);
+					//ns.Write(10);
 					//未知
 					ns.WriteHex("62450000000000000000000000000000005363000000000000000000000000000000E0600000000000000000000000514900000000000000000000004863000000000000000000000000000000000000000000000000000000000000000000000000000000000000002607000000000000000000000000000000D9360000000000000000000000000000007E4D0000425E00000000000000000000000000001802000000000000000000000000000003AA0E00000100000000000000000000000000803F0000803F0000000000000000000000000000803F000000000000803F350200000000803F000000000000803F0000000021000000000000003CDA3C3FFFCDC2FFA25F42FFA25F42FF2B250DFF4B4756FF800000FAFDE6F7DFE4553AF82622176437F5009CD934D8FE090800EBF06220BA2325F30E14FDFF02F0DA0FF325D7F516EB0A25C141E1B0D3159CCE0F0315001EFEF545E601043C1427FFED430DD5272A140023FCCB000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 					//未知
 					//ns.WriteHex("02B0A473020200000000000000000000");
 					//HP  1.00
-					ns.Write(0);
+					ns.Write(1000);
 					//MP
-					ns.Write(0);
+					ns.Write(1000);
 					//
 					ns.WriteHex("FFFF");
 					//姿势 NPC独有  怪兽没有
@@ -118,7 +119,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 
 
 
-				}
+//				}
 			}
 			catch(Exception ex)
 			{

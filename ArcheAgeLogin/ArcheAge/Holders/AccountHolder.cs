@@ -42,37 +42,37 @@ namespace ArcheAgeLogin.ArcheAge.Holders
         /// <returns></returns>
         public static uint MaxAccountUid()
         {
-	        uint uid = 0;
-	        using (var conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
-	        {
-		        try
-		        {
-			        conn.Open();
-			        var command = new MySqlCommand("SELECT `accountid` FROM `accounts`", conn);
-			        var reader = command.ExecuteReader();
-			        if (!reader.Read()) { return uid; }
-			        do
-			        {
-				        var account = new Account();
-				        account.AccountId = reader.GetUInt32("accountid");
-				        if (uid < account.AccountId)
-				        {
-					        uid = (uint) account.AccountId;
-				        }
-			        } while (reader.Read());
-			        command.Dispose();
-			        reader.Close();
-		        }
-		        catch (Exception ex)
-		        {
-			        Log.Info("Error: {0}", ex.Message);
-		        }
-		        finally
-		        {
-			        conn.Close();
-		        }
-	        }
-	        return uid;
+            uint uid = 0;
+            using (MySqlConnection conn = new MySqlConnection(Settings.Default.DataBaseConnectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand command = new MySqlCommand("SELECT * FROM `accounts`", conn);
+                    MySqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Account account = new Account();
+                        account.AccountId = reader.GetUInt32("accountid");
+                        if (uid < account.AccountId)
+                        {
+                            uid = account.AccountId;
+                        }
+                    }
+
+                    command.Dispose();
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.Info("Error: {0}", ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+            return uid;
         }
 
         /// <summary>

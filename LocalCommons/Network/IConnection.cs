@@ -97,7 +97,7 @@ namespace LocalCommons.Network
 		{
 			try
 			{
-				bool res = false;
+				var res = false;
 				do
 				{
 					if (this.m_AsyncReceive == null) //Disposed
@@ -154,8 +154,10 @@ namespace LocalCommons.Network
 				var packet = this.m_PacketQueue.Dequeue();
 				var compiled = packet.Compile();
 				this.m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None); //отправляем пакет
-																						 //--- Console Hexadecimal 
-																						 //вывод лога пакетов в консоль
+				//не выводим Pong
+				if (compiled[4] == 0x13 || compiled[4] == 0x66) return;
+				//--- Console Hexadecimal 
+				//вывод лога пакетов в консоль
 				var builder = new StringBuilder();
 				builder.Append("Send: ");
 				//builder.Append(Utility.IntToHex(compiled.Length));
@@ -163,11 +165,6 @@ namespace LocalCommons.Network
 				foreach (var t in compiled)
 				{
 					builder.AppendFormat("{0:X2} ", t);
-				}
-				//не выводим Pong
-				if (compiled[4] == 0x13 && !(compiled[3] == 0x01 && compiled[4] == 0x66 && compiled[5] == 0x00))
-				{
-					return;
 				}
 
 				Console.ForegroundColor = ConsoleColor.Gray;
@@ -195,6 +192,8 @@ namespace LocalCommons.Network
 
 			var compiled = packet.Compile2();
 			this.m_CurrentChannel.Send(compiled, compiled.Length, SocketFlags.None);
+			//не выводим Pong
+			if (compiled[4] == 0x13 || compiled[4] == 0x66) return;
 			//--- Console Hexadecimal 
 			var builder = new StringBuilder();
 			builder.Append("Send: ");
@@ -202,13 +201,6 @@ namespace LocalCommons.Network
 			{
 				builder.AppendFormat("{0:X2} ", b);
 			}
-			//не выводим Pong
-			if (compiled[4] == 0x13 && !(compiled[3] == 0x01 && compiled[4] == 0x66 && compiled[5] == 0x00))
-			//if (compiled[4] == 0x13)
-			{
-				return;
-			}
-
 			Console.ForegroundColor = ConsoleColor.Gray;
 			Log.Info(builder.ToString());
 			Console.ResetColor();
@@ -246,64 +238,64 @@ namespace LocalCommons.Network
 			var size = reader.Size;
 			var length = reader.ReadLEUInt16();
 			ushort offset = 2;
-			
-			do
-			{
-				byte[] data = new byte[length]; //создадим один раз
-				Buffer.BlockCopy(reader.Buffer, offset, data, 0, length);
-				//--- Console Hexadecimal 
-				//сначало надо вывести лог пакета в консоль
-				var builder = new StringBuilder();
-				builder.Append("Recv: ");
-				builder.Append(Utility.IntToHex(length));
-				builder.Append(" ");
-				for (ushort i = 0; i < length; i++)
-				{
-					builder.AppendFormat("{0:X2} ", data[i]);
-				}
-
-				//не выводим Ping
-				//Heartbeat and Move Hidden
-				if ((data[2] != 0x12) && !(data[1] == 0x01 && data[2] == 0x88 && data[3] == 0x00))
-					//if ((data[2] != 0x12))
-				{
-					Console.ForegroundColor = ConsoleColor.DarkGray;
-					Log.Info(builder.ToString());
-					Console.ResetColor();
-				}
+            while (length > 0 && offset < transfered - 2)
+            {
+                try
+                {
+                    var data = new byte[length];
+                    Buffer.BlockCopy(reader.Buffer, offset, data, 0, length);
+                    //не выводим Ping
+                    if (data[2] != 0x12 || data[2] != 0x88)
+                    {
+                        //--- Console Hexadecimal 
+                        //сначало надо вывести лог пакета в консоль
+                        var builder = new StringBuilder();
+                        builder.Append("Recv: ");
+                        builder.Append(Utility.IntToHex(length));
+                        builder.Append(" ");
+                        for (ushort i = 0; i < length; i++)
+                        {
+                            builder.AppendFormat("{0:X2} ", data[i]);
+                        }
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+	                    Log.Info(builder.ToString());
+                        Console.ResetColor();
+                    }
 #if DEBUG
-				//--- File Hexadecimal
-				//вывод лога пакетов в файл
-				//не выводим Ping
-				//if (data[2] != 0x12)
-				//{
-				//    var fs = new FileStream(path, FileMode.Append);
-				//    var sw = new StreamWriter(fs);
-				//    sw.WriteLine(builder.ToString());
-				//    sw.Close();
-				//    fs.Close();
-				//}
+                    //--- File Hexadecimal
+                    //вывод лога пакетов в файл
+                    //не выводим Ping
+                    //if (data[2] != 0x12)
+                    //{
+                    //    var fs = new FileStream(path, FileMode.Append);
+                    //    var sw = new StreamWriter(fs);
+                    //    sw.WriteLine(builder.ToString());
+                    //    sw.Close();
+                    //    fs.Close();
+                    //}
 #endif
-				try
-				{
-					//и только затем отправить на обработку
-					this.HandleReceived(data); //отправляем на обработку данные пакета
-				}
-				catch (Exception ex)
-				{
-					Log.Info("Errors when parsing glued packets : {0}", ex.Message);
-					//throw;
-				}
-				offset += length;
-				if (offset >= size || offset + 4 >= size) //проверяем не вышди за пределы буфера
-				{
-					continue;
-				}
-				reader.Offset = offset;
-				offset += 2;
-				length = reader.ReadLEUInt16(); //проверяем, есть ли еще пакет
-			} while (length > 0 && offset < size);
-			reader.Clear(); //почистим буфер, инача считываются старые данные
+                    try
+                    {
+						this.HandleReceived(data); //и только затем отправить на обработку данные пакета
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Info("Errors HandleReceived when parsing glued packets : {0}", ex.Message);
+                        //throw;
+                    }
+
+                    offset += length;
+                    reader.Offset = offset;
+                    length = reader.ReadLEUInt16(); //проверяем, есть ли еще пакет
+                    offset += 2;
+                }
+                catch (Exception ex)
+                {
+	                Log.Info("Errors when parsing glued packets : {0}", ex.Message);
+                    break;
+                }
+            }
+            reader.Clear(); //почистим буфер, инача считываются старые данные
 		}
 
 		/// <summary>

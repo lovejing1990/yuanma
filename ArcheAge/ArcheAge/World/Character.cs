@@ -13,7 +13,7 @@ using LocalCommons.World.ObjectProperties;
 
 namespace ArcheAgeGame.ArcheAge.World
 {
-	public class Character : IEntity, ICommander, IPropertyObject
+	public class Character : IEntity //, ICommander, IPropertyObject
 	{
 		private bool _warping;
 
@@ -30,7 +30,7 @@ namespace ArcheAgeGame.ArcheAge.World
 		/// <summary>
 		/// Character's unique id.
 		/// </summary>
-		public long Id { get; set; }
+		public uint Id { get; set; }
 
 		/// <summary>
 		/// Character's globally unique id.
@@ -92,6 +92,64 @@ namespace ArcheAgeGame.ArcheAge.World
 		/// Character's gender.
 		/// </summary>
 		public Gender Gender { get; set; }
+		public Race Race { get; set; }
+		public byte WorldId { get; set; }
+
+		public byte RaceGender { get { return (byte)((0x10 * (byte)this.Gender) + (byte)this.Race); } }
+		public string Guid { get; set; } = "DC0D0CFCD3E01847AD2A5D55EA471CDF"; //для теста // может быть пустой строкой (не null)!
+		public long V { get; set; }
+		//----------------------------------
+		public int[] Type { get; set; } = new int[18];
+		public float[] Weight { get; set; } = new float[18];
+		public float Scale { get; set; }
+		public float Rotate { get; set; }
+		public ushort MoveX { get; set; } //float
+		public ushort MoveY { get; set; } //float
+		public int Lip { get; set; }
+		public int LeftPupil { get; set; }
+		public int RightPupil { get; set; }
+		public int Eyebrow { get; set; }
+		public int Decor { get; set; }
+		public string Modifiers { get; set; }
+		public byte[] Ability { get; set; } = new byte[3];
+		public byte Ext { get; set; } = (byte)3;
+		public int Body { get; set; }
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Z { get; set; }
+		public sbyte RotZ { get; set; }
+		//----------------------------------
+		/// <summary>
+		/// Что одето
+		/// </summary>
+		public int EsHead { get; set; }
+		public int EsNeck { get; set; }
+		public int Chest { get; set; }
+		public int EsWaist { get; set; }
+		public int Legs { get; set; }
+		public int Gloves { get; set; }
+		public int Feet { get; set; }
+		public int EsArms { get; set; }
+		public int EsBack { get; set; }
+		public int EsEar1 { get; set; }
+		public int EsEar2 { get; set; }
+		public int EsFinger1 { get; set; }
+		public int EsFinger2 { get; set; }
+		public int EsUndershirt { get; set; }
+		public int EsUnderpants { get; set; }
+		public int Weapon { get; set; }
+		public int WeaponExtra { get; set; }
+		public int WeaponRanged { get; set; }
+		public int Instrument { get; set; }
+		public int EsBackpack { get; set; }
+		public int EsCosplay { get; set; }
+		public int NewbieClothPackId { get; set; }
+		public int NewbieWeaponPackId { get; set; }
+		public int FactionId { get; set; }
+		public int StartingZoneId { get; set; }
+		public int ModelRef { get; set; }
+		public Uint24 LiveObjectId { get; set; }
+		//----------------------------------
 
 		/// <summary>
 		/// Character's hair style.
@@ -308,6 +366,22 @@ namespace ArcheAgeGame.ArcheAge.World
 		public int TotalExp { get; set; }
 
 		/// <summary>
+		/// Gets or set MP, clamped between 0 and MaxMp.
+		/// </summary>
+		public int Mp
+		{
+			get => _mp; //test
+			set => _mp = Math2.Clamp(0, this.MaxMp, value);
+		}
+
+		private int _mp = 0x0ffffff; //TODO
+
+		/// <summary>
+		/// Maximum MP.
+		/// </summary>
+		public int MaxMp { get; set; }
+		
+		/// <summary>
 		/// Gets or set HP, clamped between 0 and MaxHp.
 		/// </summary>
 		public int Hp
@@ -315,7 +389,7 @@ namespace ArcheAgeGame.ArcheAge.World
 			get { return this._hp; }
 			set { this._hp = Math2.Clamp(0, this.MaxHp, value); }
 		}
-		private int _hp;
+		private int _hp = 0x0ffffff; //TODO
 
 		/// <summary>
 		/// Maximum HP.
@@ -1033,11 +1107,11 @@ namespace ArcheAgeGame.ArcheAge.World
 		/// </summary>
 		/// <param name="d1"></param>
 		/// <param name="d2"></param>
-		public void Rotate(float d1, float d2)
-		{
-			this.SetDirection(d1, d2);
-			Send.ZC_ROTATE(this);
-		}
+		//public void Rotate(float d1, float d2)
+		//{
+		//	this.SetDirection(d1, d2);
+		//	Send.ZC_ROTATE(this);
+		//}
 
 		/// <summary>
 		/// Sets direction and updates clients.
@@ -1131,4 +1205,30 @@ namespace ArcheAgeGame.ArcheAge.World
 			return rnd.Next(min, max + 1);
 		}
 	}
+}
+public enum UnitType : byte
+{
+	//0-actor; 1-npc; 2-slave; 3-unk; 4-unk; 5-mape(pet); 6-unk
+	Actor = 0, //наш персонаж или другие игроки
+	Npc = 1,   //
+	Slave = 2,
+	Pet = 5
+}
+public enum Race : byte
+{
+	None = 0,
+	Nuian = 1,
+	Fairy = 2,
+	Dwarf = 3,
+	Elf = 4,
+	Hariharan = 5,
+	Ferre = 6,
+	Returned = 7,
+	Warborn = 8
+}
+
+public enum Gender : byte
+{
+	Male = 1,
+	Female = 2
 }

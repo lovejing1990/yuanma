@@ -2,6 +2,7 @@
 // For more information, see licence.txt in the main folder
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using LocalCommons.Const;
 using LocalCommons.Logging;
@@ -140,6 +141,33 @@ namespace ArcheAgeGame.ArcheAge.World
 		{
 			lock (this._characters)
 				return this._characters.Values.FirstOrDefault(a => a.TeamName == teamName);
+		}
+
+		/// <summary>
+		/// Adds all monsters to map.
+		/// </summary>
+		public void AddAllMonsters()
+		{
+			//грузим всех NPC
+			var watch = Stopwatch.StartNew();
+			uint count = 0;
+			//const int upper = 14152; //4587; //последний номер ID
+			//Console.WriteLine("[THREAD] Start loading monsters in the background...");
+			//for (var i = 1; i < upper; i++)
+			//{
+			//	GameNetwork.Instance.Database.LoadMonstersData(i);
+			//	foreach (var npc in GameNetwork.Instance.Database.MonstersList)
+			//	{
+			//		if (npc.LiveObjectId == 0)
+			//		{
+			//			npc.LiveObjectId = GameNetwork.Instance.LiveObjectUid.Next(); //инициируем LiveObjectId
+			//		}
+			//		this.AddMonster(npc);
+			//		count++;
+			//	}
+			//}
+			Console.WriteLine("[THREAD] End loading monsters in the background, loading {0} entries in {1:0.00} ms.", count, watch.ElapsedMilliseconds);
+			watch.Stop();
 		}
 
 		/// <summary>

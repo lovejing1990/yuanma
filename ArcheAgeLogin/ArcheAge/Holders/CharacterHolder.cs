@@ -48,18 +48,17 @@ namespace ArcheAgeLogin.ArcheAge.Holders
                 try
                 {
                     conn.Open();
-                    var command = new MySqlCommand("SELECT `characterid` FROM `character_records`", conn);
+                    var command = new MySqlCommand("SELECT * FROM `character_records`", conn);
                     var reader = command.ExecuteReader();
-	                if (!reader.Read()) { return uid; }
-	                do
-	                {
-		                var character = new Character();
-		                character.CharacterId = reader.GetUInt32("characterid");
-		                if (uid < character.CharacterId)
-		                {
-			                uid = character.CharacterId;
-		                }
-	                } while (reader.Read());
+                    while (reader.Read())
+                    {
+                        var character = new Character();
+                        character.CharacterId = reader.GetUInt32("characterid");
+                        if (uid < character.CharacterId)
+                        {
+                            uid = character.CharacterId;
+                        }
+                    }
                     command.Dispose();
                     reader.Close();
                 }

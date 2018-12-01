@@ -129,8 +129,7 @@ namespace ArcheAgeGame.ArcheAge.Network.Packets.Server.Utils
             }
         }
 
-
-        public CharacterInfo(byte level, int packetId) : base(level, packetId)
+	    public CharacterInfo(byte level, int packetId) : base(level, packetId)
         {
         }
     }

@@ -16,6 +16,23 @@ namespace ArcheAgeGame.ArcheAge.World
 		/// </summary>
 		public int Handle { get; private set; }
 
+		/// <summary>
+		/// Creates new NPC.
+		/// </summary>
+		public Monster(int id, NpcType type)
+		{
+			this.Handle = ArcheAgeGame.Instance.World.CreateHandle();
+
+			this.Id = id;
+			this.NpcType = type;
+			this.Level = 1;
+			this.SDR = 1;
+			this.Hp = this.MaxHp = 100;
+			this.DisappearTime = DateTime.MaxValue;
+
+			this.LoadData();
+		}
+
 		private Map _map = Map.Limbo;
 		/// <summary>
 		/// The map the monster is currently on.
@@ -32,10 +49,77 @@ namespace ArcheAgeGame.ArcheAge.World
 		/// </summary>
 		public NpcType NpcType { get; set; }
 
+		public int PreviewBodyPackId { get; set; }  //в базе characters: preview_body_pack_id
+		public int HairColorId { get; set; }  //в базе equip_pack_body_parts: hair_color_id
+		public int FaceId { get; set; }  //в базе equip_pack_body_parts: face_id
+		public int HairId { get; set; }  //в базе equip_pack_body_parts: hair_id
+		public int SkinColorId { get; set; }  //в базе equip_pack_body_parts: skin_color_id
+		public int TotalCustomId { get; set; }  //в базе npcs: total_custom_id
+
+		public int TemplateId { get; set; } //в базе npcs: npc_template_id
 		/// <summary>
 		/// Monster's name, leave empty for default.
 		/// </summary>
 		public string Name { get; set; }
+
+		public byte Race { get; set; } //в базе npcs: char_race_id
+		public byte Gender { get; set; }
+		public byte RaceGender { get { return (byte)((0x10 * this.Gender) + this.Race); } }
+
+		public int FactionId { get; set; } //в базе npcs: faction_id
+		public int StartingZoneId { get; set; }
+		public int ModelRef { get; set; } //в базе npcs: model_id
+		public Uint24 LiveObjectId { get; set; }
+		public int TargetObjectId { get; set; }
+
+		public int[] Type { get; set; } = new int[18];
+		public float[] Weight { get; set; } = new float[18];
+		public float Scale { get; set; } //в базе npcs: scale
+		public float Rotate { get; set; }
+		public float MoveX { get; set; }
+		public float MoveY { get; set; }
+		public int Lip { get; set; }
+		public int LeftPupil { get; set; }
+		public int RightPupil { get; set; }
+		public int Eyebrow { get; set; }
+		public int Decor { get; set; }
+		public string Modifiers { get; set; }
+		public byte[] Ability { get; set; } = new byte[3];
+
+		public byte Ext { get; set; } = (byte)2;
+		public int Body { get; set; }
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Z { get; set; }
+		public sbyte RotZ { get; set; }
+
+		/// <summary>
+		/// Что одето
+		/// </summary>
+		public int EsHead { get; set; }
+		public int EsNeck { get; set; }
+		public int EsChest { get; set; }
+		public int EsWaist { get; set; }
+		public int EsLegs { get; set; }
+		public int ES_HANDS { get; set; }
+		public int EsFeet { get; set; }
+		public int EsArms { get; set; }
+		public int EsBack { get; set; }
+		public int EsEar1 { get; set; }
+		public int EsEar2 { get; set; }
+		public int EsFinger1 { get; set; }
+		public int EsFinger2 { get; set; }
+		public int EsUndershirt { get; set; }
+		public int EsUnderpants { get; set; }
+		public int ES_MAINHAND { get; set; }
+		public int ES_OFFHAND { get; set; }
+		public int ES_RANGED { get; set; }
+		public int ES_MUSICAL { get; set; }
+		public int EsBackpack { get; set; }
+		public int EsCosplay { get; set; }
+
+		public int NewbieClothPackId { get; set; }
+		public int NewbieWeaponPackId { get; set; }
 
 		/// <summary>
 		/// Name of dialog function to call on trigger,
@@ -83,6 +167,22 @@ namespace ArcheAgeGame.ArcheAge.World
 		public int SDR { get; set; }
 
 		/// <summary>
+		/// Gets or set MP, clamped between 0 and MaxMp.
+		/// </summary>
+		public int Mp
+		{
+			get => _mp;
+			set => _mp = Math2.Clamp(0, this.MaxMp, value);
+		}
+
+		private int _mp = 0x0ffffff; //TODO
+		
+		/// <summary>
+		/// Maximum HP.
+		/// </summary>
+		public int MaxMp { get; set; }
+
+		/// <summary>
 		/// Health points.
 		/// </summary>
 		public int Hp
@@ -90,7 +190,7 @@ namespace ArcheAgeGame.ArcheAge.World
 			get { return this._hp; }
 			private set { this._hp = Math2.Clamp(0, this.MaxHp, value); }
 		}
-		private int _hp;
+		private int _hp = 0x0ffffff; //TODO
 
 		/// <summary>
 		/// Maximum health points.
@@ -117,22 +217,6 @@ namespace ArcheAgeGame.ArcheAge.World
 		/// </summary>
 		public MonsterData Data { get; private set; }
 
-		/// <summary>
-		/// Creates new NPC.
-		/// </summary>
-		public Monster(int id, NpcType type)
-		{
-			this.Handle = ArcheAgeGame.Instance.World.CreateHandle();
-
-			this.Id = id;
-			this.NpcType = type;
-			this.Level = 1;
-			this.SDR = 1;
-			this.Hp = this.MaxHp = 100;
-			this.DisappearTime = DateTime.MaxValue;
-
-			this.LoadData();
-		}
 
 		/// <summary>
 		/// Loads data from data files.

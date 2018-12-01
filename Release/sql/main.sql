@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : AA
-Source Server Version : 80011
+Source Server         : aaemu
+Source Server Version : 80012
 Source Host           : localhost:3306
-Source Database       : archeage
+Source Database       : aaemu
 
 Target Server Type    : MYSQL
-Target Server Version : 80011
+Target Server Version : 80012
 File Encoding         : 65001
 
-Date: 2018-09-30 02:43:50
+Date: 2018-11-26 20:20:18
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,7 +30,7 @@ CREATE TABLE `accounts` (
   `characters` tinyint(3) unsigned DEFAULT '0' COMMENT 'character? feature? quality? What a ghost! \r\n Probably not an administrator or VIP',
   `cookie` int(11) DEFAULT NULL,
   PRIMARY KEY (`accountid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci COMMENT='Account table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Account table';
 
 -- ----------------------------
 -- Records of accounts
@@ -76,7 +76,7 @@ CREATE TABLE `charactermodel` (
   `deco_color` bigint(20) DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `npconly` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `modifiers` varchar(512) DEFAULT NULL,
+  `modifiers` varchar(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `face_fixed_decal_asset_3_weight` double DEFAULT NULL,
   `face_fixed_decal_asset_1_weight` double DEFAULT NULL,
   `start_location_x` int(11) DEFAULT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `charactermodel` (
   `start_location_z` int(11) DEFAULT NULL,
   `anglez` tinyint(3) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of charactermodel
@@ -117,7 +117,7 @@ CREATE TABLE `characters` (
   `default_fx_voice_sound_pack_id` int(11) DEFAULT NULL,
   `creatable` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of characters
@@ -145,7 +145,7 @@ CREATE TABLE `character_buffs` (
   `character_id` int(11) DEFAULT NULL,
   `buff_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of character_buffs
@@ -174,7 +174,7 @@ DROP TABLE IF EXISTS `character_default_skills`;
 CREATE TABLE `character_default_skills` (
   `character_id` int(11) DEFAULT NULL,
   `default_skill_id` int(11) DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of character_default_skills
@@ -214,7 +214,7 @@ CREATE TABLE `character_equip_packs` (
   `newbie_cloth_pack_id` int(11) DEFAULT NULL,
   `newbie_weapon_pack_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of character_equip_packs
@@ -299,18 +299,18 @@ CREATE TABLE `character_records` (
   `x` double DEFAULT NULL,
   `y` double DEFAULT NULL,
   `z` double DEFAULT NULL,
-  `rotx` smallint(6) DEFAULT NULL,
-  `roty` smallint(6) DEFAULT NULL,
-  `rotz` smallint(6) DEFAULT NULL,
+  `rotx` tinyint(6) DEFAULT NULL,
+  `roty` tinyint(6) DEFAULT NULL,
+  `rotz` tinyint(6) DEFAULT NULL,
   PRIMARY KEY (`characterid`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of character_records
 -- ----------------------------
-INSERT INTO `character_records` VALUES ('2', '50972', '2', 'qqq', '6', '0', '3', '-530945', 'DC0D0CFCD3E01847AD2A5D55EA471CDF', '-4432640', '1', '-13958976', '00FD6426531C41AD00210000AB00002D005A64FC0000000E64100000001963001033AEED04000700E10011B713162600B61D28C6E7FA00D60A2B00FEDB14120600F49C9C6400649CD4E80001330000000000C5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\0\0', '0', '0', '-4432640', '0', '1', '20118', '16245', '0', '0', '0', '0', '0', '2179', '11', '0', '0', '0', '869', '825', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '0', '0', '1', '1', '1', '11', '11', null, '0', '23728.97', '9063.568', '591.9691', '0', '0', '0');
-INSERT INTO `character_records` VALUES ('4', '50970', '1', 'newbie', '1', '-12042656', '3', '-12227665', 'DC0D0CFCD3E01847AD2A5D55EA471CDF', '-12356390', '1', '-4279809', '00D3000011DCF00F1D0500002000000E0000202500FAFE093DE4D70000BC00380000131D0000001FFF00150000001F0001000000D3000800D700000027000FEF01260000260C000044291500000000002DCA1D000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\0\0', '0', '0', '-12356390', '0', '1', '19838', '24127', '0', '0', '0', '0', '0', '1537', '1', '0', '0', '0', '0', '563', '683', '0', '31', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0.64', '1', '1', '0', '0', '0.33', '1', '1', '11', '11', null, '0', '15578.0742', '15382.0537', '126.245', '0', '0', '0');
-INSERT INTO `character_records` VALUES ('6', '50970', '1', 'swordsman', '1', '-12042656', '3', '-12955812', 'DC0D0CFCD3E01847AD2A5D55EA471CDF', '-11585064', '1', '-4279809', '00C100001DDCFDDBD003E00020CE2FF600000001DCF9000E3DD3F70A00DA001000F1DF0100001E9C01001000010000010100000000000000E70000003CD70FEF1C2600002C330000FF64B0FE00002B0011CA2C000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\0\0', '0', '0', '-11585064', '0', '1', '19838', '24131', '0', '0', '0', '0', '0', '873', '1', '0', '0', '316', '0', '587', '681', '0', '29', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0.86', '1', '1', '0', '0', '0.62', '1', '1', '11', '11', null, '0', '15578.07', '15382.0537', '126.4831', '0', '0', '0');
+INSERT INTO `character_records` VALUES ('2', '50972', '2', 'qqq', '6', '0', '3', '-530945', 'DC0D0CFCD3E01847AD2A5D55EA471CDF', '-4432640', '1', '-13958976', '00FD6426531C41AD00210000AB00002D005A64FC0000000E64100000001963001033AEED04000700E10011B713162600B61D28C6E7FA00D60A2B00FEDB14120600F49C9C6400649CD4E80001330000000000C5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\0\0', '0', '0', '-4432640', '0', '1', '20118', '16245', '0', '0', '0', '0', '0', '2179', '11', '0', '0', '0', '869', '825', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '0', '0', '1', '1', '1', '11', '11', '500', '179', '23728.97', '9063.568', '591.9691', '0', '0', '0');
+INSERT INTO `character_records` VALUES ('4', '50970', '1', 'newbie', '1', '-12042656', '3', '-12227665', 'DC0D0CFCD3E01847AD2A5D55EA471CDF', '-12356390', '1', '-4279809', '00D3000011DCF00F1D0500002000000E0000202500FAFE093DE4D70000BC00380000131D0000001FFF00150000001F0001000000D3000800D700000027000FEF01260000260C000044291500000000002DCA1D000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\0\0', '0', '0', '-12356390', '0', '1', '19838', '24127', '0', '0', '0', '0', '0', '1537', '1', '0', '0', '0', '0', '563', '683', '0', '31', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0.64', '1', '1', '0', '0', '0.33', '1', '1', '11', '11', '501', '179', '15578.0742', '15382.0537', '126.245', '0', '0', '0');
+INSERT INTO `character_records` VALUES ('6', '50970', '1', 'swordsman', '1', '-12042656', '3', '-12955812', 'DC0D0CFCD3E01847AD2A5D55EA471CDF', '-11585064', '1', '-4279809', '00C100001DDCFDDBD003E00020CE2FF600000001DCF9000E3DD3F70A00DA001000F1DF0100001E9C01001000010000010100000000000000E70000003CD70FEF1C2600002C330000FF64B0FE00002B0011CA2C000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\0\0', '0', '0', '-11585064', '0', '1', '19838', '24131', '0', '0', '0', '0', '0', '873', '1', '0', '0', '316', '0', '587', '681', '0', '29', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0.86', '1', '1', '0', '0', '0.62', '1', '1', '11', '11', '502', '179', '15578.07', '15382.0537', '126.4831', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for equip_pack_cloths
@@ -344,7 +344,7 @@ CREATE TABLE `equip_pack_cloths` (
   `underpants_id` int(11) DEFAULT NULL,
   `underpants_grade_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of equip_pack_cloths
@@ -2078,7 +2078,7 @@ CREATE TABLE `equip_pack_weapons` (
   `ranged_grade_id` int(11) DEFAULT NULL,
   `musical_grade_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of equip_pack_weapons
@@ -2628,11 +2628,11 @@ CREATE TABLE `hotkeys` (
   `action_type2_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `mode_id` int(11) DEFAULT NULL,
-  `key_primary` varchar(255) DEFAULT NULL,
-  `key_second` varchar(255) DEFAULT NULL,
-  `activation` varchar(255) DEFAULT NULL,
+  `key_primary` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `key_second` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `activation` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of hotkeys
@@ -2754,7 +2754,7 @@ CREATE TABLE `levels` (
   `total_mate_exp` int(11) DEFAULT NULL,
   `skill_points` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of levels
@@ -2870,7 +2870,7 @@ CREATE TABLE `npc_map_data` (
   `X` double DEFAULT NULL,
   `Y` double DEFAULT NULL,
   `Z` double DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of npc_map_data
@@ -33882,7 +33882,7 @@ CREATE TABLE `total_character_customs` (
   `left_pupil_color` int(11) DEFAULT NULL,
   `right_pupil_color` int(11) DEFAULT NULL,
   `eyebrow_color` int(11) DEFAULT NULL,
-  `modifier` text,
+  `modifier` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `owner_type_id` int(11) DEFAULT NULL,
   `face_movable_decal_weight` double DEFAULT NULL,
   `face_fixed_decal_asset_0_weight` double DEFAULT NULL,
@@ -33892,7 +33892,7 @@ CREATE TABLE `total_character_customs` (
   `face_normal_map_weight` double DEFAULT NULL,
   `deco_color` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of total_character_customs
@@ -34734,12 +34734,13 @@ INSERT INTO `total_character_customs` VALUES ('1185', '18', 'ha_m_gurudal', '1',
 -- ----------------------------
 DROP TABLE IF EXISTS `updates`;
 CREATE TABLE `updates` (
-  `path` varchar(255) NOT NULL,
+  `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`path`)
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of updates
 -- ----------------------------
 INSERT INTO `updates` VALUES ('main.sql');
+INSERT INTO `updates` VALUES ('updates.sql');
 SET FOREIGN_KEY_CHECKS=1;

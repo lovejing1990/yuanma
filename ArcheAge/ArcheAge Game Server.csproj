@@ -145,8 +145,10 @@
     <Compile Include="ArcheAge\Network\Packets\Server\NP_Pong_0x0013.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\NP_X2EnterWorldResponsePacket_0x0000.cs" />
     <Compile Include="ArcheAge\Network\Packets.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\UnitStatePacket.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\Utils\CharacterInfo.cs" />
     <Compile Include="ArcheAge\Network\Packets\Server\Utils\ItemInfo.cs" />
+    <Compile Include="ArcheAge\Network\Packets\Server\Utils\UnitInfo.cs" />
     <Compile Include="ArcheAge\Scripting\LuaThread.cs" />
     <Compile Include="ArcheAge\Scripting\ScriptManager.cs" />
     <Compile Include="ArcheAge\Scripting\ScriptState.cs" />

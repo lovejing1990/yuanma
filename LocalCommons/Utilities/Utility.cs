@@ -16,9 +16,9 @@ namespace LocalCommons.Utilities
 		}
 		public static byte[] HexToByteArray(string hex)
 		{
-			var split = hex.Split(new string[] { " " }, StringSplitOptions.None);
-			var data = new byte[split.Length];
-			for (var i = 0; i < split.Length; i++)
+			string[] split = hex.Split(new string[] { " " }, StringSplitOptions.None);
+			byte[] data = new byte[split.Length];
+			for (int i = 0; i < split.Length; i++)
 			{
 				data[i] = byte.Parse(split[i], System.Globalization.NumberStyles.HexNumber);
 			}
@@ -39,9 +39,9 @@ namespace LocalCommons.Utilities
 				throw new Exception("The binary key cannot have an odd number of digits");
 			}
 
-			var arr = new byte[hex.Length >> 1];
+			byte[] arr = new byte[hex.Length >> 1];
 
-			for (var i = 0; i < hex.Length >> 1; ++i)
+			for (int i = 0; i < hex.Length >> 1; ++i)
 			{
 				arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
 			}
@@ -50,7 +50,7 @@ namespace LocalCommons.Utilities
 		}
 		public static int GetHexVal(char hex)
 		{
-			var val = (int)hex;
+			int val = (int)hex;
 			//For uppercase A-F letters:
 			return val - (val < 58 ? 48 : 55);
 			//For lowercase a-f letters:
@@ -89,9 +89,9 @@ namespace LocalCommons.Utilities
         */
 		public static string ByteArrayToString(byte[] data)
 		{
-			var lookup = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+			char[] lookup = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 			int i = 0, p = 0, l = data.Length;
-			var c = new char[l * 2 + 2];
+			char[] c = new char[l * 2 + 2];
 			byte d;
 			//int p = 2; c[0] = '0'; c[1] = 'x'; //если хотим 0x
 			while (i < l)
@@ -104,7 +104,7 @@ namespace LocalCommons.Utilities
 		}
 		public void Clear(byte[] buf)
 		{
-			for (var i = 0; i < buf.Length; i++)
+			for (int i = 0; i < buf.Length; i++)
 			{
 				buf[i] = 0;
 			}

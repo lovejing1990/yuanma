@@ -101,7 +101,7 @@ namespace ArcheAgeGame.ArcheAge.Database
 					if (!reader.Read())
 						return null;
 
-					character.Id = reader.GetInt64("characterId");
+					character.Id = reader.GetUInt32("characterId");
 					character.AccountId = accountId;
 					character.Name = reader.GetStringSafe("name");
 					character.TeamName = reader.GetStringSafe("teamName");

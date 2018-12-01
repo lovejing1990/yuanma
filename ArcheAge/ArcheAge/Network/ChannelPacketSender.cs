@@ -36,7 +36,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			packet.PutByte(0);
 
 			packet.PutLpString(conn.SessionKey);
-			packet.AddCommander(character);
+			//packet.AddCommander(character);
 
 			conn.Send(packet);
 		}
@@ -126,7 +126,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			packet.PutInt(-1); // titleAchievmentId
 			packet.PutInt(0);
 			packet.PutByte(0);
-			packet.AddAppearancePc(character);
+			//packet.AddAppearancePc(character);
 			packet.PutInt(0);
 			//packet.PutByte(0);
 
@@ -698,7 +698,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			var packet = new Packet(Op.ZC_UPDATED_PCAPPEARANCE);
 
 			packet.PutInt(character.Handle);
-			packet.AddAppearancePc(character);
+			//packet.AddAppearancePc(character);
 
 			character.Map.Broadcast(packet, character);
 		}
@@ -862,7 +862,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 		/// <param name="properties"></param>
 		public static void ZC_OBJECT_PROPERTY(Character character)
 		{
-			ZC_OBJECT_PROPERTY(character.Connection, character);
+			//ZC_OBJECT_PROPERTY(character.Connection, character);
 		}
 
 		/// <summary>
@@ -872,7 +872,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 		/// <param name="properties"></param>
 		public static void ZC_OBJECT_PROPERTY(Character character, params int[] properties)
 		{
-			ZC_OBJECT_PROPERTY(character.Connection, character, properties);
+			//ZC_OBJECT_PROPERTY(character.Connection, character, properties);
 		}
 
 		/// <summary>
