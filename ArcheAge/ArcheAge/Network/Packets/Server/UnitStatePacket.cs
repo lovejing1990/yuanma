@@ -1,4 +1,5 @@
 ﻿using System;
+using ArcheAgeGame.ArcheAge.Database.Model;
 using ArcheAgeGame.ArcheAge.Network.Packets.Server.Utils;
 using ArcheAgeGame.ArcheAge.Structuring.NPC;
 using LocalCommons.Logging;
@@ -49,8 +50,8 @@ namespace ArcheAgeGame.ArcheAge.Network.Packets.Server
 				ns.Write((byte)npc.Level);
 				ns.Write((int)npc.ModelId);
 
-				UnitInfo.WriteItemInfo(npc);          //equipment
-				UnitInfo.WritePlayerAppearance(npc); //appearance
+				UnitInfo.WriteItemInfo(npc);          //equipment 装备
+				UnitInfo.WritePlayerAppearance(npc); //appearance 外观
 
 				ns.Write((Uint24)0); //bc 3
 				ns.Write(npc.Hp * 100); //preciseHealth" type="d"
@@ -67,21 +68,53 @@ namespace ArcheAgeGame.ArcheAge.Network.Packets.Server
 						break;
 				}
 				ns.Write((sbyte)point);
-				switch (point)
+				//switch (point)
+				//{
+				//	case -1:
+				//		break;
+				//	default:
+				//		ns.Write((Uint24)0); //bc 3
+				//		ns.Write((byte)0);   //kind" type="c" 
+				//		ns.Write((int)0);    //space" type="d"
+				//		ns.Write((int)0);    //spot" type="d"
+				//		break;
+				//}
+				//动作 By Yanlongli 2018年12月2日
+				//0400    3E000000    01  00
+				if (npc.PostureSet > 0)
 				{
-					case -1:
-						break;
-					default:
-						ns.Write((Uint24)0); //bc 3
-						ns.Write((byte)0);   //kind" type="c" 
-						ns.Write((int)0);    //space" type="d"
-						ns.Write((int)0);    //spot" type="d"
-						break;
+					try
+					{
+						//获取该集合对应的动作
+						NPCPostureSets NPCPostureSets = NPCPostureSets.loadPosturesSetByID(npc.PostureSet);
+
+						//此处可能抛出异常，则跳过该动作
+						uint AnimActionID = NPCPostureSets.NPCPostures.Find(a => a.ID > 0).AnimActionID;
+						///现在只能发送一个Posture ，多个Posture并不清楚如何传递
+						ns.Write((short)0x0004);
+						ns.Write(AnimActionID);
+						ns.Write((byte)0x01);
+						ns.Write((byte)0x00);
+					}
+					catch(Exception e)
+					{
+						Log.Warning("Load NPC PostureSet Error");
+						ns.Write((byte)0); //
+						ns.Write((byte)0); //islooted
+						ns.Write((byte)0); //activeWeapon
+					}
+				}
+				else
+				{
+					ns.Write((byte)0); //
+					ns.Write((byte)0); //islooted
+					ns.Write((byte)0); //activeWeapon
 				}
 
-				ns.Write((byte)0); //
-				ns.Write((byte)0); //islooted
-				ns.Write((byte)0); //activeWeapon
+
+				//ns.Write((byte)0); //
+				//ns.Write((byte)0); //islooted
+				//ns.Write((byte)0); //activeWeapon
 				ns.Write((byte)1); //count
 				ns.Write((int)2); //SkillId
 				ns.Write((byte)1); //level

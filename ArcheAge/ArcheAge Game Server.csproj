@@ -79,6 +79,7 @@
     <Compile Include="ArcheAge\Database\Account.cs" />
     <Compile Include="ArcheAge\Database\AccountSettings.cs" />
     <Compile Include="ArcheAge\Database\GameDb.cs" />
+    <Compile Include="ArcheAge\Database\Model\NPCPosture.cs" />
     <Compile Include="ArcheAge\Holders\AccountHolder.cs" />
     <Compile Include="ArcheAge\Holders\CharacterHolder.cs" />
     <Compile Include="ArcheAge\Network\ChannelConnection.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="ArcheAge\Structuring\Character.cs" />
     <Compile Include="ArcheAge\Structuring\EventDefinitions.cs" />
     <Compile Include="ArcheAge\Structuring\Main\IVisibleObject.cs" />
+    <Compile Include="ArcheAge\Database\Model\NPCPostureSets.cs" />
     <Compile Include="ArcheAge\Structuring\NPC\NPCs.cs" />
     <Compile Include="ArcheAge\Structuring\User\User.cs" />
     <Compile Include="ArcheAge\Utilites\AbilityPriceTime.cs" />
@@ -202,6 +204,7 @@
     <None Include="app.config" />
     <COMPILE_IF_NOT_EXCLUDED Include="liblua51.dylib" />
     <COMPILE_IF_NOT_EXCLUDED Include="liblua51.so" />
+    <None Include="ArcheAge\Database\Model\readme.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

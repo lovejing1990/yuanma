@@ -29,3 +29,10 @@ Local language
 ![avatar](/doc/img/Screenshot_18.png)
 ![avatar](/doc/img/Screenshot_19.png)
 ![avatar](/doc/img/Screenshot_20.png)
+
+
+更新日志
+
+	2018年12月2日 Yanlongli
+		增加NPC动作表
+		增加NPC动作集合表

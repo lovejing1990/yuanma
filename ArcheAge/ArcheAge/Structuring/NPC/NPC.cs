@@ -138,6 +138,10 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 		public int SkinColorId { get; set; }  //в базе equip_pack_body_parts: skin_color_id
 		public int TotalCustomId { get; set; }  //в базе npcs: total_custom_id
 		public int Body { get; set; }
+		/// <summary>
+		/// NPC动作集合
+		/// </summary>
+		public uint PostureSet { get; set; }
 
 	}
 }

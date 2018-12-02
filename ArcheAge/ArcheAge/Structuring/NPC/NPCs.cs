@@ -291,7 +291,8 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 					try
 					{
 						conn.Open();
-						var command = new MySqlCommand("SELECT `id`,`level`,`model_id`,`faction_id`,`scale`  FROM `npcs` WHERE `id`=@aid", conn);
+						//调整代码加载NPC所有信息
+						var command = new MySqlCommand("SELECT *  FROM `npcs` WHERE `id`=@aid", conn);
 						command.Parameters.Add("@aid", MySqlDbType.Int32).Value = ID;
 						var reader = command.ExecuteReader();
 						while (reader.Read())
@@ -302,6 +303,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 							NPC.ModelId = reader.GetUInt32("model_id");
 							NPC.FactionId = reader.GetUInt32("faction_id");
 							NPC.Scale = reader.GetFloat("scale");
+							NPC.PostureSet = reader.GetUInt32("npc_posture_set_id");//获取NPC动作集合
 							//写入加载的NPC
 							NPCs.LoadedNPCList.Add(NPC);
 						}
@@ -408,6 +410,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 			}
 			return NPC;
 		}
+
 	}
 }
 
