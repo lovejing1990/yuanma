@@ -69,7 +69,7 @@ namespace ArcheAgeGame.ArcheAge.Database.Model
 					conn.Close();
 				}
 			}
-			return posturesSet; ;
+			return posturesSet;
 		}
 	}
 }

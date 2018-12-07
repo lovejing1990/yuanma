@@ -35,7 +35,7 @@ namespace ArcheAgeGame.ArcheAge.Database.Model
 		/// <summary>
 		/// 开始时间
 		/// </summary>
-		public byte StartTodTime { get; set; }
+		public uint StartTodTime { get; set; }
 
 		/// <summary>
 		/// 这是一个集合，姿势集合可能对应多个姿势并且每个姿势都有特定的时常
@@ -62,7 +62,7 @@ namespace ArcheAgeGame.ArcheAge.Database.Model
 						NPCPosture.NPCPostureSetID = reader.GetUInt32("npc_posture_set_id");
 						NPCPosture.AnimActionID = reader.GetUInt32("anim_action_id");
 						NPCPosture.TalkAnim = reader.GetString("talk_anim");
-						NPCPosture.StartTodTime = reader.GetByte("start_tod_time");
+						NPCPosture.StartTodTime = reader.GetUInt32("start_tod_time");
 						NPCPostures.Add(NPCPosture);
 					}
 					command.Dispose();
