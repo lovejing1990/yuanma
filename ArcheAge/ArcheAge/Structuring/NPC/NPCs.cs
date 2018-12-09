@@ -32,7 +32,14 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 		public static void LoadMonsterData0(NPC npc, uint id)
 		{
 			LoadMonsterData(npc, id); //считываем id, name, char_race_id, level, npc_template_id, model_id, faction_id, scale, equip_cloths_id, equip_weapons_id, total_custom_id
-			LoadMonsterData1(npc, id); //считываем X,Y,Z, rotZ
+									  //LoadMonsterData1(npc, id); //считываем X,Y,Z, rotZ
+
+
+			var rnd = new Random(Environment.TickCount);
+			var rotz = (sbyte)rnd.Next(0, 255);
+			npc.Direction = new Direction(0, 0, rotz);
+
+
 			LoadMonsterClothsData(npc, npc.NewbieClothPackId); //считываем что одето на герое/NPC
 			if (npc.TotalCustomId != 0 && npc.ModelId < 21)
 			{
@@ -275,14 +282,14 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 		/// <returns></returns>
 		public static NPC GetNPCByID(UInt32 ID)
 		{
-			//NPC NPC = new NPC();
+			NPC npc = new NPC();
 
-			var NPC = LoadedNPCList.Find(npc => npc.ID == ID);
+			npc = LoadedNPCList.Find(a => a.ID == ID);
 
 			//判断NPC是否已加载到内存中
-			if (NPC != null)
+			if (npc != null)
 			{
-				return NPC;
+				return npc;
 			}
 			else
 			{
@@ -297,15 +304,15 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 						var reader = command.ExecuteReader();
 						while (reader.Read())
 						{
-							NPC = new NPC();
-							NPC.ID = reader.GetUInt32("id"); //ID
-							NPC.Level = (byte)reader.GetInt32("level");
-							NPC.ModelId = reader.GetUInt32("model_id");
-							NPC.FactionId = reader.GetUInt32("faction_id");
-							NPC.Scale = reader.GetFloat("scale");
-							NPC.PostureSet = reader.GetUInt32("npc_posture_set_id");//获取NPC动作集合
+							npc = new NPC();
+							npc.ID = reader.GetUInt32("id"); //ID
+							npc.Level = (byte)reader.GetInt32("level");
+							npc.ModelId = reader.GetUInt32("model_id");
+							npc.FactionId = reader.GetUInt32("faction_id");
+							npc.Scale = reader.GetFloat("scale");
+							npc.PostureSet = reader.GetUInt32("npc_posture_set_id");//获取NPC动作集合
 							//写入加载的NPC
-							NPCs.LoadedNPCList.Add(NPC);
+							//NPCs.LoadedNPCList.Add(npc); //取消写入列表 在无法解决对象引用之前
 						}
 						command.Dispose();
 					}
@@ -319,7 +326,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 					}
 				}
 			}
-			return NPC;
+			return npc;
 		}
 
 		/// <summary>
@@ -346,7 +353,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 					}
 					// BUG 此处未考虑到同一NPC在多处分身。如 野兽 为多个不同的分布
 					// BUG не считает здесь, что тот же NPC находится в нескольких местах. Такие, как звери для множества разных распределений
-					var command = new MySqlCommand("SELECT *  FROM `npc_map_data` WHERE `X`>=@Xmin and `X`<= @Xmax and `Y`>=@Ymin and `Y`<=@Ymax" + limit + " group by id", conn);
+					var command = new MySqlCommand("SELECT *  FROM `npc_map_data` WHERE `X`>=@Xmin and `X`<= @Xmax and `Y`>=@Ymin and `Y`<=@Ymax" + limit, conn);
 					command.Parameters.Add("@Xmin", MySqlDbType.Float).Value = X - RangeX / 2;
 					command.Parameters.Add("@Xmax", MySqlDbType.Float).Value = X + RangeX / 2;
 					command.Parameters.Add("@Ymin", MySqlDbType.Float).Value = Y - RangeY / 2;

@@ -25,7 +25,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 		public string Name { get; set; } = ""; //в базе npcs: name
 		public byte Race { get; set; } //в базе npcs: char_race_id
 		public byte Gender { get; set; }
-		public byte RaceGender { get { return (byte)((0x10 * this.Gender) + this.Race); } }
+		public byte RaceGender { get { return (byte)((0x10 * this.Gender) + this.Race); } set { } }
 
 		/// <summary>
 		/// Model ID
@@ -57,7 +57,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 			set => _mp = Math2.Clamp(0, this.MaxMp, value);
 		}
 
-		private int _mp = 0x0ffffff; //TODO
+		private int _mp { get; set; } = 0x0ffffff; //TODO
 		
 		/// <summary>
 		/// Maximum HP.
@@ -72,7 +72,7 @@ namespace ArcheAgeGame.ArcheAge.Structuring.NPC
 			get { return this._hp; }
 			private set { this._hp = Math2.Clamp(0, this.MaxHp, value); }
 		}
-		private int _hp = 0x0ffffff; //TODO
+		private int _hp { get; set; } = 0x0ffffff; //TODO
 
 		/// <summary>
 		/// Maximum health points.
