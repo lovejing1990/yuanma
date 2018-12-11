@@ -856,9 +856,9 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//SCDeleteFriendPacket
 			net.SendAsyncHex(new NP_Hex("0E00DD01C40006000000940000000000"));//势力 国家 联盟
 			net.SendAsyncHex(new NP_Hex("0E00DD01C40001000500000000000000"));//场景
-			net.SendAsyncHex(new NP_Hex("0E00DD01C40002000600000000000000"));//交易
+			//net.SendAsyncHex(new NP_Hex("0E00DD01C40002000600000000000000"));//交易
 			net.SendAsyncHex(new NP_Hex("0E00DD01C4000B000000940000000000"));
-			net.SendAsyncHex(new NP_Hex("0E00DD01C40003000600940000000000"));//组队
+			//net.SendAsyncHex(new NP_Hex("0E00DD01C40003000600940000000000"));//组队
 			net.SendAsyncHex(new NP_Hex("0E00DD01C4000E000600940000000000"));//种族
 
 			////          count 
@@ -909,6 +909,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 		/// 1.1406 recv 16 00 00 01 61 00 00 00 00 00 00 00 00 00 00 00 01 00 31 09 00 00 00 00
 		/// 3.0.3.0 send 2d00dd055ed5c000d2a2724212e3b3832963f4c6fd66340fdd30754516e2b6c7244395c697414010e0b09176c1f020
 		/// 2d00dd05CFB4F10100000000000000007A4000026902000A0895000000040041736462010031000000001027000000
+		/// 3f00dd054CF5F101000000000000000004B701026902000A0895000000040041736462130031313131313131313131313131313131313131000000001027000000
 		/// </summary>
 		/// <param name="net"></param>
 		/// <param name="reader"></param>
@@ -916,8 +917,10 @@ namespace ArcheAgeGame.ArcheAge.Network
 		{
 			//获取聊天类型ID
 			var chatId = reader.ReadLEInt16();
-			//未知
-			var var1 = reader.ReadLEInt16();
+			//地域
+			//5索兹里德半岛
+			//6黎利尔丘陵
+			var region = reader.ReadLEInt16();
 			//未知
 			reader.Offset += 6;
 
@@ -935,7 +938,7 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//debug
 			if (chatId == 0)
 			{
-				var msg2 = "The information you sent is not recognized.\n你发送的信息不能被识别";
+				var msg2 = "The information you sent is not recognized.\n";
 				switch (msg)
 				{
 					case "/dev"://开发命令
