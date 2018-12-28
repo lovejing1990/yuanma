@@ -7,7 +7,8 @@ Get the AAEMU Server (compil) https://github.com/NL0bP/Archeage-Server-emulator/
 2. Run "AAEMU\start MySQL.bat"
 3. Run "AAEMU\start AAServer.bat"
 4. Run "AAEMU\Release\AAEMU-Launcher\AAEMU-Launcher.exe"
-5. Profit.
+5. use login: aatest, password: aatestaa
+6. Profit.
 
 You need Client is 1.0!
 Client 1.0: https://cloud.mail.ru/public/cdaf4fb889b9/Archeage_enotbox.com.rar

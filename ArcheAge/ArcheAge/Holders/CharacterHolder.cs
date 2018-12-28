@@ -11,17 +11,12 @@ namespace ArcheAgeGame.ArcheAge.Holders
 {
 	public class CharacterHolder
     {
-        private List<Character> m_DbCharacters;
-
-        /// <summary>
+	    /// <summary>
         /// Loaded List of Characters.
         /// </summary>
-        public List<Character> CharactersList
-        {
-            get { return m_DbCharacters; }
-        }
+        public static List<Character> CharactersList { get; }
 
-        public int GetCount()
+	    public static int GetCount()
         {
             return CharactersList.Count;
         }
@@ -562,37 +557,37 @@ namespace ArcheAgeGame.ArcheAge.Holders
                     parameters.Add("@roty", MySqlDbType.Byte).Value = character.Heading.Y;
                     parameters.Add("@rotz", MySqlDbType.Byte).Value = character.Heading.Z;
 
-                    //parameters.Add("@liveobjectid", MySqlDbType.Int32).Value = character.LiveObjectId;
-                    //parameters.Add("@x", MySqlDbType.Float).Value = character.Position.X;
-                    //parameters.Add("@y", MySqlDbType.Float).Value = character.Position.Y;
-                    //parameters.Add("@z", MySqlDbType.Float).Value = character.Position.Z;
-                    //parameters.Add("@exp", MySqlDbType.Int32).Value = character.Exp;
-                    //parameters.Add("@maxexp", MySqlDbType.Int32).Value = character.MaxExp;
-                    //parameters.Add("@totalexp", MySqlDbType.Int32).Value = character.TotalExp;
-                    //parameters.Add("@hp", MySqlDbType.Int32).Value = character.Hp;
-                    //parameters.Add("@maxhp", MySqlDbType.Int32).Value = character.MaxHp;
-                    //parameters.Add("@sp", MySqlDbType.Int32).Value = character.Sp;
-                    //parameters.Add("@maxsp", MySqlDbType.Int32).Value = character.MaxSp;
-                    //parameters.Add("@stamina", MySqlDbType.Int32).Value = character.Stamina;
-                    //parameters.Add("@maxstamina", MySqlDbType.Int32).Value = character.MaxStamina;
-                    //parameters.Add("@str", MySqlDbType.Int32).Value = character.Str;
-                    //parameters.Add("@con", MySqlDbType.Int32).Value = character.Con;
-                    //parameters.Add("@int", MySqlDbType.Int32).Value = character.Int;
-                    //parameters.Add("@spr", MySqlDbType.Int32).Value = character.Spr;
-                    //parameters.Add("@dex", MySqlDbType.Int32).Value = character.Dex;
-                    //
-                   
+					//parameters.Add("@liveobjectid", MySqlDbType.Int32).Value = character.LiveObjectId;
+					//parameters.Add("@x", MySqlDbType.Float).Value = character.Position.X;
+					//parameters.Add("@y", MySqlDbType.Float).Value = character.Position.Y;
+					//parameters.Add("@z", MySqlDbType.Float).Value = character.Position.Z;
+					//parameters.Add("@exp", MySqlDbType.Int32).Value = character.Exp;
+					//parameters.Add("@maxexp", MySqlDbType.Int32).Value = character.MaxExp;
+					//parameters.Add("@totalexp", MySqlDbType.Int32).Value = character.TotalExp;
+					//parameters.Add("@hp", MySqlDbType.Int32).Value = character.Hp;
+					//parameters.Add("@maxhp", MySqlDbType.Int32).Value = character.MaxHp;
+					//parameters.Add("@sp", MySqlDbType.Int32).Value = character.Sp;
+					//parameters.Add("@maxsp", MySqlDbType.Int32).Value = character.MaxSp;
+					//parameters.Add("@stamina", MySqlDbType.Int32).Value = character.Stamina;
+					//parameters.Add("@maxstamina", MySqlDbType.Int32).Value = character.MaxStamina;
+					//parameters.Add("@str", MySqlDbType.Int32).Value = character.Str;
+					//parameters.Add("@con", MySqlDbType.Int32).Value = character.Con;
+					//parameters.Add("@int", MySqlDbType.Int32).Value = character.Int;
+					//parameters.Add("@spr", MySqlDbType.Int32).Value = character.Spr;
+					//parameters.Add("@dex", MySqlDbType.Int32).Value = character.Dex;
+					//
 
-     //               if (m_DbCharacters.Contains(character))
-     //               {
-     //                   parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
-					//}
-					//else
-					//{
-					//	m_DbCharacters.Add(character);
-					//}
 
-                    cmd.ExecuteNonQuery();
+					if (net.CurrentAccount.Characters.Contains(character))
+					{
+						parameters.Add("@acharname", MySqlDbType.String).Value = character.CharName;
+					}
+					else
+					{
+						net.CurrentAccount.Characters.Add(character);
+					}
+
+					cmd.ExecuteNonQuery();
                     cmd.Dispose();
                 }
                 catch (Exception ex)

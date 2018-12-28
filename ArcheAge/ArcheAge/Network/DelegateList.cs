@@ -11,7 +11,9 @@ using ArcheAgeGame.ArcheAge.Network.Packets.Server;
 using ArcheAgeGame.ArcheAge.Structuring;
 using System.IO;
 using System.Threading;
+using ArcheAgeGame.ArcheAge.Database;
 using ArcheAgeGame.ArcheAge.Structuring.NPC;
+using Account = ArcheAgeGame.ArcheAge.Structuring.Account;
 
 namespace ArcheAgeGame.ArcheAge.Network
 {
@@ -454,12 +456,13 @@ namespace ArcheAgeGame.ArcheAge.Network
 			//sbyte rotz = reader.ReadLEInt16();
 			//net.CurrentAccount.Character.Heading = new Direction(rotx, roty, rotz); //сохраним направление взгляда
 
-			CharacterHolder.InsertOrUpdate(newCharacter,net); //записываем в базу character_records
+			CharacterHolder.InsertOrUpdate(newCharacter, net); //записываем в базу character_records
 
 			//выводим созданного чара
 			var accountId = net.CurrentAccount.AccountId;
 			//var charList = CharacterHolder.LoadCharacterData(accountId,net);
-			var totalChars = net.CurrentAccount.Characters.Count();
+			var totalChars = net.CurrentAccount.Characters.Count;
+			//var totalChars = CharacterHolder.GetCount();
 
 			//Handle_UpdateCharacters(net, net.CurrentAccount.AccountId, totalChars);
 

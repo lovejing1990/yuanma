@@ -9,6 +9,7 @@ using System.Threading;
 using ArcheAgeStream.ArcheAge;
 using ArcheAgeStream.ArcheAge.Network;
 using ArcheAgeStream.Properties;
+using LocalCommons.Utilities;
 
 namespace ArcheAgeStream
 {
@@ -21,8 +22,10 @@ namespace ArcheAgeStream
         // .method private hidebysig static void Main(string[] args) cil managed
         static void Main(string[] args)
         {
-            Console.Title = "ARCHEAGE SERVER : Stream";
+            //Console.Title = "ARCHEAGE SERVER : Stream";
             Console.CancelKeyPress += Console_CancelKeyPress;
+	        CliUtil.WriteHeader("Stream", ConsoleColor.DarkGreen);
+	        CliUtil.LoadingTitle();
             Stopwatch watch = Stopwatch.StartNew();
             watch.Start();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

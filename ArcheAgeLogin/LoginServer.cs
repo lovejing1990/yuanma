@@ -52,7 +52,7 @@ namespace ArcheAgeLogin
 
 			base.Run();
 
-            CliUtil.WriteHeader("Login", ConsoleColor.DarkBlue);
+	        CliUtil.WriteHeader("Login", ConsoleColor.DarkGreen);
             CliUtil.LoadingTitle();
            
 	        // Data
