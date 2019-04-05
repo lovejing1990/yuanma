@@ -1,0 +1,33 @@
+﻿using AAEmu.Commons.Network;
+using AAEmu.Game.Core.Network.Game;
+using AAEmu.Game.Models.Game.Skills;
+
+namespace AAEmu.Game.Core.Packets.G2C
+{
+    public class SCTaxItemConfigPacket2 : GamePacket
+    {
+        private readonly uint _count;
+        private readonly uint _type;
+        private readonly byte _declareDominion;
+
+        public SCTaxItemConfigPacket2(uint count) : base(SCOffsets.SCTaxItemConfigPacket2, 5)
+        {
+            _count = count;
+            _type = 0;
+            _declareDominion = 0;
+
+        }
+
+        public override PacketStream Write(PacketStream stream)
+        {
+            stream.Write(_count);
+            for (var i = 0; i < _count; i++)
+            {
+                stream.Write(_type); // type
+                stream.Write(_declareDominion); // declareDominion
+            }
+
+            return stream;
+        }
+    }
+}
