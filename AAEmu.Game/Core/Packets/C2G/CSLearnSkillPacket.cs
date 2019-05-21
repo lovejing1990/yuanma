@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSLearnSkillPacket : GamePacket
     {
-        public CSLearnSkillPacket() : base(0x092, 1)
+        public CSLearnSkillPacket() : base(CSOffsets.CSLearnSkillPacket, 5)
         {
         }
 

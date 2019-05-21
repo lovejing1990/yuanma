@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSSecurityReportPacket : GamePacket
     {
-        public CSSecurityReportPacket() : base(0x22, 5)
+        public CSSecurityReportPacket() : base(CSOffsets.CSSecurityReportPacket, 5)
         {
         }
 

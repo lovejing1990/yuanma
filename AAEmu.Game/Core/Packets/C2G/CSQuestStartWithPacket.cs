@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSQuestStartWithPacket : GamePacket
     {
-        public CSQuestStartWithPacket() : base(0x0db, 1)
+        public CSQuestStartWithPacket() : base(CSOffsets.CSQuestStartWithPacket, 5)
         {
         }
 

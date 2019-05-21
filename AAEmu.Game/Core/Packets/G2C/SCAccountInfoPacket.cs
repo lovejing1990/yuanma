@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using AAEmu.Commons.Network;
 using AAEmu.Game.Core.Network.Game;
 
@@ -13,7 +13,7 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly int _buyPremiumCount;
 
         public SCAccountInfoPacket(int payMethod, int payLocation, DateTime payStart, DateTime payEnd)
-            : base(SCOffsets.SCAccountInfoPacket,  5)
+            : base(SCOffsets.SCAccountInfoPacket, 5)
         {
             _payMethod = payMethod;
             _payLocation = payLocation;

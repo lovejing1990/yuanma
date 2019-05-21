@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSSetTeamOfficerPacket : GamePacket
     {
-        public CSSetTeamOfficerPacket() : base(0x07e, 1)
+        public CSSetTeamOfficerPacket() : base(CSOffsets.CSSetTeamOfficerPacket, 5)
         {
         }
 

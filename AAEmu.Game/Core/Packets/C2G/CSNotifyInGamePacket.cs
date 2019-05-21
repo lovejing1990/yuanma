@@ -8,7 +8,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSNotifyInGamePacket : GamePacket
     {
-        public CSNotifyInGamePacket() : base(0x029, 1)
+        public CSNotifyInGamePacket() : base(CSOffsets.CSNotifyInGamePacket, 5)
         {
         }
 
@@ -26,6 +26,7 @@ namespace AAEmu.Game.Core.Packets.C2G
             
             // TODO - MAYBE MOVE TO SPAWN CHARACTER
             TeamManager.Instance.UpdateAtLogin(Connection.ActiveChar);
+            Connection.ActiveChar.Expedition?.OnCharacterLogin(Connection.ActiveChar);
 
             _log.Info("NotifyInGame");
         }

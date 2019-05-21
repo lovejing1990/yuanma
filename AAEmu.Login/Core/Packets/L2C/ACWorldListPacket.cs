@@ -55,8 +55,8 @@ namespace AAEmu.Login.Core.Packets.L2C
                          RACE_WARBORN = 8
                           */
                         /*
-                         RACE_CONGESTION = 
-                         {
+                             RACE_CONGESTION = 
+                             {
                             LOW = 0,
                             MIDDLE = 1,
                             HIGH = 2,
@@ -64,7 +64,7 @@ namespace AAEmu.Login.Core.Packets.L2C
                             PRE_SELECT_RACE_FULL = 9,
                             CHECK = 10
                          }
-                         */
+                        */
                     }
                 }
             }
@@ -74,7 +74,7 @@ namespace AAEmu.Login.Core.Packets.L2C
             {
                 foreach (var character in _characters)
                 {
-                    stream.Write((ulong)character.AccountId);
+                    stream.Write(character.AccountId);
                     stream.Write(character.GsId);
                     stream.Write(character.Id);
                     stream.Write(character.Name);

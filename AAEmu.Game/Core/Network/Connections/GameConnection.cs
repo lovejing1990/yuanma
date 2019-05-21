@@ -83,11 +83,18 @@ namespace AAEmu.Game.Core.Network.Connections
             AccountManager.Instance.Remove(AccountId);
             
             if (ActiveChar != null)
+            {
                 foreach (var subscriber in ActiveChar.Subscribers)
+                {
                     subscriber.Dispose();
+                }
+
+            }
 
             foreach (var subscriber in Subscribers)
+            {
                 subscriber.Dispose();
+            }
 
             Save();
         }
@@ -126,7 +133,9 @@ namespace AAEmu.Game.Core.Network.Connections
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
+                        {
                             characterIds.Add(reader.GetUInt32("id"));
+                        }
                     }
                 }
 
@@ -134,12 +143,16 @@ namespace AAEmu.Game.Core.Network.Connections
                 {
                     var character = Character.Load(connection, id, AccountId);
                     if (character == null)
+                    {
                         continue; // TODO ...
+                    }
                     Characters.Add(character.Id, character);
                 }
 
                 foreach (var character in Characters.Values)
+                {
                     character.Inventory.Load(connection, SlotType.Equipment);
+                }
             }
 
             Houses.Clear();

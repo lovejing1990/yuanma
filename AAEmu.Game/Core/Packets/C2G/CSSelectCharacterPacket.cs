@@ -12,7 +12,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSSelectCharacterPacket : GamePacket
     {
-        public CSSelectCharacterPacket() : base(0x0E9, 5)
+        public CSSelectCharacterPacket() : base(CSOffsets.CSSelectCharacterPacket, 5)
         {
         }
 
@@ -56,15 +56,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 
                 foreach (var conflict in ZoneManager.Instance.GetConflicts())
                 {
-                    Connection.SendPacket(
-                        new SCConflictZoneStatePacket(
-                            conflict.ZoneGroupId,
-                            ZoneConflictType.Trouble0,
-                            conflict.NoKillMin[0] > 0
-                                ? DateTime.Now.AddMinutes(conflict.NoKillMin[0])
-                                : DateTime.MinValue
-                        )
-                    );
+                    Connection.SendPacket(new SCConflictZoneStatePacket(conflict.ZoneGroupId, ZoneConflictType.Trouble0, conflict.NoKillMin[0] > 0 ? DateTime.Now.AddMinutes(conflict.NoKillMin[0]) : DateTime.MinValue));
                 }
 
                 FactionManager.Instance.SendFactions(Connection.ActiveChar);

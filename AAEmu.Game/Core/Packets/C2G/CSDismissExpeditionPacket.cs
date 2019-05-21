@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSDismissExpeditionPacket : GamePacket
     {
-        public CSDismissExpeditionPacket() : base(0x00b, 1)
+        public CSDismissExpeditionPacket() : base(CSOffsets.CSDismissExpeditionPacket, 5)
         {
         }
 

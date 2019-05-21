@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AAEmu.Commons.IO;
 using AAEmu.Commons.Utils;
 using AAEmu.Game.Core.Managers.Id;
@@ -20,6 +21,8 @@ namespace AAEmu.Game.Core.Managers
         private static Logger _log = LogManager.GetCurrentClassLogger();
         private Dictionary<uint, HousingTemplate> _housingTemplates;
         private Dictionary<uint, House> _houses;
+        private Dictionary<ushort, House> _housesTl; // TODO or so mb tlId is id in the active zone? or type of house
+        private List<uint> _removedHousings;
 
         public Dictionary<uint, House> GetByAccountId(Dictionary<uint, House> values, ulong accountId)
         {
@@ -37,7 +40,7 @@ namespace AAEmu.Game.Core.Managers
             var template = _housingTemplates[templateId];
 
             var house = new House();
-            house.TlId = tlId > 0 ? tlId : (ushort)TlIdManager.Instance.GetNextId(); // TODO что то придумать...
+            house.TlId = tlId > 0 ? tlId : (ushort)HousingTldManager.Instance.GetNextId();
             house.ObjId = objectId > 0 ? objectId : ObjectIdManager.Instance.GetNextId();
             house.Template = template;
             house.TemplateId = template.Id;
@@ -52,6 +55,8 @@ namespace AAEmu.Game.Core.Managers
         {
             _housingTemplates = new Dictionary<uint, HousingTemplate>();
             _houses = new Dictionary<uint, House>();
+            _housesTl = new Dictionary<ushort, House>();
+            _removedHousings = new List<uint>();
 
 //            var housingAreas = new Dictionary<uint, HousingAreas>();
             var houseTaxes = new Dictionary<uint, HouseTax>();
@@ -124,7 +129,7 @@ namespace AAEmu.Game.Core.Managers
                             template.GateExists = reader.GetBoolean("gate_exists", true);
                             template.Hp = reader.GetInt32("hp");
                             template.RepairCost = reader.GetUInt32("repair_cost");
-                            template.GardenRadius = reader.GetFloat("garden_radius");
+                            template.GardenRadius = reader.GetFloat("garden_radius"); // нет такого поля в 3.5.5.3
                             template.Family = reader.GetString("family");
                             var taxationId = reader.GetUInt32("taxation_id");
                             template.Taxation = houseTaxes.ContainsKey(taxationId) ? houseTaxes[taxationId] : null;
@@ -140,15 +145,18 @@ namespace AAEmu.Game.Core.Managers
                             template.AbsoluteDecoLimit = reader.GetUInt32("absolute_deco_limit");
                             template.HousingDecoLimitId = reader.GetUInt32("housing_deco_limit_id", 0);
                             template.IsSellable = reader.GetBoolean("is_sellable", true);
+                            template.HeavyTax = reader.GetBoolean("heavy_tax", true);
+                            template.AlwaysPublic = reader.GetBoolean("always_public", true);
                             _housingTemplates.Add(template.Id, template);
 
                             var templateBindings = binding.Find(x => x.TemplateId.Contains(template.Id));
                             using (var command2 = connection.CreateCommand())
                             {
-                                command2.CommandText =
-                                    "SELECT * FROM housing_binding_doodads WHERE owner_id=@owner_id AND owner_type='Housing'";
+                                //command2.CommandText = "SELECT * FROM housing_binding_doodads WHERE housing_id=@housing_id"; // для 3.5.5.3
+                                command2.CommandText = "SELECT * FROM housing_binding_doodads WHERE owner_id=@owner_id AND owner_type='Housing'"; // для 1.2
                                 command2.Prepare();
-                                command2.Parameters.AddWithValue("owner_id", template.Id);
+                                //command2.Parameters.AddWithValue("housing_id", template.Id); // для 3.5.5.3
+                                command2.Parameters.AddWithValue("owner_id", template.Id); // для 1.2
                                 using (var reader2 = new SQLiteWrapperReader(command2.ExecuteReader()))
                                 {
                                     var doodads = new List<HousingBindingDoodad>();
@@ -157,19 +165,17 @@ namespace AAEmu.Game.Core.Managers
                                         var bindingDoodad = new HousingBindingDoodad();
                                         bindingDoodad.AttachPointId = reader2.GetUInt32("attach_point_id");
                                         bindingDoodad.DoodadId = reader2.GetUInt32("doodad_id");
-
-                                        if (templateBindings != null &&
-                                            templateBindings.AttachPointId.ContainsKey(bindingDoodad.AttachPointId))
-                                            bindingDoodad.Position = templateBindings
-                                                .AttachPointId[bindingDoodad.AttachPointId].Clone();
-
+                                        if (templateBindings != null && templateBindings.AttachPointId.ContainsKey(bindingDoodad.AttachPointId))
+                                        {
+                                            bindingDoodad.Position = templateBindings.AttachPointId[bindingDoodad.AttachPointId].Clone();
+                                        }
                                         if (bindingDoodad.Position == null)
+                                        {
                                             bindingDoodad.Position = new Point(0, 0, 0);
+                                        }
                                         bindingDoodad.Position.WorldId = 1;
-
                                         doodads.Add(bindingDoodad);
                                     }
-
                                     template.HousingBindingDoodad = doodads.ToArray();
                                 }
                             }
@@ -219,15 +225,19 @@ namespace AAEmu.Game.Core.Managers
                             var templateId = reader.GetUInt32("template_id");
                             var house = Create(templateId);
                             house.Id = reader.GetUInt32("id");
-                            house.AccountId = reader.GetUInt32("account_id");
+                            house.AccountId = reader.GetUInt64("account_id");
                             house.OwnerId = reader.GetUInt32("owner");
+                            house.CoOwnerId = reader.GetUInt32("co_owner");
+                            house.Name = reader.GetString("name");
                             house.Position =
                                 new Point(reader.GetFloat("x"), reader.GetFloat("y"), reader.GetFloat("z"));
                             house.Position.RotationZ = reader.GetSByte("rotation_z");
                             house.Position.WorldId = 1;
                             house.CurrentStep = reader.GetInt32("current_step");
-                            house.Permission = reader.GetByte("permission");
+                            house.NumAction = reader.GetInt32("current_action");
+                            house.Permission = (HousingPermission)reader.GetByte("permission");
                             _houses.Add(house.Id, house);
+                            _housesTl.Add(house.TlId, house);
                         }
                     }
                 }
@@ -242,6 +252,22 @@ namespace AAEmu.Game.Core.Managers
             {
                 using (var transaction = connection.BeginTransaction())
                 {
+                    lock (_removedHousings)
+                    {
+                        if (_removedHousings.Count > 0)
+                        {
+                            using (var command = connection.CreateCommand())
+                            {
+                                command.CommandText =
+                                    $"DELETE FROM housings WHERE id IN({string.Join(",", _removedHousings)})";
+                                command.Prepare();
+                                command.ExecuteNonQuery();
+                            }
+
+                            _removedHousings.Clear();
+                        }
+                    }
+
                     foreach (var house in _houses.Values)
                         house.Save(connection, transaction);
 
@@ -275,17 +301,48 @@ namespace AAEmu.Game.Core.Managers
         {
             // TODO validation position and some range...
 
-            var tax = _housingTemplates[designId].Taxation?.Tax ?? 0;
+            var template = _housingTemplates[designId];
+            var baseTax = (int)(template.Taxation?.Tax ?? 0);
+            var depositTax = baseTax * 2;
+            var totalTax = baseTax + depositTax;
+
+            var heavyTaxHouseCount = connection.Houses.Values
+                .Count(house => house.OwnerId == connection.ActiveChar.Id && house.Template.HeavyTax);
+            var normalTaxHouseCount = connection.Houses.Values
+                .Count(house => house.OwnerId == connection.ActiveChar.Id && !house.Template.HeavyTax);
 
             connection.SendPacket(
                 new SCConstructHouseTaxPacket(designId,
+                    heavyTaxHouseCount,
+                    normalTaxHouseCount,
+                    template.HeavyTax,
+                    baseTax,
+                    depositTax,
+                    totalTax
+                )
+            );
+        }
+
+        public void HouseTaxInfo(GameConnection connection, ushort tlId)
+        {
+            if (!_housesTl.ContainsKey(tlId))
+                return;
+
+            var house = _housesTl[tlId];
+            var baseTax = (int)(house.Template.Taxation?.Tax ?? 0);
+            var depositTax = baseTax * 2;
+
+            connection.SendPacket(
+                new SCHouseTaxInfoPacket(
+                    house.TlId,
                     0,
-                    0,
-                    false,
-                    (int)tax,
-                    (int)tax,
-                    0,
-                    0)
+                    baseTax,
+                    depositTax, // Amount Due
+                    DateTime.Now.AddDays(30),
+                    true,
+                    -1,
+                    false
+                )
             );
         }
 
@@ -309,12 +366,77 @@ namespace AAEmu.Game.Core.Managers
             else
                 house.CurrentStep = -1;
             house.OwnerId = connection.ActiveChar.Id;
+            house.CoOwnerId = connection.ActiveChar.Id;
             house.AccountId = connection.AccountId;
-            house.Permission = 2;
+            house.Permission = HousingPermission.Public;
             _houses.Add(house.Id, house);
+            _housesTl.Add(house.TlId, house);
 
             connection.ActiveChar.SendPacket(new SCMyHousePacket(house));
             house.Spawn();
+        }
+
+        public void ChangeHousePermission(GameConnection connection, ushort tlId, HousingPermission permission)
+        {
+            if (!_housesTl.ContainsKey(tlId))
+                return;
+            var house = _housesTl[tlId];
+            if (house.OwnerId != connection.ActiveChar.Id)
+                return;
+
+            switch (permission)
+            {
+                case HousingPermission.Guild when connection.ActiveChar.Expedition == null:
+                case HousingPermission.Family when connection.ActiveChar.Family == 0:
+                    return;
+                case HousingPermission.Guild:
+                    house.CoOwnerId = connection.ActiveChar.Expedition.Id;
+                    break;
+                case HousingPermission.Family:
+                    house.CoOwnerId = connection.ActiveChar.Family;
+                    break;
+                default:
+                    house.CoOwnerId = connection.ActiveChar.Id;
+                    break;
+            }
+
+            house.Permission = permission;
+            connection.SendPacket(new SCHousePermissionChangedPacket(tlId, (byte)permission));
+        }
+
+        public void ChangeHouseName(GameConnection connection, ushort tlId, string name)
+        {
+            if (!_housesTl.ContainsKey(tlId))
+                return;
+            var house = _housesTl[tlId];
+            if (house.OwnerId != connection.ActiveChar.Id)
+                return;
+
+            house.Name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+            connection.SendPacket(new SCUnitNameChangedPacket(house.ObjId, house.Name));
+        }
+
+        public void Demolish(GameConnection connection, House house)
+        {
+            if (!_houses.ContainsKey(house.Id))
+                return; // TODO send error
+            if (house.OwnerId == connection.ActiveChar.Id)
+            {
+                _removedHousings.Add(house.Id);
+                _houses.Remove(house.Id);
+                _housesTl.Remove(house.TlId);
+
+                house.Delete();
+                connection.ActiveChar.BroadcastPacket(new SCHouseDemolishedPacket(house.TlId), true);
+                connection.SendPacket(new SCMyHouseRemovedPacket(house.TlId));
+
+                HousingTldManager.Instance.ReleaseId(house.TlId);
+                HousingIdManager.Instance.ReleaseId(house.Id);
+            }
+            else
+            {
+                // TODO send error...
+            }
         }
     }
 }

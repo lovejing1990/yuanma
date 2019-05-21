@@ -28,7 +28,7 @@ namespace AAEmu.Game.Core.Managers
             _accounts.TryRemove(id, out _);
         }
 
-        public bool Contains(uint id)
+        public bool Contains(ulong id)
         {
             return _accounts.ContainsKey(id);
         }

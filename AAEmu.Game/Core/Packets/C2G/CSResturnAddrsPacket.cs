@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSResturnAddrsPacket : GamePacket
     {
-        public CSResturnAddrsPacket() : base(0x115, 1)
+        public CSResturnAddrsPacket() : base(CSOffsets.CSResturnAddrsPacket, 5)
         {
         }
 

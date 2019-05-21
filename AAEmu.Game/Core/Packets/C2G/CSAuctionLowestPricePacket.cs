@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSAuctionLowestPricePacket : GamePacket
     {
-        public CSAuctionLowestPricePacket() : base(0x0bc, 1) //TODO 1.0 opcode: 0x0b8
+        public CSAuctionLowestPricePacket() : base(CSOffsets.CSAuctionLowestPricePacket, 5)
         {
         }
 

@@ -12,8 +12,7 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly byte _mail;
         private readonly byte[] _limitLevels;
 
-        public SCLevelRestrictionConfigPacket(byte searchLevel, byte bidLevel, byte postLevel, byte trade, byte mail, byte[] limitLevels)
-            : base(SCOffsets.SCLevelRestrictionConfigPacket, 5)
+        public SCLevelRestrictionConfigPacket(byte searchLevel, byte bidLevel, byte postLevel, byte trade, byte mail, byte[] limitLevels) : base(SCOffsets.SCLevelRestrictionConfigPacket, 5)
         {
             _searchLevel = searchLevel;
             _bidLevel = bidLevel;
@@ -30,7 +29,7 @@ namespace AAEmu.Game.Core.Packets.G2C
             stream.Write(_postLevel);
             stream.Write(_trade);
             stream.Write(_mail);
-            for (var i = 0; i < 17; i++)
+            for (var i = 0; i < 15; i++)
             {
                 stream.Write(_limitLevels[i]);
             }

@@ -12,7 +12,7 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly MailBody _body;
         private readonly bool _isCancel;
 
-        public SCGotMailPacket(Mail mail, CountUnreadMail count, bool isCancel, MailBody body = null) : base(SCOffsets.SCGotMailPacket, 1)
+        public SCGotMailPacket(Mail mail, CountUnreadMail count, bool isCancel, MailBody body = null) : base(SCOffsets.SCGotMailPacket, 5)
         {
             _mail = mail;
             _count = count;

@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSSelectInteractionExPacket : GamePacket
     {
-        public CSSelectInteractionExPacket() : base(0x06b, 1)
+        public CSSelectInteractionExPacket() : base(CSOffsets.CSSelectInteractionExPacket, 5)
         {
         }
 

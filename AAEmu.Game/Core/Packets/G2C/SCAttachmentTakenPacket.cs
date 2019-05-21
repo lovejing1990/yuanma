@@ -1,4 +1,4 @@
-﻿using AAEmu.Commons.Network;
+using AAEmu.Commons.Network;
 using AAEmu.Game.Core.Network.Game;
 using AAEmu.Game.Models.Game.Items;
 
@@ -13,8 +13,8 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly ulong[] _itemsId;
         private readonly (SlotType slotType, byte slot)[] _itemSlots;
 
-        public SCAttachmentTakenPacket(long mailId, bool money, bool aaPoint, bool takeSequentially, ulong[] itemsId, (SlotType slotType, byte slot)[] itemSlots)
-            : base(SCOffsets.SCAttachmentTakenPacket, 5)
+        public SCAttachmentTakenPacket(long mailId, bool money, bool aaPoint, bool takeSequentially,
+            ulong[] itemsId, (SlotType slotType, byte slot)[] itemSlots) : base(SCOffsets.SCAttachmentTakenPacket, 5)
         {
             _mailId = mailId;
             _money = money;
@@ -31,10 +31,6 @@ namespace AAEmu.Game.Core.Packets.G2C
             stream.Write(_aaPoint);
             stream.Write(_takeSequentially);
             stream.Write((byte)_itemsId.Length);
-            foreach (var id in _itemsId)
-            {
-                stream.Write(id);
-            }
             foreach (var (slotType, slot) in _itemSlots) // TODO 10 items
             {
                 stream.Write((byte)slotType);

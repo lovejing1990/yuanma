@@ -107,10 +107,10 @@ namespace AAEmu.Game.Models.Game.Items
             //stream.Write(TemperMagical);
             // for 3.0.3.0
             stream.Write(Durability);
-            stream.Write((short)0);     // chargeCount
+            stream.Write((short)0);           // chargeCount
             stream.Write(DateTime.MinValue); // chargeTime
-            stream.Write(TemperPhysical); // scaledA
-            stream.Write(TemperMagical);  // scaledB
+            stream.Write(TemperPhysical);   // scaledA
+            stream.Write(TemperMagical);   // scaledB
 
             //foreach (var gemId in GemIds)
             //    stream.Write(gemId);

@@ -6,7 +6,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSICSMenuListPacket : GamePacket
     {
-        public CSICSMenuListPacket() : base(0x11b, 1)
+        public CSICSMenuListPacket() : base(CSOffsets.CSICSMenuListPacket, 5)
         {
         }
 

@@ -211,7 +211,7 @@ namespace AAEmu.Game.Core.Managers
                         {
                             var template = new SlaveInitialBuffs
                             {
-                                Id = reader.GetUInt32("id"),
+                                Id = reader.GetUInt32("id"), // нет такого поля в 3.5.5.3
                                 SlaveId = reader.GetUInt32("slave_id"),
                                 BuffId = reader.GetUInt32("buff_id")
                             };
@@ -234,7 +234,7 @@ namespace AAEmu.Game.Core.Managers
                         {
                             var template = new SlavePassiveBuffs
                             {
-                                Id = reader.GetUInt32("id"),
+                                Id = reader.GetUInt32("id"), // нет такого поля в 3.5.5.3
                                 OwnerId = reader.GetUInt32("owner_id"),
                                 OwnerType = reader.GetString("owner_type"),
                                 PassiveBuffId = reader.GetUInt32("passive_buff_id")
@@ -249,23 +249,23 @@ namespace AAEmu.Game.Core.Managers
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM slave_doodad_bindings";
+                    command.CommandText = "SELECT * FROM slave_doodad_bindings ORDER BY owner_id ASC";
                     command.Prepare();
 
                     using (var reader = new SQLiteWrapperReader(command.ExecuteReader()))
                     {
+                        //var step = 0U;
                         while (reader.Read())
                         {
-                            var template = new SlaveDoodadBindings
-                            {
-                                Id = reader.GetUInt32("id"),
-                                OwnerId = reader.GetUInt32("owner_id"),
-                                OwnerType = reader.GetString("owner_type"),
-                                AttachPointId = reader.GetInt32("attach_point_id"),
-                                DoodadId = reader.GetUInt32("doodad_id"),
-                                Persist = reader.GetBoolean("persist"),
-                                Scale = reader.GetFloat("scale")
-                            };
+                            var template = new SlaveDoodadBindings();
+                            template.Id = reader.GetUInt32("id"); // нет такого поля в 3.5.5.3
+                            //template.Id = step++;
+                            template.OwnerId = reader.GetUInt32("owner_id");
+                            template.OwnerType = reader.GetString("owner_type");
+                            template.AttachPointId = reader.GetInt32("attach_point_id");
+                            template.DoodadId = reader.GetUInt32("doodad_id");
+                            template.Persist = reader.GetBoolean("persist");
+                            template.Scale = reader.GetFloat("scale");
                             if (_slaveTemplates.ContainsKey(template.OwnerId))
                             {
                                 _slaveTemplates[template.OwnerId].DoodadBindings.Add(template);

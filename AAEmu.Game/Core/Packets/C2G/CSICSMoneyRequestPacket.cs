@@ -6,7 +6,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSICSMoneyRequestPacket : GamePacket
     {
-        public CSICSMoneyRequestPacket() : base(0x11e, 1)
+        public CSICSMoneyRequestPacket() : base(CSOffsets.CSICSMoneyRequestPacket, 5)
         {
         }
 

@@ -1,19 +1,21 @@
-using AAEmu.Commons.Network;
+﻿using AAEmu.Commons.Network;
 using AAEmu.Game.Core.Network.Game;
+using AAEmu.Game.Core.Packets.G2C;
 
 namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSChallengeDuelPacket : GamePacket
     {
-        public CSChallengeDuelPacket() : base(0x050, 1)
+        public CSChallengeDuelPacket() : base(CSOffsets.CSChallengeDuelPacket, 5)
         {
         }
 
         public override void Read(PacketStream stream)
         {
-            var id = stream.ReadUInt32();
+            var challengedId = stream.ReadUInt32();
+            Connection.ActiveChar.BroadcastPacket(new SCDuelChallengedPacket(challengedId), true);
 
-            _log.Warn("ChallengeDuel, Id: {0}", id);
+            _log.Warn("ChallengeDuel, challengedId: {0}", challengedId);
         }
     }
 }

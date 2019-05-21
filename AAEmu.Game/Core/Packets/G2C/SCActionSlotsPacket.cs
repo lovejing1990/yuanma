@@ -21,9 +21,7 @@ namespace AAEmu.Game.Core.Packets.G2C
             {
                 stream.Write((byte)slot.Type);
                 if (slot.Type != ActionSlotType.None)
-                {
                     stream.Write(slot.ActionId);
-                }
             }
 
             return stream;

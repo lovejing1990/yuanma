@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSHgResponsePacket : GamePacket
     {
-        public CSHgResponsePacket() : base(0x15D, 1)
+        public CSHgResponsePacket() : base(CSOffsets.CSHgResponsePacket, 1)
         {
         }
 

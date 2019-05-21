@@ -14,16 +14,26 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly uint _hour;
         private readonly uint _min;
 
-        public SCUnknownPacket_0x2CF(byte protectFaction, DateTime time, uint year, uint month, uint day, uint hour, uint min)
-            : base(SCOffsets.SCUnknownPacket_0x2CF, 5)
+        public SCUnknownPacket_0x2CF(byte protectFaction, DateTime time) : base(SCOffsets.SCUnknownPacket_0x2CF, 5)
         {
             _protectFaction = protectFaction;
             _time = time;
-            _year = year;
-            _month = month;
-            _day = day;
-            _hour = hour;
-            _min = min;
+
+            var date = _time.ToString("g");
+
+            _year = Convert.ToUInt32(date.Substring(6,4));
+            _month = Convert.ToUInt32(date.Substring(3, 2));
+            _day = Convert.ToUInt32(date.Substring(0, 2));
+            if (date.Length<16)
+            {
+                _hour = Convert.ToUInt32(date.Substring(11, 1)); // 20.07.2015 0:00:00
+                _min = Convert.ToUInt32(date.Substring(13, 2));
+            }
+            else
+            {
+                _hour = Convert.ToUInt32(date.Substring(11, 2)); // 20.07.2015 11:43:33
+                _min = Convert.ToUInt32(date.Substring(14, 2));
+            }
         }
 
         public override PacketStream Write(PacketStream stream)

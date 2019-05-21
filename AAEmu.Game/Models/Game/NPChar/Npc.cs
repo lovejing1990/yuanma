@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Managers.World;
 using AAEmu.Game.Core.Network.Game;
@@ -463,7 +463,7 @@ namespace AAEmu.Game.Models.Game.NPChar
         public Npc()
         {
             Name = "";
-            Equip = new Item[28];
+            Equip = new Item[29]; // TODO 1.2 item: 28, at 3.0.3.0 item: 29
         }
 
         public override void DoDie(Unit killer)

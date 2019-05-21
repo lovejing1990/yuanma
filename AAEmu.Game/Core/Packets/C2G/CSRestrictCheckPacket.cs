@@ -6,15 +6,15 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSRestrictCheckPacket : GamePacket
     {
-        public CSRestrictCheckPacket() : base(0x72, 5)
+        public CSRestrictCheckPacket() : base(CSOffsets.CSRestrictCheckPacket, 5)
         {
         }
 
         public override void Read(PacketStream stream)
         {
             var characterId = stream.ReadUInt32();
-            var code = stream.ReadByte();
-            Connection.SendPacket(new SCResultRestrictCheckPacket(characterId, code, 0));
+            var restrictCode = stream.ReadByte();
+            Connection.SendPacket(new SCResultRestrictCheckPacket(characterId, restrictCode, 0));
         }
     }
 }

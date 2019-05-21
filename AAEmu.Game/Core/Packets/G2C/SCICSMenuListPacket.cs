@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AAEmu.Commons.Network;
 using AAEmu.Game.Core.Network.Game;
 
@@ -9,17 +9,17 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly byte _result;
         private readonly (byte mainTab, List<byte> subTabs)[] _tabs;
 
-        public SCICSMenuListPacket(byte result) : base(SCOffsets.SCICSMenuListPacket, 1)
+        public SCICSMenuListPacket(byte result) : base(SCOffsets.SCICSMenuListPacket, 5)
         {
             _result = result;
             _tabs = new (byte mainTab, List<byte> subTabs)[]
             {
-                (1, new List<byte> {2, 3}),
-                (2, new List<byte> {1, 2, 6}),
-                (3, new List<byte> {1, 2, 6}),
-                (4, new List<byte> {1, 4}),
-                (0, new List<byte>()),
-                (0, new List<byte>())
+                (1, new List<byte> { 1,2,3,4,5,6,7 }),
+                (2, new List<byte> { 1,2,3,4,5,6,7 }),
+                (3, new List<byte> { 1,2,3,4,5,6,7 }),
+                (4, new List<byte> { 1,2,3,4,5,6,7 }),
+                (5, new List<byte> { 1,2,3,4,5,6,7 }),
+                (6, new List<byte> { 1,2,3,4,5,6,7 })
             };
         }
 

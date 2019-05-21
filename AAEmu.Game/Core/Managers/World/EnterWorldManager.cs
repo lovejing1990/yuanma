@@ -16,14 +16,14 @@ namespace AAEmu.Game.Core.Managers.World
     {
         private static Logger _log = LogManager.GetCurrentClassLogger();
 
-        private Dictionary<uint, uint> _accounts;
+        private Dictionary<uint, ulong> _accounts;
 
         protected EnterWorldManager()
         {
-            _accounts = new Dictionary<uint, uint>();
+            _accounts = new Dictionary<uint, ulong>();
         }
 
-        public void AddAccount(uint accountId, uint connectionId)
+        public void AddAccount(ulong accountId, uint connectionId)
         {
             var connection = LoginNetwork.Instance.GetConnection();
             var gsId = AppConfiguration.Instance.Id;
@@ -80,21 +80,17 @@ namespace AAEmu.Game.Core.Managers.World
                         connection.LeaveTask = new LeaveWorldTask(connection, type);
                         TaskManager.Instance.Schedule(connection.LeaveTask, TimeSpan.FromSeconds(10));
                     }
-
                     break;
                 case 2: // выбор сервера
                     connection.SendPacket(new SCChatMessagePacket(Models.Game.Chat.ChatType.Notice, "Good - bye!"));
-                    connection.SendPacket(new SCReconnectAuthPacket(connection.Id));
-
-                    //if (connection.State == GameState.Lobby)
-                    //{
-                    //    var gsId = AppConfiguration.Instance.Id;
-                    //    LoginNetwork
-                    //        .Instance
-                    //        .GetConnection()
-                    //        .SendPacket(new GLPlayerReconnectPacket(gsId, connection.AccountId, connection.Id));
-                    //}
-
+                    if (connection.State == GameState.Lobby)
+                    {
+                        var gsId = AppConfiguration.Instance.Id;
+                        LoginNetwork
+                            .Instance
+                            .GetConnection()
+                            .SendPacket(new GLPlayerReconnectPacket(gsId, connection.AccountId, connection.Id));
+                    }
                     break;
                 default:
                     _log.Info("[Leave] Unknown type: {0}", type);

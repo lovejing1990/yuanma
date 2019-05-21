@@ -1,4 +1,4 @@
-using AAEmu.Commons.Network;
+﻿using AAEmu.Commons.Network;
 using AAEmu.Game.Core.Network.Game;
 using AAEmu.Game.Core.Packets.G2C;
 
@@ -6,7 +6,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSRequestUIDataPacket : GamePacket
     {
-        public CSRequestUIDataPacket() : base(0x113, 1)
+        public CSRequestUIDataPacket() : base(CSOffsets.CSRequestUIDataPacket, 5)
         {
         }
 
@@ -16,9 +16,9 @@ namespace AAEmu.Game.Core.Packets.C2G
             var id = stream.ReadUInt32();
 
             if (Connection.Characters.ContainsKey(id))
-                Connection.SendPacket(
-                    new SCResponseUIDataPacket(id, uiDataType, Connection.Characters[id].GetOption(uiDataType))
-                );
+            {
+                Connection.SendPacket(new SCResponseUIDataPacket(id, uiDataType, Connection.Characters[id].GetOption(uiDataType)));
+            }
         }
     }
 }

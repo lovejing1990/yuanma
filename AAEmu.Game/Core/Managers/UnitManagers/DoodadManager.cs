@@ -64,7 +64,7 @@ namespace AAEmu.Game.Core.Managers.UnitManagers
                             template.ModelKindId = reader.GetUInt32("model_kind_id");
                             template.UseCreatorFaction = reader.GetBoolean("use_creator_faction", true);
                             template.ForceTodTopPriority = reader.GetBoolean("force_tod_top_priority", true);
-                            template.MilestoneId = reader.GetUInt32("milestone_id", 0);
+                            template.MilestoneId = reader.GetUInt32("milestone_id", 0); //нет такого поля в 3.5.5.3
                             template.GroupId = reader.GetUInt32("group_id");
                             template.UseTargetDecal = reader.GetBoolean("use_target_decal", true);
                             template.UseTargetSilhouette = reader.GetBoolean("use_target_silhouette", true);
@@ -315,7 +315,7 @@ namespace AAEmu.Game.Core.Managers.UnitManagers
                         {
                             var func = new DoodadFuncBuyFishModel();
                             func.Id = reader.GetUInt32("id");
-                            func.Name = reader.GetString("name");
+                            func.Name = reader.GetString("name"); //нет такого поля в 3.5.5.3
                             _funcTemplates["DoodadFuncBuyFishModel"].Add(func.Id, func);
                         }
                     }
@@ -417,14 +417,16 @@ namespace AAEmu.Game.Core.Managers.UnitManagers
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM doodad_func_clout_effects";
+                    command.CommandText = "SELECT * FROM doodad_func_clout_effects ORDER BY doodad_func_clout_id ASC";
                     command.Prepare();
                     using (var reader = new SQLiteWrapperReader(command.ExecuteReader()))
                     {
+                        //var step = 0U;
                         while (reader.Read())
                         {
                             var func = new DoodadFuncCloutEffect();
-                            func.Id = reader.GetUInt32("id");
+                            func.Id = reader.GetUInt32("id"); //нет такого поля в 3.5.5.3
+                            //func.Id = step++;
                             func.FuncCloutId = reader.GetUInt32("doodad_func_clout_id");
                             func.EffectId = reader.GetUInt32("effect_id");
                             _funcTemplates["DoodadFuncCloutEffect"].Add(func.Id, func);
@@ -554,7 +556,8 @@ namespace AAEmu.Game.Core.Managers.UnitManagers
                         {
                             var func = new DoodadFuncConsumeChangerModel();
                             func.Id = reader.GetUInt32("id");
-                            func.Name = reader.GetString("name");
+                            func.Name = reader.GetString("name"); // есть в базе 1.2
+                            //func.Model = reader.GetString("model"); // есть в базе 3.5.5.3
                             _funcTemplates["DoodadFuncConsumeChangerModel"].Add(func.Id, func);
                         }
                     }

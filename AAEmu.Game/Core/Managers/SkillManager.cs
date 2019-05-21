@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AAEmu.Commons.Utils;
 using AAEmu.Game.Models.Game.Skills;
@@ -207,7 +207,7 @@ namespace AAEmu.Game.Core.Managers
                             template.StopCastingOnBigHit = reader.GetBoolean("stop_casting_on_big_hit", true);
                             template.StopChannelingOnBigHit = reader.GetBoolean("stop_channeling_on_big_hit", true);
                             template.AutoLearn = reader.GetBoolean("auto_learn", true);
-                            template.NeedLearn = reader.GetBoolean("need_learn", true);
+                            template.NeedLearn = reader.GetBoolean("need_learn", true); // нет такого поля в базе 3.5.5.3
                             template.MainhandToolId = reader.GetUInt32("mainhand_tool_id", 0);
                             template.OffhandToolId = reader.GetUInt32("offhand_tool_id", 0);
                             template.FrontAngle = reader.GetInt32("front_angle");
@@ -215,7 +215,7 @@ namespace AAEmu.Game.Core.Managers
                             template.Unmount = reader.GetBoolean("unmount", true);
                             template.DamageTypeId = reader.GetUInt32("damage_type_id", 0);
                             template.AllowToPrisoner = reader.GetBoolean("allow_to_prisoner", true);
-                            template.MilestoneId = reader.GetUInt32("milestone_id", 0);
+                            template.MilestoneId = reader.GetUInt32("milestone_id", 0); // нет такого поля в базе 3.5.5.3
                             template.Plot = reader.IsDBNull("plot_id") ? null : PlotManager.Instance.GetPlot(reader.GetUInt32("plot_id"));
                             template.ConsumeLaborPower = reader.GetInt32("consume_lp", 0);
                             template.SourceStun = reader.GetBoolean("source_stun", true);
@@ -269,14 +269,21 @@ namespace AAEmu.Game.Core.Managers
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM default_skills";
+                    //command.CommandText = "SELECT DISTINCT skill_id FROM default_skills ORDER BY skill_id ASC";
+                    command.CommandText = "SELECT * FROM default_skills ORDER BY skill_id ASC";
                     command.Prepare();
                     using (var sqliteReader = command.ExecuteReader())
                     using (var reader = new SQLiteWrapperReader(sqliteReader))
                     {
+                        uint again = 0;
                         while (reader.Read())
                         {
                             var id = (uint) reader.GetInt32("skill_id");
+                            if (id == again) // проверка на повтор
+                            {
+                                continue;
+                            }
+                            again = id; 
                             var skill = new DefaultSkill
                             {
                                 Template = _skills[id],
@@ -367,7 +374,7 @@ namespace AAEmu.Game.Core.Managers
                             template.ReflectionRatio = reader.GetInt32("reflection_ratio");
                             template.ReflectionTargetRatio = reader.GetInt32("reflection_target_ratio");
                             template.KnockbackImmune = reader.GetBoolean("knockback_immune");
-                            template.ImmuneBuffTagId = reader.GetUInt32("immune_buff_tag_id", 0);
+                            template.ImmuneBuffTagId = reader.GetUInt32("immune_buff_tag_id", 0); // нет такого поля в базе 3.5.5.3
                             template.AuraRelationId = reader.GetUInt32("aura_relation_id");
                             template.GroupId = reader.GetUInt32("group_id", 0);
                             template.GroupRank = reader.GetInt32("group_rank");
@@ -432,7 +439,7 @@ namespace AAEmu.Game.Core.Managers
                             template.SlaveApplicable = reader.GetBoolean("slave_applicable", true);
                             template.Pacifist = reader.GetBoolean("pacifist", true);
                             template.RemoveOnInteraction = reader.GetBoolean("remove_on_interaction", true);
-                            template.Crime = reader.GetBoolean("crime", true);
+                            template.Crime = reader.GetBoolean("crime", true); // нет такого поля в базе 3.5.5.3
                             template.RemoveOnUnmount = reader.GetBoolean("remove_on_unmount", true);
                             template.AuraChildOnly = reader.GetBoolean("aura_child_only", true);
                             template.RemoveOnMount = reader.GetBoolean("remove_on_mount", true);
@@ -734,7 +741,7 @@ namespace AAEmu.Game.Core.Managers
                             template.ManaStealRatio = reader.GetInt32("mana_steal_ratio");
                             template.DpsMultiplier = reader.GetFloat("dps_multiplier");
                             template.WeaponSlotId = reader.GetInt32("weapon_slot_id");
-                            template.CheckCrime = reader.GetBoolean("check_crime", true);
+                            template.CheckCrime = reader.GetBoolean("check_crime", true); // нет такого поля в базе 3.5.5.3
                             template.HitAnimTimingId = reader.GetUInt32("hit_anim_timing_id");
                             template.UseTargetChargedBuff = reader.GetBoolean("use_target_charged_buff", true);
                             template.TargetChargedBuffId = reader.GetUInt32("target_charged_buff_id", 0);
@@ -1103,8 +1110,8 @@ namespace AAEmu.Game.Core.Managers
                             template.OwnerTypeId = reader.GetUInt32("owner_type_id");
                             template.SubType = reader.GetUInt32("sub_type");
                             template.PosDirId = reader.GetUInt32("pos_dir_id");
-                            template.PosAngle = reader.GetFloat("pos_angle");
-                            template.PosDistance = reader.GetFloat("pos_distance");
+                            template.PosAngle = reader.GetFloat("pos_angle"); // нет такого поля в базе 3.5.5.3
+                            template.PosDistance = reader.GetFloat("pos_distance"); // нет такого поля в базе 3.5.5.3
                             template.OriDirId = reader.GetUInt32("ori_dir_id");
                             template.OriAngle = reader.GetFloat("ori_angle");
                             template.UseSummonerFaction = reader.GetBoolean("use_summoner_faction", true);

@@ -1,4 +1,4 @@
-namespace AAEmu.Game.Models.Game.Items
+﻿namespace AAEmu.Game.Models.Game.Items
 {
     public enum EquipmentItemSlot : byte
     {
@@ -21,6 +21,7 @@ namespace AAEmu.Game.Models.Game.Items
         Offhand = 16,
         Ranged = 17,
         Musical = 18,
+        //somehow_special (BodyPart)
         Face = 19,
         Hair = 20,
         Glasses = 21,
@@ -28,8 +29,10 @@ namespace AAEmu.Game.Models.Game.Items
         Tail = 23,
         Body = 24,
         Beard = 25,
+        //================
         Backpack = 26,
-        Cosplay = 27
+        Cosplay = 27,
+        CosplayVisual = 28
     }
 
     public enum EquipmentItemSlotType : byte
@@ -64,6 +67,7 @@ namespace AAEmu.Game.Models.Game.Items
         Body = 28,
         Beard = 29,
         Backpack = 30,
-        Cosplay = 31
+        Cosplay = 31,
+        CosplayVisual = 32
     }
 }

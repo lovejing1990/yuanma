@@ -10,6 +10,7 @@ using AAEmu.Game.Models.Game.NPChar;
 using AAEmu.Game.Models.Game.Skills;
 using AAEmu.Game.Models.Game.Units;
 using AAEmu.Game.Models.Game.Shipyard;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AAEmu.Game.Core.Packets.G2C
 {
@@ -22,18 +23,16 @@ namespace AAEmu.Game.Core.Packets.G2C
         public SCUnitStatePacket(Unit unit) : base(SCOffsets.SCUnitStatePacket, 5)
         {
             _unit = unit;
+
             if (_unit is Character)
             {
                 _type = 0;
                 _modelPostureType = 0;
             }
-            else if (_unit is Npc)
+            else if (_unit is Npc npc)
             {
                 _type = 1;
-                if (((Npc)_unit).Template.AnimActionId > 0)
-                    _modelPostureType = 4;
-                else
-                    _modelPostureType = 0;
+                _modelPostureType = npc.Template.AnimActionId > 0 ? (byte)4 : (byte)0;
             }
             else if (_unit is Slave)
             {
@@ -64,55 +63,68 @@ namespace AAEmu.Game.Core.Packets.G2C
 
         public override PacketStream Write(PacketStream stream)
         {
+            #region read_8030
+
             stream.WriteBc(_unit.ObjId);
             stream.Write(_unit.Name);
+
+            #region read_A3C0
+
             stream.Write(_type);
             switch (_type) // UnitOwnerInfo?
             {
                 case 0:
-                    var character = (Character)_unit;
+                    var character = _unit as Character;
                     stream.Write(character.Id); // type(id)
-                    stream.Write(0L); // v?
+                    stream.Write(0L);          // v
                     break;
                 case 1:
-                    var npc = (Npc)_unit;
+                    var npc = _unit as Npc;
+
                     stream.WriteBc(npc.ObjId);
                     stream.Write(npc.TemplateId); // npc templateId
-                    stream.Write(0u); // type(id)
-                    stream.Write((byte)0); // clientDriven
+                    stream.Write(0u);            // type(id)
+                    stream.Write((byte)0);      // clientDriven
                     break;
                 case 2:
-                    var slave = (Slave)_unit;
-                    stream.Write(0u); // type(id)
-                    stream.Write(slave.TlId); // tl
+                    var slave = _unit as Slave;
+
+                    stream.Write(0u);                 // type(id)
+                    stream.Write(slave.TlId);        // tl
                     stream.Write(slave.TemplateId); // type(id)
-                    stream.Write(0u); // type(id)
+                    stream.Write(0u);              // type(id)
                     break;
                 case 3:
-                    var house = (House)_unit;
-                    var buildStep = house.CurrentStep == -1 ? 0 : (-house.Template.BuildSteps.Count + house.CurrentStep);
+                    var house = _unit as House;
+
+                    var buildStep = house.CurrentStep == -1 ? 0 : -house.Template.BuildSteps.Count + house.CurrentStep;
 
                     stream.Write(house.TlId); // tl
                     stream.Write(house.TemplateId); // house templateId
                     stream.Write((short)buildStep); // buildstep
                     break;
                 case 4:
-                    var transfer = (Transfer)_unit;
+                    var transfer = _unit as Transfer;
+
                     stream.Write(transfer.TlId); // tl
                     stream.Write(transfer.TemplateId); // transfer templateId
                     break;
                 case 5:
-                    var mount = (Mount)_unit;
+                    var mount = _unit as Mount;
+
                     stream.Write(mount.TlId); // tl
                     stream.Write(mount.TemplateId); // npc teplateId
                     stream.Write(mount.OwnerId); // characterId (masterId)
                     break;
                 case 6:
-                    var shipyard = (Shipyard)_unit;
+                    var shipyard = _unit as Shipyard;
+
                     stream.Write(shipyard.Template.Id); // type(id)
                     stream.Write(shipyard.Template.TemplateId); // type(id)
                     break;
             }
+
+            #endregion
 
             if (_unit.OwnerId > 0) // master
             {
@@ -122,305 +134,481 @@ namespace AAEmu.Game.Core.Packets.G2C
             else
                 stream.Write("");
 
-            stream.Write(Helpers.ConvertX(_unit.Position.X));
-            stream.Write(Helpers.ConvertY(_unit.Position.Y));
-            stream.Write(Helpers.ConvertZ(_unit.Position.Z));
-            stream.Write(_unit.Scale);
-            stream.Write(_unit.Level);
-
-            // === 3.0.3.0 ===
+            stream.WritePosition(_unit.Position.X, _unit.Position.Y, _unit.Position.Z); // posXYZ
+            stream.Write(_unit.Scale); // scale
+            stream.Write(_unit.Level); // level
             stream.Write((byte)0); // level
-            var v3 = 0;
-            do
-            {
-                stream.Write((byte)0); // slot
-                ++v3;
-            }
-            while (v3 < 4);
-            //================
-
+            for (var i = 0; i < 4; i++)
+                stream.Write((sbyte)-1); // slot
             stream.Write(_unit.ModelId); // modelRef
 
-            // === 3.0.3.0 ===
-            // calculate validFlags
+            #region CharacterInfo_3EB0
+
             var index = 0;
             var validFlags = 0;
-            var chr = (Character)_unit;
-            foreach (var item in chr.Inventory.Equip)
+            if (_unit is Character character2)
             {
-                if (item != null)
+                // calculate validFlags
+                foreach (var item in character2.Inventory.Equip)
                 {
-                    validFlags |= 1 << index;
+                    if (item != null)
+                        validFlags |= 1 << index;
+                    index++;
                 }
-                index++;
+                stream.Write((uint)validFlags); // validFlags for 3.0.3.0
+                foreach (var item in character2.Inventory.Equip)
+                {
+                    if (item != null)
+                        stream.Write(item);
+                }
             }
-            stream.Write((uint)validFlags); // validFlags for 3.0.3.0
-            foreach (var item in chr.Inventory.Equip)
+            else if (_unit is Npc npc)
             {
-                if (item != null)
+                // calculate validFlags
+                foreach (var item in npc.Equip)
                 {
-                    stream.Write(item);
+                    if (item != null)
+                        validFlags |= 1 << index;
+                    index++;
+                }
+                stream.Write((uint)validFlags); // validFlags for 3.0.3.0
+
+                for (var i = 0; i < npc.Equip.Length; i++)
+                {
+                    var item = npc.Equip[i];
+
+                    if (item is BodyPart)
+                        stream.Write(item.TemplateId);
+                    else if (item != null)
+                    {
+                        if (i == 27) // Cosplay
+                            stream.Write(item);
+                        else
+                        {
+                            stream.Write(item.TemplateId);
+                            stream.Write(0L);
+                            stream.Write((byte)0);
+                        }
+                    }
                 }
             }
-            if (validFlags != 0)
+
+            if (_unit is Character)
             {
                 stream.Write((uint)0); // flags for 3.0.3.0
             }
-
-            //================
-
-            // === 1.2 ===
-            //if (_unit is Character)
-            //{
-            //    var character = (Character)_unit;
-            //    foreach (var item in character.Inventory.Equip)
-            //    {
-            //        if (item == null)
-            //            stream.Write(0);
-            //        else
-            //            stream.Write(item);
-            //    }
-            //}
-            //else if (_unit is Npc)
-            //{
-            //    var npc = (Npc)_unit;
-            //    for (var i = 0; i < npc.Equip.Length; i++)
-            //    {
-            //        var item = npc.Equip[i];
-
-            //        if (item is BodyPart)
-            //            stream.Write(item.TemplateId);
-            //        else if (item != null)
-            //        {
-            //            if (i == 27) // Cosplay
-            //                stream.Write(item);
-            //            else
-            //            {
-            //                stream.Write(item.TemplateId);
-            //                stream.Write(0L);
-            //                stream.Write((byte)0);
-            //            }
-            //        }
-            //        else
-            //            stream.Write(0);
-            //    }
-            //}
-            //else
-            //    for (var i = 0; i < 28; i++)
-            //        stream.Write(0);
-            // ===============
+            #endregion
 
             stream.Write(_unit.ModelParams); // CustomModel_3570
 
             stream.WriteBc(0);
             stream.Write(_unit.Hp * 100); // preciseHealth
             stream.Write(_unit.Mp * 100); // preciseMana
-            stream.Write((byte)255); // point // TODO UnitAttached
-            //if (point != 255) // -1
-            //{
-            //    stream.WriteBc(0);
-            //}
 
-            if (_unit is Character)
+            var point = -1;                   // point TODO UnitAttached
+            if (point == -1)
             {
-                var character = (Character)_unit;
-                if (character.Bonding == null)
-                    stream.Write((sbyte)-1); // point
-                else
-                    stream.Write(character.Bonding);
-            }
-            else if (_unit is Slave)
-            {
-                var slave = (Slave)_unit;
-                if (slave.BondingObjId > 0)
-                    stream.WriteBc(slave.BondingObjId);
-                else
-                    stream.Write((sbyte)-1);
+                stream.Write((sbyte)point);
             }
             else
-                stream.Write((sbyte)-1); // point
+            {
+                stream.Write((sbyte)0);    //TODO что должно быть?
+                stream.WriteBc(0);
+            }
+            var point2 = -1;               // TODO что это?
+            if (point2 == -1)
+            {
+                stream.Write((sbyte)point2);  // point2
+            }
+            else
+            {
+                stream.Write((sbyte)0);    //TODO not -1
+                stream.WriteBc(0);
+
+                stream.Write(0);  // space
+                stream.Write(0);  // spot
+                stream.Write(0);  // type
+            }
+            //if (_unit is Character character3)
+            //{
+            //    if (character3.Bonding == null)
+            //        stream.Write((sbyte)-1); // point
+            //    else
+            //    {
+            //        stream.Write((sbyte)-1); // point
+            //        stream.WriteBc(0);
+            //    }
+            //}
+            //else if (_unit is Slave slave)
+            //{
+            //    if (slave.BondingObjId > 0)
+            //        stream.WriteBc(slave.BondingObjId);
+            //    else
+            //        stream.Write((sbyte)-1);
+            //}
+            //else
+            //    stream.Write((sbyte)-1); // point
+
+
+            #region ModelPosture_9CF0
 
             // TODO UnitModelPosture
             stream.Write(_modelPostureType); // type
-            stream.Write(false); // isLooted
+            stream.Write(false);             // isLooted
 
             switch (_modelPostureType)
             {
                 case 1: // build
-                    for (var i = 0; i < 2; i++)
-                        stream.Write(true); // door
-                    for (var i = 0; i < 6; i++)
-                        stream.Write(true); // window
+                    stream.Write(false); // flags Byte
                     break;
                 case 4: // npc
-                    var npc = (Npc)_unit;
-                    stream.Write(npc.Template.AnimActionId);
-                    stream.Write(true); // active
+                    var npc = _unit as Npc;
+                    stream.Write(npc.Template.AnimActionId); // animId
+                    stream.Write(true);                     // activate
                     break;
                 case 7:
-                    stream.Write(0u); // type(id)
-                    stream.Write(0f); // growRate
-                    stream.Write(0); // randomSeed
-                    stream.Write(false); // isWithered
-                    stream.Write(false); // isHarvested
+                    stream.Write(0u);    // type(id)
+                    stream.Write(0f);    // growRate
+                    stream.Write(0);     // randomSeed
+                    stream.Write(false); // flags Byte
                     break;
                 case 8: // slave
-                    stream.Write(0f); // pitch
-                    stream.Write(0f); // yaw
+                    stream.Write(0f);    // pitch
+                    stream.Write(0f);    // yaw
                     break;
             }
+            #endregion
 
             stream.Write(_unit.ActiveWeapon);
 
-            if (_unit is Character)
+            if (_unit is Character character4)
             {
-                var character = (Character)_unit;
-                stream.Write((byte)character.Skills.Skills.Count);
-                foreach (var skill in character.Skills.Skills.Values)
-                {
-                    stream.Write(skill.Id);
-                    stream.Write(skill.Level);
-                }
+                var learnedSkillCount = (byte)character4.Skills.Skills.Count;
+                var passiveBuffCount = (byte)character4.Skills.PassiveBuffs.Count;
 
-                stream.Write(character.Skills.PassiveBuffs.Count);
-                foreach (var buff in character.Skills.PassiveBuffs.Values)
-                    stream.Write(buff.Id);
+                stream.Write(learnedSkillCount);  // learnedSkillCount
+                stream.Write(passiveBuffCount);  // passiveBuffCount
+                stream.Write(0);                // highAbilityRsc
+
+                foreach (var skill in character4.Skills.Skills.Values)
+                {
+                    stream.WritePisc(skill.Id);
+                }
+                foreach (var buff in character4.Skills.PassiveBuffs.Values)
+                {
+                    stream.WritePisc(buff.Id);
+                }
+            }
+            else if(_unit is Npc npc)
+            {
+
+                stream.Write((byte)1);  // learnedSkillCount
+                stream.Write((byte)0);  // passiveBuffCount
+                stream.Write(0);        // highAbilityRsc
+
+                stream.WritePisc(npc.Template.BaseSkillId);
             }
             else
             {
                 stream.Write((byte)0); // learnedSkillCount
-                stream.Write(0); // learnedBuffCount
+                stream.Write((byte)0); // passiveBuffCount
+                stream.Write(0);       // highAbilityRsc
             }
 
-            stream.Write(_unit.Position.RotationX);
-            stream.Write(_unit.Position.RotationY);
-            stream.Write(_unit.Position.RotationZ);
+            if (_type == 3)
+            {
+                stream.Write(_unit.Position.RotationZ);
+            }
+            else
+            {
+                stream.Write(_unit.Position.RotationX);
+                stream.Write(_unit.Position.RotationY);
+                stream.Write(_unit.Position.RotationZ);
+            }
+
             stream.Write(_unit.RaceGender);
 
-            if (_unit is Character)
-                stream.WritePisc(0, 0, ((Character)_unit).Appellations.ActiveAppellation, 0); // pisc
+            if (_unit is Character character5)
+            {
+                stream.WritePisc(0, 0, character5.Appellations.ActiveAppellation, 0); // pisc
+            }
             else
+            {
                 stream.WritePisc(0, 0, 0, 0); // pisc
+            }
 
             stream.WritePisc(_unit.Faction?.Id ?? 0, _unit.Expedition?.Id ?? 0, 0, 0); // pisc
 
-            if (_unit is Character)
+            stream.WritePisc(0, 0, 0, 0); // pisc
+
+            if (_unit is Character character6)
             {
-                var character = (Character)_unit;
-                var flags = new BitSet(16);
+                var flags = new BitSet(16); // short
 
-                if (character.Invisible)
+                if (character6.Invisible)
+                {
                     flags.Set(5);
+                }
 
-                if (character.IdleStatus)
+                if (character6.IdleStatus)
+                {
                     flags.Set(13);
+                }
 
-                stream.WritePisc(0, 0); // очки чести полученные в PvP, кол-во убийств в PvP
+                //stream.WritePisc(0, 0); // очки чести полученные в PvP, кол-во убийств в PvP
                 stream.Write(flags.ToByteArray()); // flags(ushort)
                 /*
-                 * 0x01 - 8bit - режим боя
-                 * 0x04 - 6bit - невидимость?
-                 * 0x08 - 5bit - дуэль
-                 * 0x40 - 2bit - gmmode, дополнительно 7 байт
-                 * 0x80 - 1bit - дополнительно tl(ushort), tl(ushort), tl(ushort), tl(ushort)
-                 * 0x0100 - 16bit - дополнительно 3 байт (bc), firstHitterTeamId(uint)
-                 * 0x0400 - 14bit - надпись "Отсутсвует" под именем
-                 */
+                * 0x01 - 8bit - режим боя
+                * 0x04 - 6bit - невидимость?
+                * 0x08 - 5bit - дуэль
+                * 0x40 - 2bit - gmmode, дополнительно 7 байт
+                * 0x80 - 1bit - дополнительно tl(ushort), tl(ushort), tl(ushort), tl(ushort)
+                * 0x0100 - 16bit - дополнительно 3 байт (bc), firstHitterTeamId(uint)
+                * 0x0400 - 14bit - надпись "Отсутсвует" под именем
+                */
+            }
+            else if (_unit is Npc)
+            {
+                stream.Write((ushort)8192); // flags
             }
             else
             {
-                stream.WritePisc(0, 0); // pisc
                 stream.Write((ushort)0); // flags
             }
 
-            if (_unit is Character)
+            if (_unit is Character character7)
             {
-                var character = (Character)_unit;
+                var activeAbilities = character7.Abilities.GetActiveAbilities();
 
-                var activeAbilities = character.Abilities.GetActiveAbilities();
-                foreach (var ability in character.Abilities.Values)
+                foreach (var ability in character7.Abilities.Values)
                 {
                     stream.Write(ability.Exp);
                     stream.Write(ability.Order);
                 }
 
-                stream.Write((byte)activeAbilities.Count);
+                stream.Write((byte)activeAbilities.Count); // nActive
                 foreach (var ability in activeAbilities)
+                {
                     stream.Write((byte)ability);
+                }
 
-                stream.WriteBc(0);
+                foreach (var ability in character7.Abilities.Values)
+                {
+                    stream.Write(ability.Exp);
+                    //stream.Write(0);
+                    stream.Write((byte)0);  //ability.Order
+                    stream.Write((byte)0);  // cannotLevelUp
+                }
 
-                character.VisualOptions.Write(stream, 31);
+                // TODO проверить
+                byte nHighActive = 0;
+                byte nActive = 0;
+                stream.Write(nHighActive); // nHighActive
+                stream.Write(nActive);    // nActive
+                while (nHighActive > 0)
+                {
+                    while (nActive > 0)
+                    {
+                        stream.Write(0); // active
+                        nActive--;
+                    }
+                    nHighActive--;
+                }
+
+                stream.WriteBc(0);      // objId
+                stream.Write((byte)0); // camp
+
+                //for (var i = 0; i < 6; i++)
+                //{
+                //    stream.Write(0); // stp
+                //}
+                stream.Write((byte)30);  // stp
+                stream.Write((byte)60);  // stp
+                stream.Write((byte)50);  // stp
+                stream.Write((byte)0);   // stp
+                stream.Write((byte)40);  // stp
+                stream.Write((byte)100); // stp
+
+                stream.Write((byte)7); // flags
+                character7.VisualOptions.Write(stream, 0x20); // cosplay_visual
 
                 stream.Write(1); // premium
 
-                for (var i = 0; i < 6; i++)
-                    stream.Write(0); // pStat
+                for (var i = 0; i < 5; i++)
+                {
+                    stream.Write(0); // stats
+                }
+
+                stream.Write(0); // extendMaxStats
+                stream.Write(0); // applyExtendCount
+                stream.Write(0); // applyNormalCount
+                stream.Write(0); // applySpecialCount
+                stream.WritePisc(0, 0, 0, 0);
+                stream.WritePisc(0, 0);
+                stream.Write(0); // accountPrivilege
             }
+            #endregion
+
+            #region read_7F50
 
             var goodBuffs = new List<Effect>();
             var badBuffs = new List<Effect>();
             var hiddenBuffs = new List<Effect>();
-            _unit.Effects.GetAllBuffs(goodBuffs, badBuffs, hiddenBuffs);
 
-            stream.Write((byte)goodBuffs.Count); // TODO max 32
-            foreach (var effect in goodBuffs)
+            if (_unit is Character)
             {
-                stream.Write(effect.Index);
-                stream.Write(effect.Template.BuffId);
-                stream.Write(effect.SkillCaster);
-                stream.Write(0u); // type(id)
-                stream.Write(effect.Caster.Level); // sourceLevel
-                stream.Write((short)1); // sourceAbLevel
-                stream.Write(effect.Duration); // totalTime
-                stream.Write(effect.GetTimeElapsed()); // elapsedTime
-                stream.Write((uint)effect.Tick); // tickTime
-                stream.Write(0); // tickIndex
-                stream.Write(1); // stack
-                stream.Write(0); // charged
-                stream.Write(0u); // type(id) -> cooldownSkill
+                _unit.Effects.GetAllBuffs(goodBuffs, badBuffs, hiddenBuffs);
+
+                stream.Write((byte)goodBuffs.Count); // TODO max 32
+                foreach (var effect in goodBuffs)
+                {
+                    // Begin read_7В10
+                    stream.Write(effect.Template.BuffId); // buffId
+                    // Begin read_6AC0
+                    stream.Write((byte)0); // _type
+
+                    switch (_type)
+                    {
+                        case 0:
+                        case 1:
+                        case 4:
+                            stream.WriteBc(_unit.ObjId);
+                            break;
+                        case 2:
+                            stream.WriteBc(_unit.ObjId);
+                            stream.Write(effect.SkillCaster);
+                            /*
+                             SkillCaster включает в себя
+                             ItemId = stream.ReadUInt64();
+                             ItemTemplateId = stream.ReadUInt32();
+                             Type1 = stream.ReadByte();
+                             Type2 = stream.ReadUInt32();
+                            */
+                            break;
+                        case 3:
+                            stream.WriteBc(_unit.ObjId);
+                            stream.Write(effect.Skill.Id); // mountSkillTyp
+                            break;
+                    }
+
+                    // End read_6AC0
+                    stream.Write(effect.Caster.Level); // sourceLevel
+                    stream.Write((short)1); // sourceAbLevel
+
+                    stream.WritePisc(0, 0, 0, 0u);
+                    stream.WritePisc(effect.Skill.Id, 1, 0, 0u);
+                    // End read_7В10
+
+                    /*
+                    stream.Write(effect.Index);
+                    stream.Write(effect.Template.BuffId);
+                    stream.Write(effect.SkillCaster);
+                    stream.Write(0u);                      // type(id)
+                    stream.Write(effect.Caster.Level);     // sourceLevel
+                    stream.Write((short)1);                // sourceAbLevel
+                    stream.Write(effect.Duration);         // totalTime
+                    stream.Write(effect.GetTimeElapsed()); // elapsedTime
+                    stream.Write((uint)effect.Tick);       // tickTime
+                    stream.Write(0);                       // tickIndex
+                    stream.Write(1);                       // stack
+                    stream.Write(0);                       // charged
+                    stream.Write(0u);                      // type(id) -> cooldownSkill
+                    */
+                }
+
+                stream.Write((byte)badBuffs.Count); // TODO max 24
+                foreach (var effect in badBuffs)
+                {
+                    // Begin read_7В10
+                    stream.Write(effect.Template.BuffId); // buffId
+                    // Begin read_6AC0
+                    stream.Write((byte)0); // _type
+
+                    switch (_type)
+                    {
+                        case 0:
+                        case 1:
+                        case 4:
+                            stream.WriteBc(_unit.ObjId);
+                            break;
+                        case 2:
+                            stream.WriteBc(_unit.ObjId);
+                            stream.Write(effect.SkillCaster);
+                            /*
+                             SkillCaster включает в себя
+                             ItemId = stream.ReadUInt64();
+                             ItemTemplateId = stream.ReadUInt32();
+                             Type1 = stream.ReadByte();
+                             Type2 = stream.ReadUInt32();
+                            */
+                            break;
+                        case 3:
+                            stream.WriteBc(_unit.ObjId);
+                            stream.Write(effect.Skill.Id); // mountSkillTyp
+                            break;
+                    }
+
+                    // End read_6AC0
+                    stream.Write(effect.Caster.Level); // sourceLevel
+                    stream.Write((short)1); // sourceAbLevel
+
+                    stream.WritePisc(0, 0, 0, 0u);
+                    stream.WritePisc(effect.Skill.Id, 1, 0, 0u);
+                    // End read_7В10
+                }
+
+                stream.Write((byte)hiddenBuffs.Count); // TODO max 24
+                foreach (var effect in hiddenBuffs)
+                {
+                    // Begin read_7В10
+                    stream.Write(effect.Template.BuffId); // buffId
+                    // Begin read_6AC0
+                    stream.Write((byte)0); // _type
+
+                    switch (_type)
+                    {
+                        case 0:
+                        case 1:
+                        case 4:
+                            stream.WriteBc(_unit.ObjId);
+                            break;
+                        case 2:
+                            stream.WriteBc(_unit.ObjId);
+                            stream.Write(effect.SkillCaster);
+                            /*
+                             SkillCaster включает в себя
+                             ItemId = stream.ReadUInt64();
+                             ItemTemplateId = stream.ReadUInt32();
+                             Type1 = stream.ReadByte();
+                             Type2 = stream.ReadUInt32();
+                            */
+                            break;
+                        case 3:
+                            stream.WriteBc(_unit.ObjId);
+                            stream.Write(effect.Skill.Id); // mountSkillTyp
+                            break;
+                    }
+
+                    // End read_6AC0
+                    stream.Write(effect.Caster.Level); // sourceLevel
+                    stream.Write((short)1); // sourceAbLevel
+
+                    stream.WritePisc(0, 0, 0, 0u);
+                    stream.WritePisc(effect.Skill.Id, 1, 0, 0u);
+                    // End read_7В10
+                }
+            }
+            else
+            {
+                stream.Write((byte)0); // goodBuffs
+                stream.Write((byte)0); // badBuffs
+                stream.Write((byte)0); // hiddenBuffs
             }
 
-            stream.Write((byte)badBuffs.Count); // TODO max 24
-            foreach (var effect in badBuffs)
-            {
-                stream.Write(effect.Index);
-                stream.Write(effect.Template.BuffId);
-                stream.Write(effect.SkillCaster);
-                stream.Write(0u); // type(id)
-                stream.Write(effect.Caster.Level); // sourceLevel
-                stream.Write((short)1); // sourceAbLevel
-                stream.Write(effect.Duration); // totalTime
-                stream.Write(effect.GetTimeElapsed()); // elapsedTime
-                stream.Write((uint)effect.Tick); // tickTime
-                stream.Write(0); // tickIndex
-                stream.Write(1); // stack
-                stream.Write(0); // charged
-                stream.Write(0u); // type(id) -> cooldownSkill
-            }
-
-            stream.Write((byte)hiddenBuffs.Count); // TODO max 24
-            foreach (var effect in hiddenBuffs)
-            {
-                stream.Write(effect.Index);
-                stream.Write(effect.Template.BuffId);
-                stream.Write(effect.SkillCaster);
-                stream.Write(0u); // type(id)
-                stream.Write(effect.Caster.Level); // sourceLevel
-                stream.Write((short)1); // sourceAbLevel
-                stream.Write(effect.Duration); // totalTime
-                stream.Write(effect.GetTimeElapsed()); // elapsedTime
-                stream.Write((uint)effect.Tick); // tickTime
-                stream.Write(0); // tickIndex
-                stream.Write(1); // stack
-                stream.Write(0); // charged
-                stream.Write(0u); // type(id) -> cooldownSkill
-            }
-
-            //            for (var i = 0; i < 255; i++)
-            //                stream.Write(0);
+            #endregion
 
             return stream;
         }
     }
 }
+

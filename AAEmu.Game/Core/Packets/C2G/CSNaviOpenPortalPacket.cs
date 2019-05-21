@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSNaviOpenPortalPacket : GamePacket
     {
-        public CSNaviOpenPortalPacket() : base(0x0e8, 1)
+        public CSNaviOpenPortalPacket() : base(CSOffsets.CSNaviOpenPortalPacket, 5)
         {
         }
 

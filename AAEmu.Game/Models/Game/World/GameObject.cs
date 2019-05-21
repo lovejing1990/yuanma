@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Managers.World;
 using AAEmu.Game.Core.Network.Game;
@@ -24,7 +24,9 @@ namespace AAEmu.Game.Models.Game.World
         public virtual void SetPosition(Point pos)
         {
             if (DisabledSetPosition)
+            {
                 return;
+            }
 
             Position = pos.Clone();
             WorldManager.Instance.AddVisibleObject(this);
@@ -33,7 +35,9 @@ namespace AAEmu.Game.Models.Game.World
         public virtual void SetPosition(float x, float y, float z)
         {
             if (DisabledSetPosition)
+            {
                 return;
+            }
 
             Position.X = x;
             Position.Y = y;
@@ -47,8 +51,12 @@ namespace AAEmu.Game.Models.Game.World
                 return;
 
             if (this is Character)
+            {
                 if (!Position.X.Equals(x) || !Position.Y.Equals(y) || !Position.Z.Equals(z))
+                {
                     TeamManager.Instance.UpdatePosition(((Character)this).Id);
+                }
+            }
 
             Position.X = x;
             Position.Y = y;

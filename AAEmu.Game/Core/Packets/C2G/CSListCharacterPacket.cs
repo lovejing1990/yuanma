@@ -9,7 +9,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSListCharacterPacket : GamePacket
     {
-        public CSListCharacterPacket() : base(0x0C9, 5)
+        public CSListCharacterPacket() : base(CSOffsets.CSListCharacterPacket, 5)
         {
         }
 
@@ -19,7 +19,14 @@ namespace AAEmu.Game.Core.Packets.C2G
             var data = stream.ReadBytes(); // TODO or string?
 
             Connection.SendPacket(new SCGetSlotCountPacket(0));
-            Connection.SendPacket(new SCAccountInfoPacket((int)Connection.Payment.Method,Connection.Payment.Location,Connection.Payment.StartTime,Connection.Payment.EndTime));
+            Connection.SendPacket(
+                new SCAccountInfoPacket(
+                    (int)Connection.Payment.Method,
+                    Connection.Payment.Location,
+                    Connection.Payment.StartTime,
+                    Connection.Payment.EndTime
+                )
+            );
 
             Connection.LoadAccount();
 

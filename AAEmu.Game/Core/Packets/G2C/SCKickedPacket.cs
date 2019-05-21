@@ -8,7 +8,7 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly byte _reason;
         private readonly string _msg;
 
-        public SCKickedPacket(byte reason, string msg) : base(SCOffsets.SCKickedPacket, 1)
+        public SCKickedPacket(byte reason, string msg) : base(SCOffsets.SCKickedPacket, 5)
         {
             _reason = reason;
             _msg = msg;

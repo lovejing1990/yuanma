@@ -154,6 +154,10 @@ namespace AAEmu.Game.Core.Managers.World
                         while (reader.Read())
                         {
                             var template = new ZoneGroupBannedTag();
+                            if (reader.IsDBNull("id"))
+                            {
+                                continue; //пропустим все id = NULL
+                            }
                             template.Id = reader.GetUInt32("id");
                             template.ZoneGroupId = reader.GetUInt32("zone_group_id");
                             template.TagId = reader.GetUInt32("tag_id");

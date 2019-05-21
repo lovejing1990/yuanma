@@ -7,7 +7,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class X2EnterWorldPacket : GamePacket
     {
-        public X2EnterWorldPacket() : base(0x00, 1)
+        public X2EnterWorldPacket() : base(CSOffsets.X2EnterWorldPacket, 1)
         {
 
         }

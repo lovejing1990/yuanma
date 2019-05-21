@@ -6,7 +6,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSResetSkillsPacket : GamePacket
     {
-        public CSResetSkillsPacket() : base(0x094, 1)
+        public CSResetSkillsPacket() : base(CSOffsets.CSResetSkillsPacket, 5)
         {
         }
 

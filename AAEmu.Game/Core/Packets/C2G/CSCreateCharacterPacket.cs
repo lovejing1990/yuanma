@@ -7,7 +7,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSCreateCharacterPacket : GamePacket
     {
-        public CSCreateCharacterPacket() : base(0x179, 5)
+        public CSCreateCharacterPacket() : base(CSOffsets.CSCreateCharacterPacket, 5)
         {
         }
 
@@ -29,7 +29,6 @@ namespace AAEmu.Game.Core.Packets.C2G
             var ability2 = stream.ReadByte();
             var ability3 = stream.ReadByte();
             var level = stream.ReadByte();
-
             var IntroZoneId = stream.ReadInt32(); // for 3.0.3.0
 
             CharacterManager.Instance.Create(Connection, name, race, gender, items, customModel, ability1);

@@ -200,18 +200,18 @@ namespace AAEmu.Game.Core.Managers
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM npc_mount_skills";
+                    command.CommandText = "SELECT * FROM npc_mount_skills ORDER BY npc_id ASC";
                     command.Prepare();
                     using (var reader = new SQLiteWrapperReader(command.ExecuteReader()))
                     {
+                        //uint step = 0;
                         while (reader.Read())
                         {
-                            var template = new NpcMountSkills()
-                            {
-                                Id = reader.GetUInt32("id"),
-                                NpcId = reader.GetUInt32("npc_id"),
-                                MountSkillId = reader.GetUInt32("mount_skill_id")
-                            };
+                            var template = new NpcMountSkills();
+                            template.Id = reader.GetUInt32("id"); // нет такого поля в базе 3.5.5.3
+                            //template.Id = step++;
+                            template.NpcId = reader.GetUInt32("npc_id");
+                            template.MountSkillId = reader.GetUInt32("mount_skill_id");
                             _slaveMountSkills.Add(template.Id, template);
                         }
                     }

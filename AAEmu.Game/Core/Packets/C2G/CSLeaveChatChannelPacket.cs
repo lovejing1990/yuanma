@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSLeaveChatChannelPacket : GamePacket
     {
-        public CSLeaveChatChannelPacket() : base(0x062, 1)
+        public CSLeaveChatChannelPacket() : base(CSOffsets.CSLeaveChatChannelPacket, 5)
         {
         }
 

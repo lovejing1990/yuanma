@@ -7,7 +7,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSSetTeamMemberRolePacket : GamePacket
     {
-        public CSSetTeamMemberRolePacket() : base(0x085, 1)
+        public CSSetTeamMemberRolePacket() : base(CSOffsets.CSSetTeamMemberRolePacket, 5)
         {
         }
 

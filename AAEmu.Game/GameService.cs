@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +41,9 @@ namespace AAEmu.Game
             FriendIdManager.Instance.Initialize();
             MateIdManager.Instance.Initialize();
             HousingIdManager.Instance.Initialize();
+            HousingTldManager.Instance.Initialize();
             TeamIdManager.Instance.Initialize();
+            DuelIdManager.Instance.Initialize(); // by NLObP
 
             ZoneManager.Instance.Load();
             WorldManager.Instance.Load();
@@ -76,6 +78,9 @@ namespace AAEmu.Game
             SpawnManager.Instance.Load();
             SpawnManager.Instance.SpawnAll();
             HousingManager.Instance.SpawnAll();
+
+            AccessLevelManager.Instance.Load();
+            
             ScriptCompiler.Compile();
 
             TimeManager.Instance.Start();
@@ -83,6 +88,8 @@ namespace AAEmu.Game
             GameNetwork.Instance.Start();
             StreamNetwork.Instance.Start();
             LoginNetwork.Instance.Start();
+
+            CashShopManager.Instance.Load();
             stopWatch.Stop();
 
             _log.Info("Server started! Took {0}", stopWatch.Elapsed);

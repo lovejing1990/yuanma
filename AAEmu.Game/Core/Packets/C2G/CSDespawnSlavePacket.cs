@@ -6,7 +6,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSDespawnSlavePacket : GamePacket
     {
-        public CSDespawnSlavePacket() : base(0x02f, 1)
+        public CSDespawnSlavePacket() : base(CSOffsets.CSDespawnSlavePacket, 5)
         {
         }
 

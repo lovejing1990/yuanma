@@ -162,7 +162,7 @@ namespace AAEmu.Game.Models.Game.Units
             stream.Write(MovableDecalRotate);
             stream.Write(MovableDecalMoveX);
             stream.Write(MovableDecalMoveY);
-            
+
             //for 1.2
             //foreach (var asset in FixedDecalAsset)
             //    stream.Write(asset);
@@ -247,14 +247,14 @@ namespace AAEmu.Game.Models.Game.Units
             stream.ReadUInt32(); // twoToneHair for 3.0.3.0
             stream.ReadSingle(); // twoToneFirstWidth for 3.0.3.0
             stream.ReadSingle(); // twoToneSecondWidth for 3.0.3.0
-            stream.ReadUInt32(); // type for 3.0.3.0
-            stream.ReadUInt32(); // type for 3.0.3.0
 
             if (_type == UnitCustomModelType.Hair)
                 return;
 
-            // Skin
             SkinColorId = stream.ReadUInt32();
+            stream.ReadUInt32(); // type for 3.0.3.0
+            stream.ReadUInt32(); // type for 3.0.3.0
+            // Skin
             //UnkId = stream.ReadUInt32();
             UnkId = stream.ReadSingle(); // weight
 
@@ -275,18 +275,18 @@ namespace AAEmu.Game.Models.Game.Units
             stream.Write(HairColorId);
 
             // for 3.0.3.0
-            stream.Write(0); // type for 3.0.3.0
+            stream.Write(0);  // type for 3.0.3.0
             stream.Write(0);  // defaultHairColor for 3.0.3.0
-            stream.Write(0); // twoToneHair for 3.0.3.0
+            stream.Write(0);  // twoToneHair for 3.0.3.0
             stream.Write(0f); // twoToneFirstWidth for 3.0.3.0
             stream.Write(0f); // twoToneSecondWidth for 3.0.3.0
-            stream.Write(0); // type for 3.0.3.0
-            stream.Write(0); // type for 3.0.3.0
 
             if (_type == UnitCustomModelType.Hair)
                 return stream;
 
             stream.Write(SkinColorId);
+            stream.Write(0);  // type for 3.0.3.0
+            stream.Write(0);  // type for 3.0.3.0
             stream.Write(UnkId); // weight
 
             if (_type == UnitCustomModelType.Skin)

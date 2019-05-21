@@ -70,7 +70,7 @@ namespace AAEmu.Game.Core.Packets.G2C
             //stream.Write((byte)1);
             //stream.Write((byte)113);
             stream.Write((uint)0x025c16ee); //port
-            stream.Write((ushort)3533); //port
+            stream.Write((ushort)25375); //port
             //stream.Write(_authority);                   // authority 1 это поле есть в 3.5.5.3, но нет в 3.0.3.0
 
             return stream;

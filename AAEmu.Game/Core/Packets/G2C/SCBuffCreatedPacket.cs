@@ -9,7 +9,7 @@ namespace AAEmu.Game.Core.Packets.G2C
     {
         private readonly Effect _effect;
 
-        public SCBuffCreatedPacket(Effect effect) : base(SCOffsets.SCBuffCreatedPacket, 1)
+        public SCBuffCreatedPacket(Effect effect) : base(SCOffsets.SCBuffCreatedPacket, 5)
         {
             _effect = effect;
         }

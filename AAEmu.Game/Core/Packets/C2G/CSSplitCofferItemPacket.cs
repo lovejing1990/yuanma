@@ -6,7 +6,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSSplitCofferItemPacket : GamePacket
     {
-        public CSSplitCofferItemPacket() : base(0x03f, 1)
+        public CSSplitCofferItemPacket() : base(CSOffsets.CSSplitCofferItemPacket, 5)
         {
         }
 

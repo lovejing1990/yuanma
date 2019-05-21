@@ -5,7 +5,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSEnteredInstantGameWorldPacket : GamePacket
     {
-        public CSEnteredInstantGameWorldPacket() : base(0x0e4, 1)
+        public CSEnteredInstantGameWorldPacket() : base(CSOffsets.CSEnteredInstantGameWorldPacket, 5)
         {
         }
 

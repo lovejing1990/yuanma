@@ -8,7 +8,7 @@ namespace AAEmu.Game.Core.Packets.C2G
 {
     public class CSInstanceLoadedPacket : GamePacket
     {
-        public CSInstanceLoadedPacket() : base(0x0e0, 1)
+        public CSInstanceLoadedPacket() : base(CSOffsets.CSInstanceLoadedPacket, 5)
         {
         }
 

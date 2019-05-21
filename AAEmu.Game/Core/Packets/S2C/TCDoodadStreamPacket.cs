@@ -1,4 +1,4 @@
-using AAEmu.Commons.Network;
+﻿using AAEmu.Commons.Network;
 using AAEmu.Commons.Utils;
 using AAEmu.Game.Core.Network.Stream;
 using AAEmu.Game.Models.Game.DoodadObj;
@@ -20,23 +20,21 @@ namespace AAEmu.Game.Core.Packets.S2C
 
         public override PacketStream Write(PacketStream stream)
         {
-            stream.Write(_id);
-            stream.Write(_next);
-            stream.Write(_doodads.Length);
+            stream.Write(_id); // id
+            stream.Write(_next); // next
+            stream.Write(_doodads.Length); // count
             foreach (var doodad in _doodads)
             {
-                stream.WriteBc(doodad.ObjId);
-                stream.Write(doodad.TemplateId);
-                stream.Write(Helpers.ConvertX(doodad.Position.X));
-                stream.Write(Helpers.ConvertY(doodad.Position.Y));
-                stream.Write(Helpers.ConvertZ(doodad.Position.Z));
-                stream.Write(Helpers.ConvertRotation(doodad.Position.RotationX));
-                stream.Write(Helpers.ConvertRotation(doodad.Position.RotationY));
-                stream.Write(Helpers.ConvertRotation(doodad.Position.RotationZ));
-                stream.Write(doodad.Scale);
-                stream.Write(doodad.FuncGroupId); // doodad_func_groups Id
-                stream.Write(doodad.TimeLeft); // growing
-                stream.Write(doodad.PlantTime); // plantTime
+                stream.WriteBc(doodad.ObjId); // bc
+                stream.Write(doodad.TemplateId); // type
+                stream.WritePosition(doodad.Position.X, doodad.Position.Y, doodad.Position.Z); // pos_bc_xyz
+                stream.Write(Helpers.ConvertRotation(doodad.Position.RotationX)); // rotx
+                stream.Write(Helpers.ConvertRotation(doodad.Position.RotationY)); // roty
+                stream.Write(Helpers.ConvertRotation(doodad.Position.RotationZ)); // rotz
+                stream.Write(doodad.Scale); //scale
+                stream.Write(doodad.FuncGroupId); // doodad_func_groups Id type
+                //stream.Write(doodad.TimeLeft); // growing
+                //stream.Write(doodad.PlantTime); // plantTime
             }
 
             return stream;

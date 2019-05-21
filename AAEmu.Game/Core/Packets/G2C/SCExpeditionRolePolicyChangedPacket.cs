@@ -9,7 +9,7 @@ namespace AAEmu.Game.Core.Packets.G2C
         private readonly ExpeditionRolePolicy _rolePolicy;
         private readonly bool _success;
 
-        public SCExpeditionRolePolicyChangedPacket(ExpeditionRolePolicy rolePolicy, bool success) : base(SCOffsets.SCExpeditionRolePolicyChangedPacket, 1)
+        public SCExpeditionRolePolicyChangedPacket(ExpeditionRolePolicy rolePolicy, bool success) : base(SCOffsets.SCExpeditionRolePolicyChangedPacket, 5)
         {
             _rolePolicy = rolePolicy;
             _success = success;
@@ -18,6 +18,7 @@ namespace AAEmu.Game.Core.Packets.G2C
         public override PacketStream Write(PacketStream stream)
         {
             stream.Write(_rolePolicy);
+            stream.Write(_success);
             return stream;
         }
     }

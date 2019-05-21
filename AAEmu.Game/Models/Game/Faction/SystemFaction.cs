@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using AAEmu.Commons.Network;
 
 namespace AAEmu.Game.Models.Game.Faction
 {
-    public class SystemFaction
+    public class SystemFaction : PacketMarshaler
     {
         public uint Id { get; set; }
         public string Name { get; set; }
@@ -15,6 +16,7 @@ namespace AAEmu.Game.Models.Game.Faction
         public bool DiplomacyTarget { get; set; }
         public bool AggroLink { get; set; }
         public bool GuardHelp { get; set; }
+        public byte AllowChangeName { get; set; }
         public DateTime Created { get; set; }
 
         public Dictionary<uint, FactionRelation> Relations { get; set; }
@@ -29,6 +31,25 @@ namespace AAEmu.Game.Models.Game.Faction
             if (id == Id)
                 return RelationState.Friendly;
             return Relations.ContainsKey(id) ? Relations[id].State : RelationState.Neutral;
+        }
+
+        public override PacketStream Write(PacketStream stream)
+        {
+            stream.Write(Id);             // type
+            stream.Write(MotherId);       // type
+            stream.Write(Name);           // name
+            stream.Write(OwnerId);        // ownerId Int32
+            stream.Write(OwnerName);      // ownerName
+            stream.Write(UnitOwnerType);  // UnitOwnerType Byte
+            stream.Write(PoliticalSystem); // PoliticalSystem Byte
+            stream.Write(Created);         // createdTime
+            stream.Write(AggroLink);       // aggroLink
+            stream.Write(true);            // dTarget
+            //stream.Write(DiplomacyTarget); // нет в 3.0.3.0.
+            stream.Write(AllowChangeName); // allowChangeName
+            stream.Write(0L);              // renameTime
+
+            return stream;
         }
     }
 }
